@@ -994,7 +994,7 @@ impl ServerSession {
     }
 
     async fn start_terminal_recording(&mut self, channel_id: Uuid, name: String) {
-        match async {
+        let recorder = async {
             let mut recorder = self
                 .services
                 .recordings
@@ -1009,8 +1009,8 @@ impl ServerSession {
             }
             Ok::<_, recordings::Error>(recorder)
         }
-        .await
-        {
+        .await;
+        match recorder {
             Ok(recorder) => {
                 self.channel_recorders.insert(channel_id, recorder);
             }
@@ -1324,7 +1324,9 @@ impl ServerSession {
                     }
                 } else if kinds.contains(&CredentialKind::WebUserApproval) {
                     let Some(auth_state) = self.auth_state.as_ref() else {
-                        return russh::server::Auth::Reject { proceed_with_methods: None};
+                        return russh::server::Auth::Reject {
+                            proceed_with_methods: None,
+                        };
                     };
                     let identification_string =
                         auth_state.lock().await.identification_string().to_owned();
@@ -1358,7 +1360,8 @@ impl ServerSession {
                     login_url.set_fragment(Some(&format!("/login/{auth_state_id}")));
 
                     russh::server::Auth::Partial {
-                        name: Cow::Owned(format!(
+                        name: Cow::Borrowed("Warpgate authentication"),
+                        instructions: Cow::Owned(format!(
                             concat!(
                             "-----------------------------------------------------------------------\n",
                             "Warpgate authentication: please open the following URL in your browser:\n",
@@ -1373,7 +1376,6 @@ impl ServerSession {
                                 .collect::<Vec<_>>()
                                 .join(" ")
                         )),
-                        instructions: Cow::Borrowed(""),
                         prompts: Cow::Owned(vec![(Cow::Borrowed("Press Enter when done: "), true)]),
                     }
                 } else {
