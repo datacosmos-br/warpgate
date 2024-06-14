@@ -1,5 +1,6 @@
 import { BehaviorSubject } from 'rxjs'
-import { get, writable, Writable } from 'svelte/store'
+import { get, writable } from 'svelte/store'
+import type { Writable } from 'svelte/store';
 
 export function autosave<T> (key: string, initial: T): ([Writable<T>, BehaviorSubject<T>]) {
     key = `warpgate:${key}`

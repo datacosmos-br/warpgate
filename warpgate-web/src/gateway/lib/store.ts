@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store'
-import { api, Info } from './api'
+import { api } from './api'
+import type { Info } from './api'
 
 export const serverInfo = writable<Info|undefined>(undefined)
 

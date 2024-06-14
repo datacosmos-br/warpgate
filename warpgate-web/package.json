@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "NODE_ENV=development vite serve",
+    "build": "NODE_ENV=production vite build",
     "watch": "vite build -w --mode development --minify false",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
@@ -63,5 +63,13 @@
     "vite-tsconfig-paths": "^4.3.2",
     "xterm": "^4.18.0",
     "xterm-addon-serialize": "^0.7.0"
+  },
+  "dependencies": {
+    "@jridgewell/sourcemap-codec": "^1.4.15",
+    "@popperjs/core": "^2.11.8",
+    "@xterm/addon-serialize": "^0.13.0",
+    "@xterm/xterm": "^5.5.0",
+    "glob": "^9.0.0",
+    "rimraf": "^4.0.0"
   }
 }
