@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
     import { Alert, FormGroup } from 'sveltestrap'
     import { TargetKind } from 'gateway/lib/api'
     import { serverInfo } from 'gateway/lib/store'

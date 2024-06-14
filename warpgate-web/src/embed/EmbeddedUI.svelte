@@ -82,7 +82,7 @@ async function logout () {
             }
         }}
     >
-        <img class="logo" src={logo} alt="Warpgate" on:mousedown|preventDefault />
+        <img class="logo" src={logo} alt="Warpgate" />
     </button>
 
     {#if menuVisible}
