@@ -1,9 +1,9 @@
 #[derive(thiserror::Error, Debug)]
 pub enum RustlsSetupError {
     #[error("rustls: {0}")]
-    Rustls(#[from] rustls::Error),
+    Rustls(#[from] tokio_rustls::rustls::Error),
     #[error("sign: {0}")]
-    Sign(#[from] rustls::sign::SignError),
+    Sign(#[from] tokio_rustls::rustls::sign::SignError),
     #[error("no certificates found in certificate file")]
     NoCertificates,
     #[error("no private keys found in key file")]

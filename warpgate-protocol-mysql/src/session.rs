@@ -3,7 +3,7 @@ use std::sync::Arc;
 
 use bytes::{Buf, Bytes, BytesMut};
 use rand::Rng;
-use rustls::ServerConfig;
+use tokio_rustls::TlsAcceptor;
 use tokio::net::TcpStream;
 use tokio::sync::Mutex;
 use tracing::*;
@@ -24,6 +24,7 @@ use warpgate_database_protocols::mysql::protocol::Capabilities;
 use crate::client::{ConnectionOptions, MySqlClient};
 use crate::error::MySqlError;
 use crate::stream::MySqlStream;
+use crate::tls::MaybeTlsStream;
 
 pub struct MySqlSession {
     stream: MySqlStream<tokio_rustls::server::TlsStream<TcpStream>>,
@@ -31,7 +32,7 @@ pub struct MySqlSession {
     challenge: [u8; 20],
     username: Option<String>,
     database: Option<String>,
-    tls_config: Arc<ServerConfig>,
+    tls_config: Arc<tokio_rustls::rustls::ServerConfig>,
     server_handle: Arc<Mutex<WarpgateServerHandle>>,
     id: Uuid,
     services: Services,
@@ -43,13 +44,13 @@ impl MySqlSession {
         server_handle: Arc<Mutex<WarpgateServerHandle>>,
         services: Services,
         stream: TcpStream,
-        tls_config: ServerConfig,
+        tls_config: tokio_rustls::rustls::ServerConfig,
         remote_address: SocketAddr,
     ) -> Self {
         let id = server_handle.lock().await.id();
         Self {
             services,
-            stream: MySqlStream::new(stream),
+            stream: MySqlStream::new(MaybeTlsStream::Raw(stream)),
             capabilities: Capabilities::PROTOCOL_41
                 | Capabilities::PLUGIN_AUTH
                 | Capabilities::FOUND_ROWS
@@ -116,12 +117,11 @@ impl MySqlSession {
                 if self.stream.is_tls() {
                     break resp;
                 }
-                self.stream = self.stream.upgrade(self.tls_config.clone()).await?;
+                let acceptor = TlsAcceptor::from(self.tls_config.clone());
+                self.stream = self.stream.upgrade(acceptor).await?;
                 continue;
-            } else {
-                self.send_error(1002, "Warpgate requires TLS - please enable it in your client: add `--ssl` on the CLI or add `?sslMode=PREFERRED` to your database URI").await?;
-                return Err(MySqlError::TlsNotSupportedByClient);
             }
+
         };
 
         if resp.auth_plugin == Some(AuthPlugin::MySqlClearPassword) {
@@ -136,8 +136,6 @@ impl MySqlSession {
             data: Bytes::new(),
         };
         self.stream.push(&req, ())?;
-
-        // self.push(&RawBytes::<
         self.stream.flush().await?;
 
         let Some(response) = &self.stream.recv().await? else {

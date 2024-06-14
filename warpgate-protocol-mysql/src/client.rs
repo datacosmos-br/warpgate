@@ -1,7 +1,8 @@
 use std::sync::Arc;
-
 use bytes::BytesMut;
 use tokio::net::TcpStream;
+use tokio_rustls::rustls::ServerName;
+use tokio_rustls::TlsConnector;
 use tracing::*;
 use warpgate_common::{TargetMySqlOptions, TlsMode};
 use warpgate_database_protocols::io::Decode;
@@ -16,6 +17,7 @@ use crate::common::compute_auth_challenge_response;
 use crate::error::MySqlError;
 use crate::stream::MySqlStream;
 use crate::tls::configure_tls_connector;
+use crate::tls::MaybeTlsStream;
 
 pub struct MySqlClient {
     pub stream: MySqlStream<tokio_rustls::client::TlsStream<TcpStream>>,
@@ -58,8 +60,8 @@ impl MySqlClient {
         target: &TargetMySqlOptions,
         mut options: ConnectionOptions,
     ) -> Result<Self, MySqlError> {
-        let mut stream =
-            MySqlStream::new(TcpStream::connect((target.host.clone(), target.port)).await?);
+        let tcp_stream = TcpStream::connect((target.host.clone(), target.port)).await?;
+        let mut stream = MySqlStream::new(MaybeTlsStream::Raw(tcp_stream));
 
         options.capabilities.remove(Capabilities::SSL);
         if target.tls.mode != TlsMode::Disabled {
@@ -72,17 +74,15 @@ impl MySqlClient {
         let handshake = Handshake::decode(payload)?;
 
         options.capabilities &= handshake.server_capabilities;
-        if target.tls.mode == TlsMode::Required && !options.capabilities.contains(Capabilities::SSL)
-        {
+        if target.tls.mode == TlsMode::Required && !options.capabilities.contains(Capabilities::SSL) {
             return Err(MySqlError::TlsNotSupported);
         }
 
         info!(capabilities=?options.capabilities, "Target handshake");
 
-        if options.capabilities.contains(Capabilities::SSL) && target.tls.mode != TlsMode::Disabled
-        {
+        if options.capabilities.contains(Capabilities::SSL) && target.tls.mode != TlsMode::Disabled {
             let accept_invalid_certs = !target.tls.verify;
-            let accept_invalid_hostname = false; // ca + hostname verification
+            let accept_invalid_hostname = false;
             let client_config = Arc::new(
                 configure_tls_connector(accept_invalid_certs, accept_invalid_hostname, None)
                     .await?,
@@ -93,16 +93,11 @@ impl MySqlClient {
             };
             stream.push(&req, options.capabilities)?;
             stream.flush().await?;
-            stream = stream
-                .upgrade((
-                    target
-                        .host
-                        .as_str()
-                        .try_into()
-                        .map_err(|_| MySqlError::InvalidDomainName)?,
-                    client_config,
-                ))
-                .await?;
+            let connector = TlsConnector::from(client_config.clone());
+            let server_name = ServerName::try_from(target.host.as_str())
+                .map_err(|_| MySqlError::InvalidDomainName)?;
+            let tls_stream = connector.connect(server_name, stream.into_inner().into_inner()).await?;
+            stream = MySqlStream::new(MaybeTlsStream::Tls(tls_stream));
             info!("Target connection upgraded to TLS");
         }
 

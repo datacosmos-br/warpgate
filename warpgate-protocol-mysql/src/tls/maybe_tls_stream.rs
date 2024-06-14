@@ -3,7 +3,6 @@ use std::sync::Arc;
 use std::task::Poll;
 
 use async_trait::async_trait;
-use rustls::{ClientConfig, ServerConfig, ServerName};
 use tokio::io::{AsyncRead, AsyncWrite, ReadBuf};
 use tracing::*;
 
@@ -42,6 +41,13 @@ where
 {
     pub fn new(stream: S) -> Self {
         Self::Raw(stream)
+    }
+
+    pub fn into_inner(self) -> S {
+        match self {
+            MaybeTlsStream::Raw(stream) => stream,
+            _ => panic!("Stream has been upgraded"),
+        }
     }
 }
 
@@ -126,10 +132,13 @@ impl<S> UpgradableStream<tokio_rustls::client::TlsStream<S>> for S
 where
     S: AsyncRead + AsyncWrite + Unpin + Send,
 {
-    type UpgradeConfig = (ServerName, Arc<ClientConfig>);
+    type UpgradeConfig = (
+        tokio_rustls::rustls::ServerName,
+        Arc<tokio_rustls::rustls::ClientConfig>,
+    );
 
     async fn upgrade(
-        mut self,
+        self,
         config: Self::UpgradeConfig,
     ) -> Result<tokio_rustls::client::TlsStream<S>, MaybeTlsStreamError> {
         let (domain, tls_config) = config;
@@ -143,10 +152,10 @@ impl<S> UpgradableStream<tokio_rustls::server::TlsStream<S>> for S
 where
     S: AsyncRead + AsyncWrite + Unpin + Send,
 {
-    type UpgradeConfig = Arc<ServerConfig>;
+    type UpgradeConfig = Arc<tokio_rustls::rustls::ServerConfig>;
 
     async fn upgrade(
-        mut self,
+        self,
         tls_config: Self::UpgradeConfig,
     ) -> Result<tokio_rustls::server::TlsStream<S>, MaybeTlsStreamError> {
         let acceptor = tokio_rustls::TlsAcceptor::from(tls_config);

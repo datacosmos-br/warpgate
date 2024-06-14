@@ -392,11 +392,14 @@ async fn proxy_ws_inner(
     client_request = inject_forwarding_headers(req, client_request)?;
     client_request = rewrite_request(client_request, options)?;
 
+
     let (client, client_response) = connect_async_with_config(
         client_request
             .body(())
-            .map_err(poem::error::InternalServerError)?,
+            .map_err(poem::error::InternalServerError)?
+            .into(),
         None,
+        true
     )
     .await
     .map_err(poem::error::BadGateway)?;
