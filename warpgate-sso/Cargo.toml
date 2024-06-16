@@ -16,3 +16,8 @@ serde_json = "1.0"
 thiserror = "1.0"
 tokio = { version = "1.38", features = ["tracing", "macros"] }
 tracing = "0.1"
+
+[features]
+offline = []
+migrate = []
+_tls-native-tls = []

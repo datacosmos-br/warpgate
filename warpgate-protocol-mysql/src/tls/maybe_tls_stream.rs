@@ -6,7 +6,7 @@ use async_trait::async_trait;
 use tokio::io::{AsyncRead, AsyncWrite, ReadBuf};
 use tracing::*;
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Error, Debug)]
 pub enum MaybeTlsStreamError {
     #[error("stream is already upgraded")]
     AlreadyUpgraded,

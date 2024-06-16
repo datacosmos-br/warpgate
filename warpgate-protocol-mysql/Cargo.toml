@@ -6,7 +6,7 @@ version = "0.9.1"
 
 [dependencies]
 anyhow = { version = "1.0", features = ["std"] }
-async-trait = "0.1"
+async-trait = "0.1.80"
 bytes = "1.6"
 futures = "0.3"
 mysql_common = "0.32"
@@ -20,7 +20,8 @@ sha1 = "0.10.6"
 stream-reconnect = "0.3"
 thiserror = "1.0"
 tokio = { version = "1.38", features = ["full"] }
-tokio-rustls = { version = "0.26", features = ["dangerous_configuration"] }
+# tokio-rustls = { version = "0.26.0", features = ["dangerous_configuration"] }
+tokio-rustls = "0.26.0"
 tokio-tungstenite = "0.23"
 tracing = "0.1"
 uuid = { version = "1.8", features = ["v4"] }
@@ -30,3 +31,8 @@ warpgate-database-protocols = { version = "*", path = "../warpgate-database-prot
 warpgate-db-entities = { version = "*", path = "../warpgate-db-entities" }
 webpki = "0.22"
 webpki-roots = "0.26"
+
+[features]
+offline = []
+migrate = []
+_tls-native-tls = []

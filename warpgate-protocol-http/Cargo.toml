@@ -40,3 +40,8 @@ warpgate-core = { version = "*", path = "../warpgate-core" }
 warpgate-db-entities = { version = "*", path = "../warpgate-db-entities" }
 warpgate-sso = { version = "*", path = "../warpgate-sso" }
 warpgate-web = { version = "*", path = "../warpgate-web" }
+
+[features]
+offline = []
+migrate = []
+_tls-native-tls = []

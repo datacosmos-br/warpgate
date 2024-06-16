@@ -13,24 +13,23 @@ futures = "0.3"
 hex = "0.4"
 mime_guess = { version = "2.0", default-features = false }
 poem = { version = "3.0.1", features = [
-    "anyhow",
     "cookie",
     "session",
+    "anyhow",
     "websocket",
 ] }
 poem-openapi = { version = "5.0", features = [
-    "chrono",
-    "static-files",
     "swagger-ui",
+    "chrono",
     "uuid",
+    "static-files",
 ] }
-regex = "1.10"
-# russh-keys = { version = "0.43.0", features = [ "openssl",], path = "../../russh/russh-keys" }
 russh-keys = { version = "0.43.0", features = ["openssl"] }
+# russh-keys = { version = "0.43.0", features = [ "openssl",], path = "../../russh/russh-keys" }
 rust-embed = "8.4"
 sea-orm = { version = "0.12.15", features = [
-    "macros",
     "runtime-tokio-native-tls",
+    "macros",
 ], default-features = false }
 serde = "1.0"
 serde_json = "1.0"
@@ -42,3 +41,4 @@ warpgate-common = { version = "*", path = "../warpgate-common" }
 warpgate-core = { version = "*", path = "../warpgate-core" }
 warpgate-db-entities = { version = "*", path = "../warpgate-db-entities" }
 warpgate-protocol-ssh = { version = "*", path = "../warpgate-protocol-ssh" }
+regex = "1.10"
