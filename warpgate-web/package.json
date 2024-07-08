@@ -69,7 +69,7 @@
     "@xterm/xterm": "^5.5.0",
     "eslint-plugin-n": "^16.0.0",
     "glob": "^10.4.1",
-    "rimraf": "^5.0.7",
+    "rimraf": "^5.0.8",
     "vscode-languageclient": "^9.0.1"
   }
 }
