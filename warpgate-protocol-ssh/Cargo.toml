@@ -15,7 +15,7 @@ dialoguer = "0.11"
 ed25519-dalek = "2.1.1" # pin due to build fail on x86 in 2.1
 futures = "0.3"
 # russh = { version = "0.43.0", features = ["vendored-openssl"], path = "../../russh/russh"}
-russh = { version = "0.43.0", features = ["vendored-openssl"]}
+russh = { version = "0.44.1", features = ["vendored-openssl"]}
 # russh-keys = { version = "0.43.0", features = ["vendored-openssl"], path = "../../russh/russh"}
 russh-keys = { version = "0.43.0", features = ["vendored-openssl"]}
 sea-orm = { version = "0.12.15", features = [ "runtime-tokio-native-tls",], default-features = false }
