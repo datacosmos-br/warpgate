@@ -5,19 +5,14 @@ name = "warpgate-sso"
 version = "0.9.1"
 
 [dependencies]
-bytes = "1.6"
-data-encoding = "2.6"
-futures = "0.3.30"
-jsonwebtoken = "9"
-once_cell = "1.19"
-openidconnect = { version = "3.5", features = ["reqwest", "rustls-tls", "accept-string-booleans"] }
+bytes = "1.3"
+thiserror = "1.0"
+tokio = { version = "1.20", features = ["tracing", "macros"] }
+tracing = "0.1"
+openidconnect = { version = "2.4", features = ["reqwest", "rustls-tls", "accept-string-booleans"] }
 serde = "1.0"
 serde_json = "1.0"
-thiserror = "1.0"
-tokio = { version = "1.38", features = ["tracing", "macros"] }
-tracing = "0.1"
-
-[features]
-offline = []
-migrate = []
-_tls-native-tls = []
+once_cell = "1.17"
+jsonwebtoken = "8"
+data-encoding = "2.3"
+futures = "0.3.30"

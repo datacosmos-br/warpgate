@@ -13,9 +13,9 @@ use std::sync::Arc;
 use anyhow::{Context, Result};
 use async_trait::async_trait;
 use client::{ConnectionOptions, MySqlClient};
+use rustls::server::NoClientAuth;
+use rustls::ServerConfig;
 use tokio::net::TcpListener;
-use tokio_rustls::rustls::server::NoClientAuth;
-use tokio_rustls::rustls::ServerConfig;
 use tracing::*;
 use warpgate_common::{
     Target, TargetOptions, TlsCertificateAndPrivateKey, TlsCertificateBundle, TlsPrivateKey,

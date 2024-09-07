@@ -8,15 +8,6 @@ use warpgate_database_protocols::io::Encode;
 
 use crate::tls::{MaybeTlsStream, MaybeTlsStreamError, UpgradableStream};
 
-use stream_reconnect::{UnderlyingStream, ReconnectStream};
-use std::future::Future;
-use std::io;
-use std::pin::Pin;
-use tokio_tungstenite::{connect_async, MaybeTlsStream as WsMaybeTlsStream, WebSocketStream};
-use tokio_tungstenite::tungstenite::{Message, error::Error as WsError};
-use futures::{Sink, SinkExt, Stream, StreamExt};
-use std::task::{Context, Poll};
-
 #[derive(thiserror::Error, Debug)]
 pub enum MySqlStreamError {
     #[error("packet codec error: {0}")]
@@ -27,6 +18,7 @@ pub enum MySqlStreamError {
 
 pub struct MySqlStream<TS>
 where
+    TcpStream: UpgradableStream<TS>,
     TS: AsyncRead + AsyncWrite + Unpin,
 {
     stream: MaybeTlsStream<TcpStream, TS>,
@@ -37,11 +29,12 @@ where
 
 impl<TS> MySqlStream<TS>
 where
+    TcpStream: UpgradableStream<TS>,
     TS: AsyncRead + AsyncWrite + Unpin,
 {
-    pub fn new(stream: MaybeTlsStream<TcpStream, TS>) -> Self {
+    pub fn new(stream: TcpStream) -> Self {
         Self {
-            stream,
+            stream: MaybeTlsStream::new(stream),
             codec: PacketCodec::default(),
             inbound_buffer: BytesMut::new(),
             outbound_buffer: BytesMut::new(),
@@ -104,88 +97,4 @@ where
             MaybeTlsStream::Upgrading => false,
         }
     }
-
-    pub fn into_inner(self) -> MaybeTlsStream<TcpStream, TS> {
-        self.stream
-    }
-}
-
-// Define the MyWs struct
-struct MyWs(WebSocketStream<WsMaybeTlsStream<TcpStream>>);
-
-// Implement Stream for MyWs
-impl Stream for MyWs {
-    type Item = Result<Message, WsError>;
-
-    fn poll_next(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Option<Self::Item>> {
-        let stream = self.get_mut();
-        Pin::new(&mut stream.0).poll_next(cx)
-    }
-}
-
-// Implement Sink for MyWs
-impl Sink<Message> for MyWs {
-    type Error = WsError;
-
-    fn poll_ready(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
-        let stream = self.get_mut();
-        Pin::new(&mut stream.0).poll_ready(cx)
-    }
-
-    fn start_send(self: Pin<&mut Self>, item: Message) -> Result<(), Self::Error> {
-        let stream = self.get_mut();
-        Pin::new(&mut stream.0).start_send(item)
-    }
-
-    fn poll_flush(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
-        let stream = self.get_mut();
-        Pin::new(&mut stream.0).poll_flush(cx)
-    }
-
-    fn poll_close(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
-        let stream = self.get_mut();
-        Pin::new(&mut stream.0).poll_close(cx)
-    }
-}
-
-// Implement UnderlyingStream for MyWs
-impl UnderlyingStream<String, Result<Message, WsError>, WsError> for MyWs {
-    fn establish(addr: String) -> Pin<Box<dyn Future<Output = Result<Self, WsError>> + Send>> {
-        Box::pin(async move {
-            // Connect to the WebSocket endpoint
-            let ws_connection = connect_async(addr).await?.0;
-            Ok(MyWs(ws_connection))
-        })
-    }
-
-    fn is_write_disconnect_error(&self, err: &WsError) -> bool {
-        matches!(
-            err,
-            WsError::ConnectionClosed
-                | WsError::AlreadyClosed
-                | WsError::Io(_)
-                | WsError::Tls(_)
-                | WsError::Protocol(_)
-        )
-    }
-
-    fn is_read_disconnect_error(&self, item: &Result<Message, WsError>) -> bool {
-        if let Err(e) = item {
-            self.is_write_disconnect_error(e)
-        } else {
-            false
-        }
-    }
-
-    fn exhaust_err() -> WsError {
-        WsError::Io(io::Error::new(io::ErrorKind::Other, "Exhausted"))
-    }
-}
-
-type ReconnectWs = ReconnectStream<MyWs, String, Result<Message, WsError>, WsError>;
-
-#[tokio::main]
-async fn main() {
-    let mut ws_stream: ReconnectWs = ReconnectWs::connect(String::from("wss://localhost:8000")).await.unwrap();
-    ws_stream.send(Message::text(String::from("hello world!"))).await.unwrap();
 }

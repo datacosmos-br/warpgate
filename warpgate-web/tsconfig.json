@@ -7,7 +7,7 @@
         "resolveJsonModule": true,
         "strictNullChecks": true,
         "baseUrl": ".",
-        "verbatimModuleSyntax": true,
+        "preserveValueImports": false,
         "noUnusedLocals": false,
         /**
         * Typecheck JS in `.svelte` and `.js` files by default.
