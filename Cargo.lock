@@ -5653,6 +5653,7 @@ dependencies = [
  "tokio",
  "tokio-tungstenite 0.17.2",
  "tracing",
+ "tungstenite 0.20.1",
  "url",
  "uuid",
  "warpgate-admin",
