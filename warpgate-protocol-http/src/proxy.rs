@@ -396,10 +396,8 @@ async fn proxy_ws_inner(
     let (client, client_response) = connect_async_with_config(
         client_request
             .body(())
-            .map_err(poem::error::InternalServerError)?
-            .into(),
+            .map_err(poem::error::InternalServerError)?,
         None,
-        true
     )
     .await
     .map_err(poem::error::BadGateway)?;

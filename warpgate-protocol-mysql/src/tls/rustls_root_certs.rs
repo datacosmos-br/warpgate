@@ -1,6 +1,5 @@
 use once_cell::sync::Lazy;
-use tokio_rustls::rustls::RootCertStore;
-use tokio_rustls::rustls::Certificate;
+use rustls::RootCertStore;
 
 #[allow(clippy::expect_used)]
 pub static ROOT_CERT_STORE: Lazy<RootCertStore> = Lazy::new(|| {
@@ -9,7 +8,7 @@ pub static ROOT_CERT_STORE: Lazy<RootCertStore> = Lazy::new(|| {
         rustls_native_certs::load_native_certs().expect("could not load root TLS certificates")
     {
         roots
-            .add(&Certificate(cert.0))
+            .add(&rustls::Certificate(cert.0))
             .expect("could not add root TLS certificate");
     }
     roots

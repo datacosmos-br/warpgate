@@ -3,27 +3,22 @@ edition = "2021"
 license = "Apache-2.0"
 name = "warpgate-db-migrations"
 publish = false
-version = "0.9.1"
+version = "0.10.2"
 
 [lib]
 
 [dependencies]
-async-std = { version = "^1.12", features = ["attributes"] }
+async-std = { version = "^1.11", features = ["attributes"] }
 chrono = { version = "0.4", default-features = false, features = ["serde"] }
-sea-orm = { version = "0.12.15", features = [
+sea-orm = { version = "0.12.2", features = [
+    "runtime-tokio-rustls",
     "macros",
-    "runtime-tokio-native-tls",
     "with-chrono",
-    "with-json",
     "with-uuid",
+    "with-json",
 ], default-features = false }
-sea-orm-migration = { version = "0.12.15", default-features = false, features = [
+sea-orm-migration = { version = "0.12.2", default-features = false, features = [
     "cli",
 ] }
+uuid = { version = "1.2", features = ["v4", "serde"] }
 serde_json = "1.0"
-uuid = { version = "1.8", features = ["v4", "serde"] }
-
-[features]
-offline = []
-migrate = []
-_tls-native-tls = []

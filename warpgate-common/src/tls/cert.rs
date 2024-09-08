@@ -2,9 +2,8 @@ use std::path::Path;
 use std::sync::Arc;
 
 use poem::listener::RustlsCertificate;
-use rustls_pemfile;
-use tokio_rustls::rustls::sign::{CertifiedKey, SigningKey, any_supported_type};
-use tokio_rustls::rustls::{Certificate, PrivateKey};
+use rustls::sign::{CertifiedKey, SigningKey};
+use rustls::{Certificate, PrivateKey};
 use tokio::fs::File;
 use tokio::io::AsyncReadExt;
 
@@ -72,7 +71,7 @@ impl TlsPrivateKey {
         }
 
         let key = key.ok_or(RustlsSetupError::NoKeys)?;
-        let key = any_supported_type(&key)?;
+        let key = rustls::sign::any_supported_type(&key)?;
 
         Ok(Self { bytes, key })
     }
