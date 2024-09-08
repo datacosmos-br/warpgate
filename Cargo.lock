@@ -1193,6 +1193,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "delegate"
+version = "0.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4e018fccbeeb50ff26562ece792ed06659b9c2dae79ece77c4456bb10d9bf79b"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.77",
+]
+
+[[package]]
 name = "der"
 version = "0.7.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1235,6 +1246,15 @@ dependencies = [
  "quote",
  "rustc_version",
  "syn 2.0.77",
+]
+
+[[package]]
+name = "des"
+version = "0.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ffdd80ce8ce993de27e9f063a444a4d53ce8e8db4c1f00cc03af5ad5a9867a1e"
+dependencies = [
+ "cipher",
 ]
 
 [[package]]
@@ -2044,7 +2064,7 @@ dependencies = [
  "iana-time-zone-haiku",
  "js-sys",
  "wasm-bindgen",
- "windows-core",
+ "windows-core 0.52.0",
 ]
 
 [[package]]
@@ -2888,6 +2908,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "pageant"
+version = "0.0.1-beta.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2c8ca7f786256e4d89f369656546b1f504cfd2d5ec796f0b99600919dd993723"
+dependencies = [
+ "bytes",
+ "delegate 0.12.0",
+ "futures",
+ "rand",
+ "thiserror",
+ "tokio",
+ "windows",
+]
+
+[[package]]
 name = "parking"
 version = "2.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3709,6 +3744,49 @@ dependencies = [
  "log",
  "num-bigint",
  "once_cell",
+ "p256",
+ "p384",
+ "p521",
+ "poly1305",
+ "rand",
+ "rand_core",
+ "russh-cryptovec",
+ "russh-keys 0.44.0",
+ "sha1",
+ "sha2",
+ "ssh-encoding",
+ "ssh-key",
+ "subtle",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
+name = "russh"
+version = "0.46.0-beta.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "63ce0c15e2872bfd8b94edd229874dd91c8ad8c951acd43a5af6b26d3a559307"
+dependencies = [
+ "aes",
+ "aes-gcm",
+ "async-trait",
+ "bitflags 2.6.0",
+ "byteorder",
+ "cbc",
+ "chacha20",
+ "ctr",
+ "curve25519-dalek",
+ "des",
+ "digest",
+ "elliptic-curve",
+ "flate2",
+ "futures",
+ "generic-array",
+ "hex-literal",
+ "hmac",
+ "log",
+ "num-bigint",
+ "once_cell",
  "openssl",
  "p256",
  "p384",
@@ -3717,7 +3795,7 @@ dependencies = [
  "rand",
  "rand_core",
  "russh-cryptovec",
- "russh-keys",
+ "russh-keys 0.46.0-beta.3",
  "sha1",
  "sha2",
  "ssh-encoding",
@@ -3763,10 +3841,63 @@ dependencies = [
  "log",
  "md5",
  "num-integer",
+ "p256",
+ "p384",
+ "p521",
+ "pbkdf2 0.11.0",
+ "pkcs1",
+ "pkcs5",
+ "pkcs8",
+ "rand",
+ "rand_core",
+ "rsa",
+ "russh-cryptovec",
+ "sec1",
+ "serde",
+ "sha1",
+ "sha2",
+ "spki",
+ "ssh-encoding",
+ "ssh-key",
+ "thiserror",
+ "tokio",
+ "tokio-stream",
+ "typenum",
+ "yasna",
+ "zeroize",
+]
+
+[[package]]
+name = "russh-keys"
+version = "0.46.0-beta.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5f1153dc91e50969a0365bfc6215d8c827e769d8ecf863800123edb135bce40d"
+dependencies = [
+ "aes",
+ "async-trait",
+ "bcrypt-pbkdf",
+ "block-padding",
+ "byteorder",
+ "cbc",
+ "ctr",
+ "data-encoding",
+ "der",
+ "digest",
+ "ecdsa",
+ "ed25519-dalek",
+ "elliptic-curve",
+ "futures",
+ "hmac",
+ "home",
+ "inout",
+ "log",
+ "md5",
+ "num-integer",
  "openssl",
  "p256",
  "p384",
  "p521",
+ "pageant",
  "pbkdf2 0.11.0",
  "pkcs1",
  "pkcs5",
@@ -5033,6 +5164,7 @@ dependencies = [
  "futures-core",
  "pin-project-lite",
  "tokio",
+ "tokio-util",
 ]
 
 [[package]]
@@ -5518,7 +5650,7 @@ dependencies = [
  "poem",
  "poem-openapi",
  "regex",
- "russh",
+ "russh 0.44.1",
  "rust-embed",
  "sea-orm",
  "serde",
@@ -5543,7 +5675,7 @@ dependencies = [
  "bytes",
  "chrono",
  "data-encoding",
- "delegate",
+ "delegate 0.6.2",
  "futures",
  "humantime-serde",
  "once_cell",
@@ -5656,7 +5788,7 @@ dependencies = [
  "chrono",
  "cookie 0.16.2",
  "data-encoding",
- "delegate",
+ "delegate 0.6.2",
  "futures",
  "http",
  "once_cell",
@@ -5720,7 +5852,8 @@ dependencies = [
  "dialoguer",
  "ed25519-dalek",
  "futures",
- "russh",
+ "russh 0.46.0-beta.4",
+ "russh-keys 0.46.0-beta.3",
  "sea-orm",
  "thiserror",
  "time",
@@ -5926,11 +6059,75 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
 
 [[package]]
+name = "windows"
+version = "0.58.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dd04d41d93c4992d421894c18c8b43496aa748dd4c081bac0dc93eb0489272b6"
+dependencies = [
+ "windows-core 0.58.0",
+ "windows-targets 0.52.6",
+]
+
+[[package]]
 name = "windows-core"
 version = "0.52.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "33ab640c8d7e35bf8ba19b884ba838ceb4fba93a4e8c65a9059d08afcfc683d9"
 dependencies = [
+ "windows-targets 0.52.6",
+]
+
+[[package]]
+name = "windows-core"
+version = "0.58.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6ba6d44ec8c2591c134257ce647b7ea6b20335bf6379a27dac5f1641fcf59f99"
+dependencies = [
+ "windows-implement",
+ "windows-interface",
+ "windows-result",
+ "windows-strings",
+ "windows-targets 0.52.6",
+]
+
+[[package]]
+name = "windows-implement"
+version = "0.58.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2bbd5b46c938e506ecbce286b6628a02171d56153ba733b6c741fc627ec9579b"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.77",
+]
+
+[[package]]
+name = "windows-interface"
+version = "0.58.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "053c4c462dc91d3b1504c6fe5a726dd15e216ba718e84a0e46a88fbe5ded3515"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.77",
+]
+
+[[package]]
+name = "windows-result"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1d1043d8214f791817bab27572aaa8af63732e11bf84aa21a45a78d6c317ae0e"
+dependencies = [
+ "windows-targets 0.52.6",
+]
+
+[[package]]
+name = "windows-strings"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4cd9b125c486025df0eabcb585e62173c6c9eddcec5d117d3b6e8c30e2ee4d10"
+dependencies = [
+ "windows-result",
  "windows-targets 0.52.6",
 ]
 

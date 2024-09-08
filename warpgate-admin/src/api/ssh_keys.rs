@@ -3,7 +3,7 @@ use std::sync::Arc;
 use poem::web::Data;
 use poem_openapi::payload::Json;
 use poem_openapi::{ApiResponse, Object, OpenApi};
-use russh::keys::PublicKeyBase64;
+use russh_keys::PublicKeyBase64;
 use serde::Serialize;
 use tokio::sync::Mutex;
 use warpgate_common::WarpgateConfig;
@@ -41,7 +41,7 @@ impl Api {
             .into_iter()
             .map(|k| SSHKey {
                 kind: k.name().to_owned(),
-                public_key_base64: k.public_key_base64(),
+                public_key_base64: k.base64(),
             })
             .collect();
         Ok(GetSSHOwnKeysResponse::Ok(Json(keys)))
