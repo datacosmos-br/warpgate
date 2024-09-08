@@ -1,7 +1,5 @@
 import sveltePreprocess from 'svelte-preprocess'
 
-const production = process.env.NODE_ENV === 'production';
-
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
     compilerOptions: {
