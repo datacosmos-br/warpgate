@@ -1,5 +1,5 @@
 <script lang="ts">
-import { api, type User, type Target, type TicketAndSecret } from 'admin/lib/api'
+import { api, type User, type Target, TargetOptions, type TicketAndSecret } from 'admin/lib/api'
 import AsyncButton from 'common/AsyncButton.svelte'
 import ConnectionInstructions from 'common/ConnectionInstructions.svelte'
 import { TargetKind } from 'gateway/lib/api'
