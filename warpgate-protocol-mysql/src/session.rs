@@ -122,7 +122,6 @@ impl MySqlSession {
                 self.send_error(1002, "Warpgate requires TLS - please enable it in your client: add `--ssl` on the CLI or add `?sslMode=PREFERRED` to your database URI").await?;
                 return Err(MySqlError::TlsNotSupportedByClient);
             }
-
         };
 
         if resp.auth_plugin == Some(AuthPlugin::MySqlClearPassword) {
@@ -137,6 +136,7 @@ impl MySqlSession {
             data: Bytes::new(),
         };
         self.stream.push(&req, ())?;
+
         // self.push(&RawBytes::<
         self.stream.flush().await?;
 
