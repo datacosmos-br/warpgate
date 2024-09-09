@@ -17,7 +17,7 @@ use futures::pin_mut;
 use handler::ClientHandler;
 use russh::client::Handle;
 use russh::keys::key::PublicKey;
-use russh::{kex, Preferred, Sig};
+use russh::{kex, cipher, mac, compression, Preferred, Sig};
 use tokio::sync::mpsc::{unbounded_channel, UnboundedReceiver, UnboundedSender};
 use tokio::sync::{oneshot, Mutex};
 use tokio::task::JoinHandle;
@@ -418,7 +418,30 @@ impl RemoteClient {
                     kex::EXTENSION_SUPPORT_AS_SERVER,
                     kex::EXTENSION_OPENSSH_STRICT_KEX_AS_CLIENT,
                     kex::EXTENSION_OPENSSH_STRICT_KEX_AS_SERVER,
-                ]),
+                    kex::NONE,
+                    ]),
+                    cipher: Cow::Borrowed(&[
+                        cipher::AES_256_GCM,
+                        cipher::CHACHA20_POLY1305,
+                        cipher::AES_256_CTR,
+                        cipher::AES_192_CTR,
+                        cipher::AES_128_CTR,
+                        cipher::AES_256_CBC,
+                        cipher::AES_192_CBC,
+                        cipher::AES_128_CBC,
+                        cipher::TRIPLE_DES_CBC,
+                        cipher::CLEAR,
+                        cipher::NONE,           // desativação de criptografia (não recomendado)
+                    ]),
+                    mac: Cow::Borrowed(&[
+                        mac::HMAC_SHA512,
+                        mac::HMAC_SHA256,
+                        mac::HMAC_SHA512_ETM,
+                        mac::HMAC_SHA256_ETM,
+                        mac::HMAC_SHA1_ETM,
+                        mac::HMAC_SHA1,
+                        mac::NONE,              // sem MAC (não recomendado)
+                    ]),
                 ..<_>::default()
             }
         } else {
