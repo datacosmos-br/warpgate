@@ -34,14 +34,20 @@ jobs:
 
       - uses: rlespinasse/github-slug-action@v4.4.1
 
-      - uses: actions-rs/toolchain@v1
+      - uses: mkroening/rust-toolchain-toml@main
         with:
-          target: ${{ matrix.target }}
           override: true
-
+          target: ${{ matrix.target }}
+          toolchain-file: 'rust-toolchain.toml'
+    
       - uses: Swatinem/rust-cache@v2
         with:
           key: "build"
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
       - name: Install just
         run: |
