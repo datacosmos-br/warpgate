@@ -44,6 +44,12 @@ jobs:
       with:
         dotnet-version: '3.1.x'
 
+    - name: Set up Node.js 20
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+
       # Run open source static analysis tools
     - name: Run OSSAR
       uses: github/ossar-action@v1
