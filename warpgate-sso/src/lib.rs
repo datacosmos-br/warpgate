@@ -3,7 +3,6 @@ mod error;
 mod request;
 mod response;
 mod sso;
-
 pub use config::*;
 pub use error::*;
 pub use openidconnect::core::CoreIdToken;

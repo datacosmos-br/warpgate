@@ -7,7 +7,6 @@ mod eof;
 mod err;
 mod ok;
 mod status;
-
 pub use eof::EofPacket;
 pub use err::ErrPacket;
 pub use ok::OkPacket;

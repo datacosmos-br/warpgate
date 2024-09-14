@@ -1,5 +1,6 @@
 #![feature(type_alias_impl_trait, try_blocks)]
 mod api;
+
 use poem_openapi::OpenApiService;
 use regex::Regex;
 
