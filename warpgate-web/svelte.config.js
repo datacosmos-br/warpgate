@@ -1,19 +1,13 @@
 import sveltePreprocess from 'svelte-preprocess'
 
-const production = process.env.NODE_ENV === 'production';
-
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
     compilerOptions: {
-        enableSourcemap: !production,
-        dev: !production,
+        enableSourcemap: true,
+        dev: true,
     },
     preprocess: sveltePreprocess({
-        sourceMap: !production,
-        scss: true,
-        typescript: {
-            tsconfigFile: './tsconfig.json',
-        },
+        sourceMap: true,
     }),
     vitePlugin: {
         prebundleSvelteLibraries: true,
@@ -21,4 +15,3 @@ const config = {
 }
 
 export default config
-
