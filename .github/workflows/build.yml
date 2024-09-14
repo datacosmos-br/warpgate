@@ -44,6 +44,11 @@ jobs:
         with:
           key: "build"
 
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
       - name: Install just
         run: |
           cargo install just
