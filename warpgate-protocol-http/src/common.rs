@@ -11,6 +11,7 @@ use uuid::Uuid;
 use warpgate_common::auth::{AuthState, CredentialKind};
 use warpgate_common::{ProtocolName, TargetOptions, WarpgateError};
 use warpgate_core::{AuthStateStore, Services};
+use warpgate_sso::CoreIdToken;
 
 use crate::session::SessionStore;
 
@@ -18,10 +19,17 @@ pub const PROTOCOL_NAME: ProtocolName = "HTTP";
 static TARGET_SESSION_KEY: &str = "target_name";
 static AUTH_SESSION_KEY: &str = "auth";
 static AUTH_STATE_ID_SESSION_KEY: &str = "auth_state_id";
+static AUTH_SSO_LOGIN_STATE: &str = "auth_sso_login_state";
 pub static SESSION_COOKIE_NAME: &str = "warpgate-http-session";
 
+#[derive(Serialize, Deserialize)]
+pub struct SsoLoginState {
+    pub token: CoreIdToken,
+    pub provider: String,
+    pub supports_single_logout: bool,
+}
+
 pub trait SessionExt {
-    fn has_selected_target(&self) -> bool;
     fn get_target_name(&self) -> Option<String>;
     fn set_target_name(&self, target_name: String);
     fn is_authenticated(&self) -> bool;
@@ -30,13 +38,12 @@ pub trait SessionExt {
     fn set_auth(&self, auth: SessionAuthorization);
     fn get_auth_state_id(&self) -> Option<AuthStateId>;
     fn clear_auth_state(&self);
+
+    fn get_sso_login_state(&self) -> Option<SsoLoginState>;
+    fn set_sso_login_state(&self, token: SsoLoginState);
 }
 
 impl SessionExt for Session {
-    fn has_selected_target(&self) -> bool {
-        self.get_target_name().is_some()
-    }
-
     fn get_target_name(&self) -> Option<String> {
         self.get(TARGET_SESSION_KEY)
     }
@@ -67,6 +74,17 @@ impl SessionExt for Session {
 
     fn clear_auth_state(&self) {
         self.remove(AUTH_STATE_ID_SESSION_KEY)
+    }
+
+    fn get_sso_login_state(&self) -> Option<SsoLoginState> {
+        self.get::<String>(AUTH_SSO_LOGIN_STATE)
+            .and_then(|x| serde_json::from_str(&x).ok())
+    }
+
+    fn set_sso_login_state(&self, state: SsoLoginState) {
+        if let Ok(json) = serde_json::to_string(&state) {
+            self.set(AUTH_SSO_LOGIN_STATE, json)
+        }
     }
 }
 

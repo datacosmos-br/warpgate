@@ -7,6 +7,7 @@ use rustls::server::{ClientHello, ResolvesServerCert};
 use rustls::sign::CertifiedKey;
 use rustls::{ClientConfig, Error as TlsError, ServerName};
 use warpgate_common::RustlsSetupError;
+
 use super::ROOT_CERT_STORE;
 
 pub struct ResolveServerCert(pub Arc<CertifiedKey>);
@@ -41,6 +42,7 @@ pub async fn configure_tls_connector(
 
         if accept_invalid_hostnames {
             let verifier = WebPkiVerifier::new(cert_store, None);
+
             config
                 .with_custom_certificate_verifier(Arc::new(NoHostnameTlsVerifier { verifier }))
                 .with_no_client_auth()
@@ -95,7 +97,7 @@ impl ServerCertVerifier for NoHostnameTlsVerifier {
             Err(TlsError::InvalidCertificateData(reason))
                 if reason.contains("CertNotValidForName") =>
             {
-            Ok(ServerCertVerified::assertion())
+                Ok(ServerCertVerified::assertion())
             }
             res => res,
         }

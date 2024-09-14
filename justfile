@@ -1,7 +1,7 @@
 projects := "warpgate warpgate-admin warpgate-common warpgate-db-entities warpgate-db-migrations warpgate-database-protocols warpgate-protocol-ssh warpgate-protocol-mysql warpgate-protocol-http warpgate-core warpgate-sso"
 
-run *ARGS:
-    RUST_BACKTRACE=1 cargo run --all-features -- --config config.yaml {{ARGS}}
+run $RUST_BACKTRACE='1' *ARGS='run':
+     cargo run --all-features -- --config config.yaml {{ARGS}}
 
 fmt:
     for p in {{projects}}; do cargo fmt -p $p -v; done
@@ -21,8 +21,8 @@ yarn *ARGS:
 migrate *ARGS:
     cargo run --all-features -p warpgate-db-migrations -- {{ARGS}}
 
-lint:
-    cd warpgate-web && yarn run lint
+lint *ARGS:
+    cd warpgate-web && yarn run lint {{ARGS}}
 
 svelte-check:
     cd warpgate-web && yarn run check
