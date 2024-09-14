@@ -22,6 +22,8 @@ on:
     branches: [ "local" ]
 
 permissions:
+  # Required to upload SARIF file to CodeQL. See: https://github.com/github/codeql-action/issues/2117
+  actions: read
   # Require writing security events to upload SARIF file to security tab
   security-events: write
   # Read commit contents
@@ -36,6 +38,7 @@ jobs:
       scan-args: |-
         -r
         --skip-git
+        --experimental-licenses-summary 
         ./
   scan-pr:
     if: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' }}
@@ -45,4 +48,5 @@ jobs:
       scan-args: |-
         -r
         --skip-git
+        --experimental-licenses-summary 
         ./
