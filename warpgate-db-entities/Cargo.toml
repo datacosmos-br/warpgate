@@ -5,6 +5,8 @@ name = "warpgate-db-entities"
 version = "0.10.2"
 
 [dependencies]
+warpgate-common = { version = "*", path = "../warpgate-common" }
+
 chrono = { version = "0.4", default-features = false, features = ["serde"] }
 poem-openapi = { version = "2.0", features = ["chrono", "uuid"] }
 sea-orm = { version = "0.12.2", features = [
@@ -16,4 +18,3 @@ sea-orm = { version = "0.12.2", features = [
 serde = "1.0"
 serde_json = "1.0"
 uuid = { version = "1.2", features = ["v4", "serde"] }
-warpgate-common = { version = "*", path = "../warpgate-common" }
