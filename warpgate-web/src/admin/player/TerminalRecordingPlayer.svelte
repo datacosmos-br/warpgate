@@ -2,7 +2,7 @@
     import Fa from 'svelte-fa'
     import { onDestroy, onMount } from 'svelte'
     import { Terminal } from '@xterm/xterm'
-    import { SerializeAddon } from 'xterm-addon-serialize'
+    import { SerializeAddon } from '@xterm/addon-serialize'
     import { faPlay, faPause, faExpand } from '@fortawesome/free-solid-svg-icons'
     import { Spinner } from '@sveltestrap/sveltestrap'
     import formatDuration from 'format-duration'
