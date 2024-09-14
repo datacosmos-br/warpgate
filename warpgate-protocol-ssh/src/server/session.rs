@@ -17,6 +17,7 @@ use russh::keys::PublicKeyBase64;
 use russh::{CryptoVec, MethodSet, Sig};
 use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
 use tokio::sync::{broadcast, oneshot, Mutex};
+use tokio::task::Builder;
 use tracing::*;
 use uuid::Uuid;
 use warpgate_common::auth::{AuthCredential, AuthResult, AuthSelector, AuthState, CredentialKind};
@@ -170,7 +171,7 @@ impl ServerSession {
         });
 
         let name = format!("SSH {id} session control");
-        tokio::task::Builder::new().name(&name).spawn({
+        Builder::new().name(&name).spawn({
             let sender = event_sender.clone();
             async move {
                 while let Some(command) = session_handle_rx.recv().await {
@@ -182,7 +183,7 @@ impl ServerSession {
         })?;
 
         let name = format!("SSH {id} client events");
-        tokio::task::Builder::new().name(&name).spawn({
+        Builder::new().name(&name).spawn({
             let sender = event_sender.clone();
             async move {
                 while let Some(e) = rc_handles.event_rx.recv().await {
@@ -194,7 +195,7 @@ impl ServerSession {
         })?;
 
         let name = format!("SSH {id} server handler events");
-        tokio::task::Builder::new().name(&name).spawn({
+        Builder::new().name(&name).spawn({
             let sender = event_sender.clone();
             async move {
                 while let Some(e) = handler_event_rx.recv().await {

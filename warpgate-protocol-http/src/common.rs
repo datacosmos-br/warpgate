@@ -137,7 +137,7 @@ pub fn endpoint_admin_auth<E: Endpoint + 'static>(e: E) -> impl Endpoint {
         if is_user_admin(&req, &auth).await? {
             return Ok(ep.call(req).await?.into_response());
         }
-        Err(poem::Error::from_status(StatusCode::UNAUTHORIZED))
+        Err(poem::Error::from_status(reqwest::StatusCode::UNAUTHORIZED))
     })
 }
 

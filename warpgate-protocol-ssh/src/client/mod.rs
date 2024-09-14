@@ -21,7 +21,7 @@ use russh::keys::key::PublicKey;
 use russh::{cipher, kex, mac, Preferred, Sig};
 use tokio::sync::mpsc::{unbounded_channel, UnboundedReceiver, UnboundedSender};
 use tokio::sync::{oneshot, Mutex};
-use tokio::task::JoinHandle;
+use tokio::task::{Builder, JoinHandle};
 use tracing::*;
 use uuid::Uuid;
 use warpgate_common::{SSHTargetAuth, SessionId, TargetSSHOptions};
@@ -257,7 +257,7 @@ impl RemoteClient {
 
     pub fn start(mut self) -> io::Result<JoinHandle<anyhow::Result<()>>> {
         let name = format!("SSH {} client commands", self.id);
-        tokio::task::Builder::new().name(&name).spawn(
+        Builder::new().name(&name).spawn(
             async move {
                 async {
                     loop {
@@ -340,7 +340,7 @@ impl RemoteClient {
         let session_channel = SessionChannel::new(channel, id, rx, self.tx.clone(), self.id);
 
         self.child_tasks.push(
-            tokio::task::Builder::new()
+            Builder::new()
                 .name(&format!("SSH {} {:?} ops", self.id, id))
                 .spawn(session_channel.run())?,
         );
@@ -572,7 +572,7 @@ impl RemoteClient {
 
             let channel = SessionChannel::new(channel, channel_id, rx, self.tx.clone(), self.id);
             self.child_tasks.push(
-                tokio::task::Builder::new()
+                Builder::new()
                     .name(&format!("SSH {} {:?} ops", self.id, channel_id))
                     .spawn(channel.run())
                     .map_err(|e| SshClientError::Other(Box::new(e)))?,
@@ -603,7 +603,7 @@ impl RemoteClient {
             let channel =
                 DirectTCPIPChannel::new(channel, channel_id, rx, self.tx.clone(), self.id);
             self.child_tasks.push(
-                tokio::task::Builder::new()
+                Builder::new()
                     .name(&format!("SSH {} {:?} ops", self.id, channel_id))
                     .spawn(channel.run())
                     .map_err(|e| SshClientError::Other(Box::new(e)))?,

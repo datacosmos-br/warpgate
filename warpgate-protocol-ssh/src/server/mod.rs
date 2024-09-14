@@ -16,6 +16,7 @@ pub use session::ServerSession;
 use tokio::io::{AsyncRead, AsyncWrite};
 use tokio::net::TcpListener;
 use tokio::sync::mpsc::unbounded_channel;
+use tokio::task::Builder;
 use tracing::*;
 use warpgate_core::{Services, SessionStateInit};
 
@@ -89,11 +90,11 @@ pub async fn run_server(services: Services, address: SocketAddr) -> Result<()> {
             }
         };
 
-        tokio::task::Builder::new()
+        Builder::new()
             .name(&format!("SSH {id} session"))
             .spawn(session)?;
 
-        tokio::task::Builder::new()
+        Builder::new()
             .name(&format!("SSH {id} protocol"))
             .spawn(_run_stream(russh_config, socket, handler))?;
     }
