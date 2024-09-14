@@ -16,9 +16,9 @@ pub use error::SshClientError;
 use futures::pin_mut;
 use handler::ClientHandler;
 use russh::client::Handle;
-use russh::keys::key::PublicKey;
 use russh::keys::key;
-use russh::{kex, cipher, mac, Preferred, Sig};
+use russh::keys::key::PublicKey;
+use russh::{cipher, kex, mac, Preferred, Sig};
 use tokio::sync::mpsc::{unbounded_channel, UnboundedReceiver, UnboundedSender};
 use tokio::sync::{oneshot, Mutex};
 use tokio::task::JoinHandle;
@@ -420,7 +420,7 @@ impl RemoteClient {
                     kex::EXTENSION_OPENSSH_STRICT_KEX_AS_CLIENT,
                     kex::EXTENSION_OPENSSH_STRICT_KEX_AS_SERVER,
                     kex::NONE,
-                    ]),
+                ]),
                 cipher: Cow::Borrowed(&[
                     cipher::AES_256_GCM,
                     cipher::CHACHA20_POLY1305,
