@@ -18,13 +18,14 @@ RUN cd /opt/warpgate \
     && just yarn build \
     && cargo build --features mysql,postgres --release
 
-FROM debian:bullseye-20221024
+FROM debian:bullseye
 LABEL maintainer=heywoodlh
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN <<EOF
   set -xe
   apt-get -y update -qq
+  apt-get -y dist-upgrade
   apt-get install --no-install-recommends -y \
     ca-certificates
   apt clean
