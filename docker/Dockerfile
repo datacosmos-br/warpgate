@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get update \
-    && apt-get install -y ca-certificates-java nodejs openjdk-17-jdk \
+    && apt-get install -y ca-certificates-java nodejs openjdk-17-jdk libssl-dev pkg-config\
     && rm -rf /var/lib/apt/lists/* \
     && npm install -g yarn \
     && cargo install just
