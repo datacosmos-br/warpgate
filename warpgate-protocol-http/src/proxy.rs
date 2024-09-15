@@ -397,6 +397,7 @@ async fn proxy_ws_inner(
             .body(())
             .map_err(poem::error::InternalServerError)?,
         None,
+        false,
     )
     .await
     .map_err(poem::error::BadGateway)?;

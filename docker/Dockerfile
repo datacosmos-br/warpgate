@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.3-labs
-FROM rust:1.81.0-bullseye AS build
+FROM rust:1.81.0-bookworm AS build
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -18,7 +18,7 @@ RUN cd /opt/warpgate \
     && just yarn build \
     && cargo build --features mysql,postgres --release
 
-FROM debian:bullseye
+FROM debian:bookworm-slim
 LABEL maintainer=heywoodlh
 
 ENV DEBIAN_FRONTEND noninteractive
