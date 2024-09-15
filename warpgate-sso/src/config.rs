@@ -77,30 +77,30 @@ impl SsoInternalProviderConfig {
     #[inline]
     pub fn label(&self) -> &'static str {
         match self {
-            SsoInternalProviderConfig::Google { .. } => "Google",
-            SsoInternalProviderConfig::Apple { .. } => "Apple",
-            SsoInternalProviderConfig::Azure { .. } => "Azure",
-            SsoInternalProviderConfig::Custom { .. } => "SSO",
+            Self::Google { .. } => "Google",
+            Self::Apple { .. } => "Apple",
+            Self::Azure { .. } => "Azure",
+            Self::Custom { .. } => "SSO",
         }
     }
 
     #[inline]
     pub fn client_id(&self) -> &ClientId {
         match self {
-            SsoInternalProviderConfig::Google { client_id, .. }
-            | SsoInternalProviderConfig::Apple { client_id, .. }
-            | SsoInternalProviderConfig::Azure { client_id, .. }
-            | SsoInternalProviderConfig::Custom { client_id, .. } => client_id,
+            Self::Google { client_id, .. }
+            | Self::Apple { client_id, .. }
+            | Self::Azure { client_id, .. }
+            | Self::Custom { client_id, .. } => client_id,
         }
     }
 
     #[inline]
     pub fn client_secret(&self) -> Result<ClientSecret, SsoError> {
         Ok(match self {
-            SsoInternalProviderConfig::Google { client_secret, .. }
-            | SsoInternalProviderConfig::Azure { client_secret, .. }
-            | SsoInternalProviderConfig::Custom { client_secret, .. } => client_secret.clone(),
-            SsoInternalProviderConfig::Apple {
+            Self::Google { client_secret, .. }
+            | Self::Azure { client_secret, .. }
+            | Self::Custom { client_secret, .. } => client_secret.clone(),
+            Self::Apple {
                 client_secret,
                 client_id,
                 key_id,
@@ -148,30 +148,30 @@ impl SsoInternalProviderConfig {
     #[inline]
     pub fn issuer_url(&self) -> Result<IssuerUrl, SsoError> {
         Ok(match self {
-            SsoInternalProviderConfig::Google { .. } => GOOGLE_ISSUER_URL.clone(),
-            SsoInternalProviderConfig::Apple { .. } => APPLE_ISSUER_URL.clone(),
-            SsoInternalProviderConfig::Azure { tenant, .. } => {
+            Self::Google { .. } => GOOGLE_ISSUER_URL.clone(),
+            Self::Apple { .. } => APPLE_ISSUER_URL.clone(),
+            Self::Azure { tenant, .. } => {
                 IssuerUrl::new(format!("https://login.microsoftonline.com/{tenant}/v2.0"))?
             }
-            SsoInternalProviderConfig::Custom { issuer_url, .. } => issuer_url.clone(),
+            Self::Custom { issuer_url, .. } => issuer_url.clone(),
         })
     }
 
     #[inline]
     pub fn scopes(&self) -> Vec<String> {
         match self {
-            SsoInternalProviderConfig::Google { .. } | SsoInternalProviderConfig::Azure { .. } => {
+            Self::Google { .. } | Self::Azure { .. } => {
                 vec!["email".to_string()]
             }
-            SsoInternalProviderConfig::Custom { scopes, .. } => scopes.clone(),
-            SsoInternalProviderConfig::Apple { .. } => vec![],
+            Self::Custom { scopes, .. } => scopes.clone(),
+            Self::Apple { .. } => vec![],
         }
     }
 
     #[inline]
     pub fn extra_parameters(&self) -> HashMap<String, String> {
         match self {
-            SsoInternalProviderConfig::Apple { .. } => {
+            Self::Apple { .. } => {
                 let mut map = HashMap::new();
                 map.insert("response_mode".to_string(), "form_post".to_string());
                 map
@@ -181,10 +181,11 @@ impl SsoInternalProviderConfig {
     }
 
     #[inline]
+    #[must_use]
     pub fn auth_type(&self) -> AuthType {
         #[allow(clippy::match_like_matches_macro)]
         match self {
-            SsoInternalProviderConfig::Apple { .. } => AuthType::RequestBody,
+            Self::Apple { .. } => AuthType::RequestBody,
             _ => AuthType::BasicAuth,
         }
     }
@@ -193,7 +194,7 @@ impl SsoInternalProviderConfig {
     pub fn needs_pkce_verifier(&self) -> bool {
         #[allow(clippy::match_like_matches_macro)]
         match self {
-            SsoInternalProviderConfig::Apple { .. } => false,
+            Self::Apple { .. } => false,
             _ => true,
         }
     }
@@ -202,7 +203,7 @@ impl SsoInternalProviderConfig {
     pub fn role_mappings(&self) -> Option<HashMap<String, String>> {
         #[allow(clippy::match_like_matches_macro)]
         match self {
-            SsoInternalProviderConfig::Custom { role_mappings, .. } => role_mappings.clone(),
+            Self::Custom { role_mappings, .. } => role_mappings.clone(),
             _ => None,
         }
     }
@@ -211,7 +212,7 @@ impl SsoInternalProviderConfig {
     pub fn additional_trusted_audiences(&self) -> Option<&Vec<String>> {
         #[allow(clippy::match_like_matches_macro)]
         match self {
-            SsoInternalProviderConfig::Custom {
+            Self::Custom {
                 additional_trusted_audiences,
                 ..
             } => additional_trusted_audiences.as_ref(),

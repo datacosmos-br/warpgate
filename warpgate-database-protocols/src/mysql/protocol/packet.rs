@@ -4,8 +4,8 @@ use bytes::Bytes;
 
 use crate::error::Error;
 use crate::io::{Decode, Encode};
-use crate::mysql::protocol::response::{EofPacket, OkPacket};
 use crate::mysql::protocol::Capabilities;
+use crate::mysql::protocol::response::{EofPacket, OkPacket};
 
 #[derive(Debug)]
 pub struct Packet<T>(pub T);
@@ -34,7 +34,7 @@ where
         // FIXME: Support larger packets
         assert!(len < 0xFF_FF_FF);
 
-        header[..4].copy_from_slice(&(len as u32).to_le_bytes());
+        header[..4].copy_from_slice(&u32::try_from(len).expect("REASON").to_le_bytes());
         header[3] = *sequence_id;
 
         *sequence_id = sequence_id.wrapping_add(1);

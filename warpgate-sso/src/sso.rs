@@ -1,5 +1,4 @@
 use std::borrow::Cow;
-use std::ops::Deref;
 
 use openidconnect::core::{CoreAuthenticationFlow, CoreClient, CoreIdToken};
 use openidconnect::reqwest::async_http_client;
@@ -43,13 +42,14 @@ pub async fn make_client(config: &SsoInternalProviderConfig) -> Result<CoreClien
     if let Some(trusted_audiences) = config.additional_trusted_audiences() {
         client
             .id_token_verifier()
-            .set_other_audience_verifier_fn(|aud| trusted_audiences.contains(aud.deref()));
+            .set_other_audience_verifier_fn(|aud| trusted_audiences.contains(&**aud));
     }
 
     Ok(client)
 }
 
 impl SsoClient {
+    #[must_use]
     pub fn new(config: SsoInternalProviderConfig) -> Self {
         Self { config }
     }

@@ -5700,6 +5700,7 @@ dependencies = [
 name = "warpgate-sso"
 version = "0.10.2"
 dependencies = [
+ "base64 0.21.7",
  "data-encoding",
  "futures",
  "jsonwebtoken",

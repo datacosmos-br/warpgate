@@ -4,7 +4,7 @@ import sveltePreprocess from 'svelte-preprocess'
 const config = {
     compilerOptions: {
         enableSourcemap: true,
-        dev: true,
+        dev: false,
     },
     preprocess: sveltePreprocess({
         sourceMap: true,
@@ -12,6 +12,6 @@ const config = {
     vitePlugin: {
         prebundleSvelteLibraries: true,
     },
-}
+};
 
 export default config

@@ -1,96 +1,113 @@
-<script lang="ts">
-import { serverInfo, reloadServerInfo } from 'gateway/lib/store'
+<script>
+  import { serverInfo, reloadServerInfo } from 'gateway/lib/store'
 
-import Router, { link } from 'svelte-spa-router'
-import active from 'svelte-spa-router/active'
-import { wrap } from 'svelte-spa-router/wrap'
-import ThemeSwitcher from 'common/ThemeSwitcher.svelte'
-import Logo from 'common/Logo.svelte'
-import DelayedSpinner from 'common/DelayedSpinner.svelte'
-import AuthBar from 'common/AuthBar.svelte'
+  import Router, { link } from 'svelte-spa-router'
+  import active from 'svelte-spa-router/active'
+  import { wrap } from 'svelte-spa-router/wrap'
+  import ThemeSwitcher from 'common/ThemeSwitcher.svelte'
+  import Logo from 'common/Logo.svelte'
+  import DelayedSpinner from 'common/DelayedSpinner.svelte'
+  import AuthBar from 'common/AuthBar.svelte'
 
-async function init () {
+  async function init () {
     await reloadServerInfo()
-}
+  }
 
-init()
+  init()
 
-const routes = {
+  const routes = {
     '/': wrap({
-        asyncComponent: () => import('./Home.svelte'),
+      asyncComponent: () => import('./Home.svelte'),
     }),
     '/sessions/:id': wrap({
-        asyncComponent: () => import('./Session.svelte'),
+      asyncComponent: () => import('./Session.svelte'),
     }),
     '/recordings/:id': wrap({
-        asyncComponent: () => import('./Recording.svelte'),
+      asyncComponent: () => import('./Recording.svelte'),
     }),
     '/tickets': wrap({
-        asyncComponent: () => import('./Tickets.svelte'),
+      asyncComponent: () => import('./Tickets.svelte'),
     }),
     '/tickets/create': wrap({
-        asyncComponent: () => import('./CreateTicket.svelte'),
+      asyncComponent: () => import('./CreateTicket.svelte'),
     }),
     '/config': wrap({
-        asyncComponent: () => import('./Config.svelte'),
+      asyncComponent: () => import('./Config.svelte'),
     }),
     '/targets/create': wrap({
-        asyncComponent: () => import('./CreateTarget.svelte'),
+      asyncComponent: () => import('./CreateTarget.svelte'),
     }),
     '/targets/:id': wrap({
-        asyncComponent: () => import('./Target.svelte'),
+      asyncComponent: () => import('./Target.svelte'),
     }),
     '/roles/create': wrap({
-        asyncComponent: () => import('./CreateRole.svelte'),
+      asyncComponent: () => import('./CreateRole.svelte'),
     }),
     '/roles/:id': wrap({
-        asyncComponent: () => import('./Role.svelte'),
+      asyncComponent: () => import('./Role.svelte'),
     }),
     '/users/create': wrap({
-        asyncComponent: () => import('./CreateUser.svelte'),
+      asyncComponent: () => import('./CreateUser.svelte'),
     }),
     '/users/:id': wrap({
-        asyncComponent: () => import('./User.svelte'),
+      asyncComponent: () => import('./User.svelte'),
     }),
     '/ssh': wrap({
-        asyncComponent: () => import('./SSH.svelte'),
+      asyncComponent: () => import('./SSH.svelte'),
     }),
     '/log': wrap({
-        asyncComponent: () => import('./Log.svelte'),
+      asyncComponent: () => import('./Log.svelte'),
     }),
-}
+  }
 </script>
 
 {#await init()}
-    <DelayedSpinner />
+  <DelayedSpinner />
 {:then}
-    <div class="app container">
-        <header>
-            <a href="/@warpgate" class="d-flex">
-                <div class="logo">
-                    <Logo />
-                </div>
-            </a>
-            {#if $serverInfo?.username}
-                <a use:link use:active href="/">Sessions</a>
-                <a use:link use:active href="/config">Config</a>
-                <a use:link use:active href="/tickets">Tickets</a>
-                <a use:link use:active href="/ssh">SSH</a>
-                <a use:link use:active href="/log">Log</a>
-            {/if}
-            <AuthBar />
-        </header>
-        <main>
-            <Router {routes}/>
-        </main>
+  <div class="app container">
+    <header>
+      <a
+        class="d-flex"
+        href="/@warpgate">
+        <div class="logo">
+          <Logo />
+        </div>
+      </a>
+      {#if $serverInfo?.username}
+        <a
+          href="/"
+          use:active
+          use:link>Sessions</a>
+        <a
+          href="/config"
+          use:active
+          use:link>Config</a>
+        <a
+          href="/tickets"
+          use:active
+          use:link>Tickets</a>
+        <a
+          href="/ssh"
+          use:active
+          use:link>SSH</a>
+        <a
+          href="/log"
+          use:active
+          use:link>Log</a>
+      {/if}
+      <AuthBar />
+    </header>
+    <main>
+      <Router {routes} />
+    </main>
 
-        <footer class="mt-5">
-            <span class="me-auto">
-                v{$serverInfo?.version}
-            </span>
-            <ThemeSwitcher />
-        </footer>
-    </div>
+    <footer class="mt-5">
+      <span class="me-auto">
+        v{$serverInfo?.version}
+      </span>
+      <ThemeSwitcher />
+    </footer>
+  </div>
 {/await}
 
 <style lang="scss">

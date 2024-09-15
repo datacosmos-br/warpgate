@@ -1,13 +1,13 @@
 <script lang="ts">
-import { Spinner } from '@sveltestrap/sveltestrap'
+  import { Spinner } from '@sveltestrap/sveltestrap'
 
-let visible = false
+  let visible = false
 
-setTimeout(() => {
+  setTimeout(() => {
     visible = true
-}, 1000)
+  }, 1000)
 </script>
 
 {#if visible}
-<Spinner style="margin: 3rem auto" />
+  <Spinner style="margin: 3rem auto" />
 {/if}

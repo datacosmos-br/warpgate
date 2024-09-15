@@ -2,6 +2,7 @@ cargo-features = ["profile-rustflags"]
 
 [workspace]
 members = [
+    "warpgate-fuzz",
     "warpgate",
     "warpgate-admin",
     "warpgate-common",

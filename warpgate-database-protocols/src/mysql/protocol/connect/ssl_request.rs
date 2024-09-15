@@ -12,7 +12,7 @@ pub struct SslRequest {
 
 impl Encode<'_, Capabilities> for SslRequest {
     fn encode_with(&self, buf: &mut Vec<u8>, capabilities: Capabilities) {
-        buf.extend((capabilities.bits() as u32).to_le_bytes());
+        buf.extend(u32::try_from(capabilities.bits()).expect("REASON").to_le_bytes());
         buf.extend(self.max_packet_size.to_le_bytes());
         buf.push(self.collation);
 

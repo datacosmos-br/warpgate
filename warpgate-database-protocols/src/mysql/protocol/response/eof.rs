@@ -10,8 +10,8 @@ use crate::mysql::protocol::Capabilities;
 ///
 /// # Note
 ///
-/// The EOF packet is deprecated as of MySQL 5.7.5. SQLx only uses this packet for MySQL
-/// prior MySQL versions.
+/// The EOF packet is deprecated as of `MySQL` 5.7.5. `SQLx` only uses this packet for `MySQL`
+/// prior `MySQL` versions.
 #[derive(Debug)]
 pub struct EofPacket {
     pub warnings: u16,
