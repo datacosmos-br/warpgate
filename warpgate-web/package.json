@@ -17,13 +17,21 @@
       "openapi:client:admin": "openapi-generator-cli generate -g typescript-fetch -i src/admin/lib/openapi-schema.json -o src/admin/lib/api-client -p npmName=warpgate-admin-api-client -p useSingleRequestParameter=true && cd src/admin/lib/api-client && npm i typescript@5 && npm i && yarn tsc --target esnext --module esnext && rm -rf src tsconfig.json",
       "openapi": "yarn run openapi:schema:admin && yarn run openapi:schema:gateway && yarn run openapi:client:admin && yarn run openapi:client:gateway"
     },
+    "resolutions": {
+      "@nestjs/core": "10.4.1",
+      "eslint-plugin-n": "^17.10.2",
+      "glob": "^11.0.0",
+      "path-to-regexp": "3.3.0",
+      "rimraf": "^6.0.1",
+      "svelte-eslint-parser": "^0.41.1"
+    },
     "devDependencies": {
       "@fontsource/work-sans": "^5.1.0",
       "@fortawesome/free-brands-svg-icons": "^6.6.0",
       "@fortawesome/free-regular-svg-icons": "^6.6.0",
       "@fortawesome/free-solid-svg-icons": "^6.6.0",
-      "@nestjs/core": "10.4.1",
       "@openapitools/openapi-generator-cli": "^2.13.5",
+      "@puppeteer/browsers": "^2.4.0",
       "@sveltejs/vite-plugin-svelte": "^3.1.2",
       "@sveltestrap/sveltestrap": "^6.2.7",
       "@tsconfig/svelte": "^5.0.4",
@@ -33,7 +41,6 @@
       "@typescript-eslint/parser": "^8.5.0",
       "@xterm/xterm": "^5.5.0",
       "@xterm/addon-serialize": "^0.13.0",
-      "base32-encode": "^2.0.0",
       "bootstrap": "^5.3.3",
       "copy-text-to-clipboard": "^3.2.0",
       "date-fns": "^3.6.0",
@@ -41,19 +48,15 @@
       "eslint-config-standard": "^17.1.0",
       "eslint-import-resolver-typescript": "^3.6.3",
       "eslint-plugin-import": "^2.30.0",
-      "eslint-plugin-n": "^17.10.2",
       "eslint-plugin-node": "^11.1.0",
       "eslint-plugin-promise": "^7.1.0",
       "eslint-plugin-svelte": "^2.44.0",
       "format-duration": "^3.0.2",
-      "glob": "^11.0.0",
       "otpauth": "^9.3.2",
       "qrcode": "^1.5.4",
-      "rimraf": "^6.0.1",
       "sass": "^1.78.0",
       "svelte": "^4.2.19",
       "svelte-check": "^4.0.2",
-      "svelte-eslint-parser": "^0.41.1",
       "svelte-fa": "^4.0.2",
       "svelte-intersection-observer": "^1.0.0",
       "svelte-observable": "^0.4.0",
@@ -66,5 +69,7 @@
       "vite": "^5.4.5",
       "vite-plugin-checker": "^0.8.0",
       "vite-tsconfig-paths": "^5.0.1"
+    },
+    "dependencies": {
     }
   }

@@ -9,7 +9,7 @@ warpgate-common = { version = "*", path = "../warpgate-common" }
 warpgate-core = { version = "*", path = "../warpgate-core" }
 warpgate-db-entities = { version = "*", path = "../warpgate-db-entities" }
 
-ansi_term = "0.12"
+ansiterm = "0.12.2"
 anyhow = { version = "1.0", features = ["std"] }
 async-trait = "0.1"
 bimap = "0.6"
@@ -17,9 +17,10 @@ bytes = "1.3"
 dialoguer = "0.10"
 futures = "0.3"
 russh = { version = "0.45.0", features = ["legacy-ed25519-pkcs8-parser", "vendored-openssl", "flate2"] }
-sea-orm = { version = "0.12.2", features = [
+sea-orm = { version = "1.1.0-rc.1", features = [
     "runtime-tokio-rustls",
 ], default-features = false }
+sqlx = "0.8"
 thiserror = "1.0"
 time = "0.3"
 tokio = { version = "1.20", features = ["tracing", "signal"] }

@@ -260,7 +260,7 @@ pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
     // ---
 
     info!("Generated configuration:");
-    let yaml = serde_yaml::to_string(&store)?;
+    let yaml = serde_yaml_ng::to_string(&store)?;
     println!("{yaml}");
 
     File::create(&cli.config)?.write_all(yaml.as_bytes())?;

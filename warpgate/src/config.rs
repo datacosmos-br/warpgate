@@ -14,7 +14,7 @@ pub fn load_config(path: &Path, secure: bool) -> Result<WarpgateConfig> {
         secure_file(path).context("Could not secure config")?;
     }
 
-    let mut store: serde_yaml::Value = Config::builder()
+    let mut store: serde_yaml_ng::Value = Config::builder()
         .add_source(File::from(path))
         .add_source(Environment::with_prefix("WARPGATE"))
         .build()
@@ -25,7 +25,7 @@ pub fn load_config(path: &Path, secure: bool) -> Result<WarpgateConfig> {
     check_and_migrate_config(&mut store);
 
     let store: WarpgateConfigStore =
-        serde_yaml::from_value(store).context("Could not load config")?;
+    serde_yaml_ng::from_value(store).context("Could not load config")?;
 
     let config = WarpgateConfig {
         store,
@@ -37,8 +37,8 @@ pub fn load_config(path: &Path, secure: bool) -> Result<WarpgateConfig> {
     Ok(config)
 }
 
-fn check_and_migrate_config(store: &mut serde_yaml::Value) {
-    use serde_yaml::Value;
+fn check_and_migrate_config(store: &mut serde_yaml_ng::Value) {
+    use serde_yaml_ng::Value;
     if let Some(map) = store.as_mapping_mut() {
         if let Some(web_admin) = map.remove(&Value::String("web_admin".into())) {
             warn!("The `web_admin` config section is deprecated. Rename it to `http`.");

@@ -65,7 +65,7 @@ impl ProtocolServer for MySQLProtocolServer {
 
         let tls_config = ServerConfig::builder()
             .with_safe_defaults()
-            .with_client_cert_verifier(NoClientAuth::new())
+            .with_client_cert_verifier(NoClientAuth::boxed())
             .with_cert_resolver(Arc::new(ResolveServerCert(Arc::new(
                 certificate_and_key.into(),
             ))));

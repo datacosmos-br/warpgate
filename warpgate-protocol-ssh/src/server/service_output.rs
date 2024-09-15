@@ -1,7 +1,7 @@
 use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
 
-use ansi_term::Colour;
+use ansiterm::Colour;
 use bytes::Bytes;
 use tokio::sync::{broadcast, mpsc};
 

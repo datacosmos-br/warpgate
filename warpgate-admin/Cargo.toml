@@ -27,12 +27,13 @@ poem-openapi = { version = "2.0", features = [
     "static-files",
 ] }
 russh-keys = { version = "0.45.0", features = ["legacy-ed25519-pkcs8-parser", "vendored-openssl"] }
-sea-orm = { version = "0.12.2", features = [
+sea-orm = { version = "1.1.0-rc.1", features = [
     "runtime-tokio-rustls",
     "macros",
 ], default-features = false }
 serde = "1.0"
 serde_json = "1.0"
+sqlx = "0.8"
 tokio = { version = "1.20", features = ["tracing"] }
 tracing = "0.1"
 uuid = { version = "1.2", features = ["v4", "serde"] }
