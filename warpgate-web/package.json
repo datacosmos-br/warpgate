@@ -17,6 +17,9 @@
     "openapi:client:admin": "openapi-generator-cli generate -g typescript-fetch -i src/admin/lib/openapi-schema.json -o src/admin/lib/api-client -p npmName=warpgate-admin-api-client -p useSingleRequestParameter=true && cd src/admin/lib/api-client && npm i typescript@5 && npm i && yarn tsc --target esnext --module esnext && rm -rf src tsconfig.json",
     "openapi": "yarn run openapi:schema:admin && yarn run openapi:schema:gateway && yarn run openapi:client:admin && yarn run openapi:client:gateway"
   },
+  "resolutions": {
+    "path-to-regexp": "3.3.0"
+  },
   "devDependencies": {
     "@fontsource/work-sans": "^5.1.0",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
