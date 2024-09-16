@@ -42,6 +42,7 @@ jobs:
         working-directory: tests
         run: |
           sudo apt install -y gnome-keyring
+          rm -rf poetry.lock
           pip3 install keyring==23.8.2 poetry==1.1.14
           poetry lock
           poetry install
