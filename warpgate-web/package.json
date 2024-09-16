@@ -18,7 +18,8 @@
     "openapi": "yarn run openapi:schema:admin && yarn run openapi:schema:gateway && yarn run openapi:client:admin && yarn run openapi:client:gateway"
   },
   "resolutions": {
-    "path-to-regexp": "3.3.0"
+    "path-to-regexp": "3.3.0",
+    "picomatch": "^2 || ^3 || ^4"
   },
   "devDependencies": {
     "@fontsource/work-sans": "^5.1.0",
