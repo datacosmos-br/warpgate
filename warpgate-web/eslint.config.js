@@ -25,6 +25,7 @@ export default [
       svelte: sveltePlugin,
     },
     settings: {
+      'svelte3/typescript': 'true',
       'import/resolver': {
         typescript: {},
       },

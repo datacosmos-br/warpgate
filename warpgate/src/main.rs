@@ -94,14 +94,14 @@ async fn _main() -> Result<()> {
         Commands::Run => crate::commands::run::command(&cli).await,
         Commands::Check => crate::commands::check::command(&cli).await,
         Commands::TestTarget { target_name } => {
-            crate::commands::test_target::command(&cli, &target_name).await
+            crate::commands::test_target::command(&cli, target_name).await
         }
         Commands::Setup { .. } | Commands::UnattendedSetup { .. } => {
             crate::commands::setup::command(&cli).await
         }
         Commands::ClientKeys => crate::commands::client_keys::command(&cli).await,
         Commands::RecoverAccess { username } => {
-            crate::commands::recover_access::command(&cli, &username).await
+            crate::commands::recover_access::command(&cli, username).await
         }
     }
 }
