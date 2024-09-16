@@ -574,6 +574,7 @@
           "Http",
           "MySql",
           "Ssh",
+          "Postgres",
           "WebAdmin"
         ]
       },

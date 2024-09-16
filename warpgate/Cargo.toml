@@ -10,6 +10,7 @@ warpgate-core = { version = "*", path = "../warpgate-core" }
 warpgate-db-entities = { version = "*", path = "../warpgate-db-entities" }
 warpgate-protocol-http = { version = "*", path = "../warpgate-protocol-http" }
 warpgate-protocol-mysql = { version = "*", path = "../warpgate-protocol-mysql" }
+warpgate-protocol-postgres = { version = "*", path = "../warpgate-protocol-postgres" }
 warpgate-protocol-ssh = { version = "*", path = "../warpgate-protocol-ssh" }
 
 anyhow = { version = "1.0", features = ["backtrace"] }

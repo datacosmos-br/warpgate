@@ -190,6 +190,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "array-init"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3d62b7694a562cdf5a74227903507c56ab2cc8bdd1f781ed5cb4cf9c9f810bfc"
+
+[[package]]
 name = "arrayvec"
 version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1177,6 +1183,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "derive-new"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d150dea618e920167e5973d70ae6ece4385b7164e0d799fe7c122dd0a5d912ad"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.77",
+]
+
+[[package]]
 name = "derive_more"
 version = "0.99.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1403,6 +1420,12 @@ dependencies = [
  "event-listener 5.3.1",
  "pin-project-lite",
 ]
+
+[[package]]
+name = "fallible-iterator"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4443176a9f2c162692bd3d352d745ef9413eec5782a80d8fd6f8a1ac692a07f7"
 
 [[package]]
 name = "fastrand"
@@ -1984,7 +2007,7 @@ dependencies = [
  "hyper",
  "rustls 0.21.12",
  "tokio",
- "tokio-rustls",
+ "tokio-rustls 0.24.1",
 ]
 
 [[package]]
@@ -2921,6 +2944,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e3148f5046208a5d56bcfc03053e3ca6334e51da8dfb19b6cdc8b306fae3283e"
 
 [[package]]
+name = "pgwire"
+version = "0.23.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "22fb7a8b4570b74080587c5f3e187553375d18e72a38c72ca7f70a065972c65d"
+dependencies = [
+ "async-trait",
+ "bytes",
+ "chrono",
+ "derive-new",
+ "futures",
+ "hex",
+ "md5",
+ "postgres-types",
+ "rand",
+ "thiserror",
+ "tokio",
+ "tokio-rustls 0.26.0",
+ "tokio-util",
+]
+
+[[package]]
 name = "phf"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3067,7 +3111,7 @@ dependencies = [
  "thiserror",
  "time",
  "tokio",
- "tokio-rustls",
+ "tokio-rustls 0.24.1",
  "tokio-stream",
  "tokio-tungstenite",
  "tokio-util",
@@ -3167,6 +3211,37 @@ dependencies = [
  "cpufeatures",
  "opaque-debug",
  "universal-hash",
+]
+
+[[package]]
+name = "postgres-protocol"
+version = "0.6.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "acda0ebdebc28befa84bee35e651e4c5f09073d668c7aed4cf7e23c3cda84b23"
+dependencies = [
+ "base64 0.22.1",
+ "byteorder",
+ "bytes",
+ "fallible-iterator",
+ "hmac",
+ "md-5",
+ "memchr",
+ "rand",
+ "sha2",
+ "stringprep",
+]
+
+[[package]]
+name = "postgres-types"
+version = "0.2.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "02048d9e032fb3cc3413bbf7b83a15d84a5d419778e2628751896d856498eee9"
+dependencies = [
+ "array-init",
+ "bytes",
+ "chrono",
+ "fallible-iterator",
+ "postgres-protocol",
 ]
 
 [[package]]
@@ -3488,7 +3563,7 @@ dependencies = [
  "sync_wrapper",
  "system-configuration",
  "tokio",
- "tokio-rustls",
+ "tokio-rustls 0.24.1",
  "tokio-util",
  "tower-service",
  "url",
@@ -3808,6 +3883,7 @@ version = "0.23.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f2dabaac7466917e566adb06783a81ca48944c6898a1b08b9374106dd671f4c8"
 dependencies = [
+ "log",
  "once_cell",
  "ring 0.17.8",
  "rustls-pki-types",
@@ -4956,6 +5032,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tokio-rustls"
+version = "0.26.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0c7bc40d0e5a97695bb96e27995cd3a08538541b0a846f65bba7a359f36700d4"
+dependencies = [
+ "rustls 0.23.13",
+ "rustls-pki-types",
+ "tokio",
+]
+
+[[package]]
 name = "tokio-stream"
 version = "0.1.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4977,7 +5064,7 @@ dependencies = [
  "rustls 0.21.12",
  "rustls-native-certs",
  "tokio",
- "tokio-rustls",
+ "tokio-rustls 0.24.1",
  "tungstenite",
 ]
 
@@ -5398,6 +5485,7 @@ dependencies = [
  "warpgate-db-entities",
  "warpgate-protocol-http",
  "warpgate-protocol-mysql",
+ "warpgate-protocol-postgres",
  "warpgate-protocol-ssh",
 ]
 
@@ -5432,11 +5520,13 @@ version = "0.10.2"
 dependencies = [
  "anyhow",
  "argon2",
+ "async-trait",
  "bytes",
  "chrono",
  "data-encoding",
  "delegate",
  "humantime-serde",
+ "once_cell",
  "password-hash 0.4.2",
  "poem",
  "poem-openapi",
@@ -5444,6 +5534,7 @@ dependencies = [
  "rand_chacha",
  "rand_core",
  "rustls 0.21.12",
+ "rustls-native-certs",
  "rustls-pemfile 1.0.4",
  "sea-orm",
  "serde",
@@ -5451,6 +5542,7 @@ dependencies = [
  "sqlx",
  "thiserror",
  "tokio",
+ "tokio-rustls 0.24.1",
  "totp-rs",
  "tracing",
  "url",
@@ -5464,6 +5556,7 @@ name = "warpgate-core"
 version = "0.10.2"
 dependencies = [
  "anyhow",
+ "argon2",
  "async-trait",
  "bytes",
  "chrono",
@@ -5578,12 +5671,33 @@ dependencies = [
  "sha1",
  "thiserror",
  "tokio",
- "tokio-rustls",
+ "tokio-rustls 0.24.1",
  "tracing",
  "uuid",
  "warpgate-common",
  "warpgate-core",
  "warpgate-database-protocols",
+ "webpki",
+]
+
+[[package]]
+name = "warpgate-protocol-postgres"
+version = "0.10.2"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "bytes",
+ "pgwire",
+ "rustls 0.21.12",
+ "rustls-native-certs",
+ "rustls-pemfile 1.0.4",
+ "thiserror",
+ "tokio",
+ "tokio-rustls 0.24.1",
+ "tracing",
+ "uuid",
+ "warpgate-common",
+ "warpgate-core",
 ]
 
 [[package]]
