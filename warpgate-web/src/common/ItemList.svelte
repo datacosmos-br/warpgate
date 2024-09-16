@@ -14,9 +14,9 @@
 
 <script lang="ts" generics="T">
     import { onDestroy } from 'svelte'
+    import { writable } from 'svelte/store';
     import { Subject, switchMap, map, Observable, distinctUntilChanged, share, combineLatest, tap, debounceTime } from 'rxjs'
     import Pagination from './Pagination.svelte'
-    import { observe } from 'svelte-observable'
     import { Input } from '@sveltestrap/sveltestrap'
     import DelayedSpinner from './DelayedSpinner.svelte'
 
@@ -55,6 +55,15 @@
             loaded = true
         }),
     )
+
+    function observe<T>(observable: Observable<T>, initialValue: T) {
+        const store = writable(initialValue);
+        const subscription = observable.subscribe(value => store.set(value));
+        return {
+            subscribe: store.subscribe,
+            unsubscribe: () => subscription.unsubscribe()
+        };
+    }
 
     const total = observe<number>(responses.pipe(map(x => x.total)), 0)
     const items = observe<T[]|null>(responses.pipe(map(x => x.items)), null)
