@@ -1,4 +1,5 @@
 use std::io::{self, IsTerminal};
+
 use tracing::*;
 
 pub(crate) fn assert_interactive_terminal() {

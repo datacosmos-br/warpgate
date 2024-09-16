@@ -25,7 +25,7 @@ pub fn load_config(path: &Path, secure: bool) -> Result<WarpgateConfig> {
     check_and_migrate_config(&mut store);
 
     let store: WarpgateConfigStore =
-    serde_yaml_ng::from_value(store).context("Could not load config")?;
+        serde_yaml_ng::from_value(store).context("Could not load config")?;
 
     let config = WarpgateConfig {
         store,
