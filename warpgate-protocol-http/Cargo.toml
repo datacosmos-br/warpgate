@@ -21,7 +21,7 @@ futures = "0.3"
 http = "0.2"
 once_cell = "1.17"
 percent-encoding = "2.1"
-poem = { version = "1.3", features = [
+poem = { version = "3.1", features = [
     "cookie",
     "session",
     "anyhow",
