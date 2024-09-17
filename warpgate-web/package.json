@@ -39,7 +39,7 @@
     "base32-encode": "^2.0.0",
     "bootstrap": "^5.3.3",
     "copy-text-to-clipboard": "^3.2.0",
-    "eslint": "^8",
+    "eslint": "^9",
     "eslint-plugin-import": "^2.30.0",
     "eslint-plugin-svelte": "^2.44.0",
     "format-duration": "^3.0.2",
