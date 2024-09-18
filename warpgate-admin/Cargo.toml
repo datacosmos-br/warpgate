@@ -11,7 +11,7 @@ warpgate-db-entities = { version = "*", path = "../warpgate-db-entities" }
 warpgate-protocol-ssh = { version = "*", path = "../warpgate-protocol-ssh" }
 
 anyhow = { version = "1.0", features = ["std"] }
-bytes = "1.3"
+bytes = "1.7"
 chrono = { version = "0.4", default-features = false }
 futures = "0.3"
 poem = { version = "1.3.50", features = [
