@@ -12,6 +12,7 @@ use crate::mysql::protocol::Capabilities;
 // https://dev.mysql.com/doc/dev/mysql-server/8.0.12/group__group__cs__column__definition__flags.html
 
 bitflags! {
+    #[derive(Clone, Copy, Debug)]
     pub struct ColumnFlags: u16 {
         /// Field can't be `NULL`.
         const NOT_NULL = 1;
@@ -98,7 +99,6 @@ pub enum ColumnType {
 // https://mariadb.com/kb/en/resultset/#column-definition-packet
 // https://dev.mysql.com/doc/internals/en/com-query-response.html#packet-Protocol::ColumnDefinition41
 
-#[derive(Debug)]
 pub struct ColumnDefinition {
     #[allow(unused)]
     catalog: Bytes,

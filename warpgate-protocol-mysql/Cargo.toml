@@ -18,7 +18,7 @@ password-hash = { version = "0.5", features = ["std"] }
 rand = "0.8"
 rustls = { version = "0.23", features = ["ring"], default-features = false }
 rustls-native-certs = "0.6"
-rustls-pemfile = "1.0"
+rustls-pemfile = "2.1"
 sha1 = "0.10"
 thiserror = "1.0"
 tokio = { version = "1.20", features = ["tracing", "signal"] }

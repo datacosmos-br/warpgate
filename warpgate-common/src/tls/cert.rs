@@ -33,15 +33,16 @@ impl TlsCertificateBundle {
     }
 
     pub fn from_bytes(bytes: Vec<u8>) -> Result<Self, RustlsSetupError> {
-        let certificates = rustls_pemfile::certs(&mut &bytes[..]).map(|mut certs| {
-            certs
-                .drain(..)
-                .map(CertificateDer::from)
-                .collect::<Vec<CertificateDer>>()
-        })?;
+        let mut cursor = &bytes[..];
+        let certificates = rustls_pemfile::certs(&mut cursor)
+            .filter_map(|cert_result| cert_result.ok())
+            .map(CertificateDer::from)
+            .collect::<Vec<CertificateDer>>();
+
         if certificates.is_empty() {
             return Err(RustlsSetupError::NoCertificates);
         }
+
         Ok(Self {
             bytes,
             certificates,
@@ -58,19 +59,22 @@ impl TlsPrivateKey {
     }
 
     pub fn from_bytes(bytes: Vec<u8>) -> Result<Self, RustlsSetupError> {
-        let mut key = rustls_pemfile::pkcs8_private_keys(&mut bytes.as_slice())?
-            .drain(..)
-            .next()
-            .and_then(|x| PrivateKeyDer::try_from(x).ok());
-
-        if key.is_none() {
-            key = rustls_pemfile::rsa_private_keys(&mut bytes.as_slice())?
-                .drain(..)
-                .next()
-                .and_then(|x| PrivateKeyDer::try_from(x).ok());
+        let mut key = None;
+        for key_result in rustls_pemfile::pkcs8_private_keys(&mut bytes.as_slice()) {
+            let private_key = key_result?;
+            key = Some(PrivateKeyDer::try_from(private_key).ok());
+            break;
         }
 
-        let key = key.ok_or(RustlsSetupError::NoKeys)?;
+        if key.is_none() {
+            for key_result in rustls_pemfile::rsa_private_keys(&mut bytes.as_slice()) {
+                let private_key = key_result?;
+                key = Some(PrivateKeyDer::try_from(private_key).ok());
+                break;
+            }
+        }
+
+        let key = key.ok_or(RustlsSetupError::NoKeys)?.ok_or(RustlsSetupError::NoKeys)?;
         let key = rustls::crypto::ring::sign::any_supported_type(&key)?;
 
         Ok(Self { bytes, key })
