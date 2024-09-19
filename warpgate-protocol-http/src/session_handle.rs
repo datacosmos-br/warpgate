@@ -1,5 +1,4 @@
 use std::any::type_name;
-use std::future::Future;
 use std::sync::Arc;
 
 use poem::error::GetDataError;

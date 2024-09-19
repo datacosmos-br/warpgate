@@ -1,4 +1,3 @@
-use std::future::Future;
 
 use http::header::Entry;
 use poem::web::cookie::Cookie;

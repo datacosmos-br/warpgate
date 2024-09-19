@@ -1,4 +1,3 @@
-use std::future::Future;
 
 use poem::session::Session;
 use poem::web::{Data, FromRequest};
