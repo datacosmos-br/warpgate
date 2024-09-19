@@ -15,5 +15,5 @@ openidconnect = { version = "3.5", features = ["reqwest", "rustls-tls", "accept-
 serde = "1.0"
 serde_json = "1.0"
 thiserror = "1.0"
-tokio = { version = "1.20", features = ["tracing", "macros"] }
+tokio = { version = "1.40", features = ["tracing", "macros"] }
 tracing = "0.1"

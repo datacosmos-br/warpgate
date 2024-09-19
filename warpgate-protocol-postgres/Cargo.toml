@@ -16,7 +16,7 @@ rustls-native-certs = "0.8"
 rustls-pemfile = "2.1"
 pgwire = { version = "0.24", default-features = false, features = ["server-api"]}
 thiserror = "1.0"
-tokio = { version = "1.20", features = ["tracing", "signal"] }
+tokio = { version = "1.40", features = ["tracing", "signal"] }
 tokio-rustls = "0.26"
 tracing = "0.1"
 uuid = { version = "1.2", features = ["v4"] }
