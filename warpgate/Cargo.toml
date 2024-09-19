@@ -15,7 +15,6 @@ warpgate-protocol-ssh = { version = "*", path = "../warpgate-protocol-ssh" }
 
 anyhow = { version = "1.0", features = ["backtrace"] }
 async-trait = "0.1"
-atty = "0.2"
 bytes = "1.7"
 clap = { version = "4.5.17", features = ["derive"] }
 config = { version = "0.14", features = ["yaml"], default-features = false }
