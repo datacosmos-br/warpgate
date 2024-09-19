@@ -1366,6 +1366,9 @@
             "properties": {
               "kind": {
                 "type": "string",
+                "enum": [
+                  "Password"
+                ],
                 "example": "Password"
               }
             }
@@ -1385,6 +1388,9 @@
             "properties": {
               "kind": {
                 "type": "string",
+                "enum": [
+                  "PublicKey"
+                ],
                 "example": "PublicKey"
               }
             }
@@ -1576,6 +1582,9 @@
             "properties": {
               "kind": {
                 "type": "string",
+                "enum": [
+                  "Http"
+                ],
                 "example": "Http"
               }
             }
@@ -1595,6 +1604,9 @@
             "properties": {
               "kind": {
                 "type": "string",
+                "enum": [
+                  "MySql"
+                ],
                 "example": "MySql"
               }
             }
@@ -1633,6 +1645,9 @@
             "properties": {
               "kind": {
                 "type": "string",
+                "enum": [
+                  "Ssh"
+                ],
                 "example": "Ssh"
               }
             }
@@ -1652,6 +1667,9 @@
             "properties": {
               "kind": {
                 "type": "string",
+                "enum": [
+                  "WebAdmin"
+                ],
                 "example": "WebAdmin"
               }
             }
@@ -1858,6 +1876,9 @@
             "properties": {
               "kind": {
                 "type": "string",
+                "enum": [
+                  "Password"
+                ],
                 "example": "Password"
               }
             }
@@ -1877,6 +1898,9 @@
             "properties": {
               "kind": {
                 "type": "string",
+                "enum": [
+                  "PublicKey"
+                ],
                 "example": "PublicKey"
               }
             }
@@ -1896,6 +1920,9 @@
             "properties": {
               "kind": {
                 "type": "string",
+                "enum": [
+                  "Sso"
+                ],
                 "example": "Sso"
               }
             }
@@ -1915,6 +1942,9 @@
             "properties": {
               "kind": {
                 "type": "string",
+                "enum": [
+                  "Totp"
+                ],
                 "example": "Totp"
               }
             }
