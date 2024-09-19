@@ -1626,6 +1626,9 @@
             "properties": {
               "kind": {
                 "type": "string",
+                "enum": [
+                  "Postgres"
+                ],
                 "example": "Postgres"
               }
             }
