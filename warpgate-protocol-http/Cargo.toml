@@ -16,7 +16,6 @@ anyhow = "1.0"
 async-trait = "0.1"
 chrono = { version = "0.4", default-features = false, features = ["serde"] }
 cookie = "0.18"
-data-encoding = "2.3"
 delegate = "0.13"
 futures = "0.3"
 http = "1.0"

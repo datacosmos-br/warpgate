@@ -14,8 +14,6 @@ warpgate-protocol-postgres = { version = "*", path = "../warpgate-protocol-postg
 warpgate-protocol-ssh = { version = "*", path = "../warpgate-protocol-ssh" }
 
 anyhow = { version = "1.0", features = ["backtrace"] }
-async-trait = "0.1"
-bytes = "1.7"
 clap = { version = "4.5.17", features = ["derive"] }
 config = { version = "0.14", features = ["yaml"], default-features = false }
 console = { version = "0.15", default-features = false }
@@ -40,8 +38,4 @@ uuid = "1.10"
 sd-notify = "0.4"
 
 [features]
-default = ["sqlite"]
 tokio-console = ["dep:console-subscriber", "tokio/tracing"]
-postgres = ["warpgate-core/postgres"]
-mysql = ["warpgate-core/mysql"]
-sqlite = ["warpgate-core/sqlite"]
