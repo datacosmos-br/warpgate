@@ -44,7 +44,7 @@ impl Encode<'_, Capabilities> for HandshakeResponse {
             max_packet_size: self.max_packet_size,
             collation: self.collation,
         }
-        .encode_with(buf, capabilities.clone());
+        .encode_with(buf, capabilities);
 
         buf.put_str_nul(&self.username);
 

@@ -1,4 +1,3 @@
-
 use http::header::Entry;
 use poem::web::cookie::Cookie;
 use poem::{Endpoint, IntoResponse, Middleware, Request, Response};
@@ -34,9 +33,7 @@ impl<E: Endpoint> Endpoint for CookieHostMiddlewareEndpoint<E> {
         let mut resp = self.inner.call(req).await?.into_response();
 
         if let Some(host) = host {
-            if let Entry::Occupied(mut entry) =
-                resp.headers_mut().entry(http::header::SET_COOKIE)
-            {
+            if let Entry::Occupied(mut entry) = resp.headers_mut().entry(http::header::SET_COOKIE) {
                 if let Ok(cookie_str) = entry.get().to_str() {
                     if let Ok(mut cookie) = Cookie::parse(cookie_str) {
                         if cookie.name() == SESSION_COOKIE_NAME {

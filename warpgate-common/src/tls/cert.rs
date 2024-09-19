@@ -62,17 +62,17 @@ impl TlsPrivateKey {
         let mut key = None;
         for key_result in rustls_pemfile::pkcs8_private_keys(&mut bytes.as_slice()) {
             let private_key = key_result?;
-            key = Some(PrivateKeyDer::try_from(private_key).ok());
+            key = Some(PrivateKeyDer::from(private_key));
         }
 
         if key.is_none() {
             for key_result in rustls_pemfile::rsa_private_keys(&mut bytes.as_slice()) {
                 let private_key = key_result?;
-                key = Some(PrivateKeyDer::try_from(private_key).ok());
+                key = Some(PrivateKeyDer::from(private_key));
             }
         }
 
-        let key = key.ok_or(RustlsSetupError::NoKeys)?.ok_or(RustlsSetupError::NoKeys)?;
+        let key = key.ok_or(RustlsSetupError::NoKeys)?;
         let key = rustls::crypto::ring::sign::any_supported_type(&key)?;
 
         Ok(Self { bytes, key })

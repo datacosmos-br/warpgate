@@ -52,10 +52,9 @@ impl SessionStorage for SharedSessionStorage {
     }
 
     /// Remove a session by session id.
-    async fn remove_session<'a>(
-        &'a self,
-        session_id: &'a str,
-    ) -> poem::Result<()> { self.0.lock().await.remove_session(session_id).await }
+    async fn remove_session<'a>(&'a self, session_id: &'a str) -> poem::Result<()> {
+        self.0.lock().await.remove_session(session_id).await
+    }
 }
 
 pub struct SessionStore {

@@ -7,9 +7,9 @@ use rustls::pki_types::{CertificateDer, ServerName, UnixTime};
 use rustls::server::{ClientHello, ResolvesServerCert};
 use rustls::sign::CertifiedKey;
 use rustls::{CertificateError, ClientConfig, Error as TlsError, SignatureScheme};
-use crate::RustlsSetupError;
 
 use super::ROOT_CERT_STORE;
+use crate::RustlsSetupError;
 
 #[derive(Debug)]
 pub struct ResolveServerCert(pub Arc<CertifiedKey>);
@@ -42,7 +42,7 @@ pub async fn configure_tls_connector(
 
             for cert_result in rustls_pemfile::certs(&mut cursor) {
                 let cert = cert_result?;
-                cert_store.add(CertificateDer::from(cert))?;
+                cert_store.add(cert)?;
             }
         }
 

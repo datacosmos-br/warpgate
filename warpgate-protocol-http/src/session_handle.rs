@@ -44,10 +44,7 @@ impl std::ops::Deref for WarpgateServerHandleFromRequest {
 }
 
 impl<'a> FromRequest<'a> for WarpgateServerHandleFromRequest {
-    async fn from_request(
-        req: &'a Request,
-        _: &mut RequestBody,
-    ) -> poem::Result<Self> {
+    async fn from_request(req: &'a Request, _: &mut RequestBody) -> poem::Result<Self> {
         let sm = Data::<&Arc<Mutex<SessionStore>>>::from_request_without_body(req).await?;
         let session = <&Session>::from_request_without_body(req).await?;
         Ok(sm
