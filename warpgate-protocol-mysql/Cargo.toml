@@ -17,7 +17,7 @@ once_cell = "1.17"
 password-hash = { version = "0.5", features = ["std"] }
 rand = "0.8"
 rustls = { version = "0.23", features = ["ring"], default-features = false }
-rustls-native-certs = "0.6"
+rustls-native-certs = "0.8"
 rustls-pemfile = "2.1"
 sha1 = "0.10"
 thiserror = "1.0"
