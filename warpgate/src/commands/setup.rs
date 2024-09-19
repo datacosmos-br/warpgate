@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 
 use anyhow::Result;
 use dialoguer::theme::ColorfulTheme;
-use rcgen::generate_simple_self_signed;
+use rcgen::CertificateParams;
 use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, QueryFilter, Set};
 use tracing::*;
 use uuid::Uuid;
@@ -350,17 +350,21 @@ pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
 
     {
         info!("Generating a TLS certificate");
-        let cert = generate_simple_self_signed(vec![
+        let params: CertificateParams = rcgen::CertificateParams::new(vec![
             "warpgate.local".to_string(),
             "localhost".to_string(),
         ])?;
+
+        let key_pair = rcgen::KeyPair::generate()?;
+        let cert: rcgen::Certificate = params.self_signed(&key_pair)?;
+        let pem_serialized = cert.pem();
 
         let certificate_path = config
             .paths_relative_to
             .join(&config.store.http.certificate);
         let key_path = config.paths_relative_to.join(&config.store.http.key);
-        std::fs::write(&certificate_path, cert.key_pair.serialize_pem())?;
-        std::fs::write(&key_path, cert.key_pair.serialize_pem())?;
+        std::fs::write(&certificate_path, pem_serialized.as_bytes())?;
+        std::fs::write(&key_path, key_pair.serialize_pem().as_bytes())?;
         secure_file(&certificate_path)?;
         secure_file(&key_path)?;
     }
