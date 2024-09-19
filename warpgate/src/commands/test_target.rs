@@ -58,6 +58,9 @@ pub(crate) async fn command(cli: &crate::Cli, target_name: &String) -> Result<()
         Err(TargetTestError::Unreachable) => {
             error!("Target is unreachable");
         }
+        Err(TargetTestError::DialoguerError(_)) => {
+            error!("Dialog error");
+        }
         Ok(()) => {
             info!("Connection successful!");
             return Ok(());

@@ -63,14 +63,12 @@ impl TlsPrivateKey {
         for key_result in rustls_pemfile::pkcs8_private_keys(&mut bytes.as_slice()) {
             let private_key = key_result?;
             key = Some(PrivateKeyDer::try_from(private_key).ok());
-            break;
         }
 
         if key.is_none() {
             for key_result in rustls_pemfile::rsa_private_keys(&mut bytes.as_slice()) {
                 let private_key = key_result?;
                 key = Some(PrivateKeyDer::try_from(private_key).ok());
-                break;
             }
         }
 

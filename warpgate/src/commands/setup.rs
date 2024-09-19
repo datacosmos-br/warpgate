@@ -31,7 +31,7 @@ fn prompt_endpoint(prompt: &str, default: ListenEndpoint) -> ListenEndpoint {
             .default(format!("{default:?}"))
             .with_prompt(prompt)
             .interact_text()
-            .and_then(|v| v.to_socket_addrs());
+            .and_then(|v| Ok(v.to_socket_addrs()?));
         match v {
             Ok(mut addr) => match addr.next() {
                 Some(addr) => return ListenEndpoint(addr),
@@ -359,8 +359,8 @@ pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
             .paths_relative_to
             .join(&config.store.http.certificate);
         let key_path = config.paths_relative_to.join(&config.store.http.key);
-        std::fs::write(&certificate_path, cert.serialize_pem()?)?;
-        std::fs::write(&key_path, cert.serialize_private_key_pem())?;
+        std::fs::write(&certificate_path, cert.key_pair.serialize_pem())?;
+        std::fs::write(&key_path, cert.key_pair.serialize_pem())?;
         secure_file(&certificate_path)?;
         secure_file(&key_path)?;
     }

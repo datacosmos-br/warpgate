@@ -79,13 +79,16 @@ impl ProtocolServer for SSHProtocolServer {
                             let _ = reply.send(false);
                         }
                         SshHostKeyVerificationMode::Prompt => {
-                            if dialoguer::Confirm::new()
-                                .with_prompt("Trust this key?")
-                                .interact()?
-                            {
-                                let _ = reply.send(true);
-                            } else {
-                                let _ = reply.send(false);
+                            match dialoguer::Confirm::new().with_prompt("Trust this key?").interact() {
+                                Ok(true) => {
+                                    let _ = reply.send(true);
+                                }
+                                Ok(false) => {
+                                    let _ = reply.send(false);
+                                }
+                                Err(e) => {
+                                    return Err(TargetTestError::DialoguerError(e));
+                                }
                             }
                         }
                     }

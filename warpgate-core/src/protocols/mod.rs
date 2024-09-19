@@ -3,6 +3,7 @@ use std::net::SocketAddr;
 
 use anyhow::Result;
 use async_trait::async_trait;
+use dialoguer::Error as DialoguerError;
 pub use handle::{SessionHandle, WarpgateServerHandle};
 use warpgate_common::Target;
 
@@ -18,6 +19,8 @@ pub enum TargetTestError {
     Misconfigured(String),
     #[error("I/O: {0}")]
     Io(#[from] std::io::Error),
+    #[error("dialoguer error: {0}")]
+    DialoguerError(DialoguerError),
 }
 
 #[async_trait]
