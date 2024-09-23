@@ -26,7 +26,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
-    "@openapitools/openapi-generator-cli": "^2.13.7",
+    "@openapitools/openapi-generator-cli": "^2.13.9",
     "@sveltejs/vite-plugin-svelte": "^3.1.2",
     "@sveltestrap/sveltestrap": "^6.2.7",
     "@tsconfig/svelte": "^5.0.4",
@@ -47,7 +47,7 @@
     "format-duration": "^3.0.2",
     "otpauth": "^9.3.2",
     "qrcode": "^1.5.4",
-    "sass": "^1.79.1",
+    "sass": "^1.79.3",
     "svelte": "^4.2.19",
     "svelte-check": "^4.0.2",
     "svelte-eslint-parser": "^0.41.1",
@@ -59,7 +59,7 @@
     "ua-parser-js": "^1.0.39",
     "tslib": "^2.7.0",
     "typescript": "^5.6.2",
-    "vite": "^5.4.6",
+    "vite": "^5.4.7",
     "vite-plugin-checker": "^0.8.0",
     "vite-tsconfig-paths": "^5.0.1"
   }
