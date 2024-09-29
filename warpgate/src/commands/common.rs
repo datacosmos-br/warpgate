@@ -2,7 +2,7 @@ use std::io::{self, IsTerminal};
 
 use tracing::{error, info};
 
-pub(crate) fn assert_interactive_terminal() {
+pub fn assert_interactive_terminal() {
     let stdin = io::stdin();
 
     if !stdin.is_terminal() {
@@ -14,6 +14,6 @@ pub(crate) fn assert_interactive_terminal() {
     }
 }
 
-pub(crate) fn is_docker() -> bool {
+pub fn is_docker() -> bool {
     std::env::var("DOCKER").is_ok()
 }

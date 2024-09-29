@@ -46,7 +46,7 @@ fn prompt_endpoint(prompt: &str, default: ListenEndpoint) -> ListenEndpoint {
     }
 }
 
-pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
+pub async fn command(cli: &crate::Cli) -> Result<()> {
     let version = env!("CARGO_PKG_VERSION");
     info!("Welcome to Warpgate {version}");
 

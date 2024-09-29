@@ -5,7 +5,7 @@ use warpgate_core::{ProtocolServer, Services, TargetTestError};
 
 use crate::config::load_config;
 
-pub(crate) async fn command(cli: &crate::Cli, target_name: &String) -> Result<()> {
+pub async fn command(cli: &crate::Cli, target_name: &String) -> Result<()> {
     let config = load_config(&cli.config, true)?;
     let services = Services::new(config.clone()).await?;
 

@@ -3,7 +3,7 @@ use warpgate_protocol_ssh::helpers::PublicKeyAsOpenSSH;
 
 use crate::config::load_config;
 
-pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
+pub async fn command(cli: &crate::Cli) -> Result<()> {
     let config = load_config(&cli.config, true)?;
     let keys = warpgate_protocol_ssh::load_client_keys(&config)?;
     println!("Warpgate SSH client keys:");

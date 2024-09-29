@@ -16,7 +16,7 @@ use warpgate_protocol_ssh::SSHProtocolServer;
 
 use crate::config::{load_config, watch_config};
 
-pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
+pub async fn command(cli: &crate::Cli) -> Result<()> {
     let version = env!("CARGO_PKG_VERSION");
     info!(%version, "Warpgate");
 
@@ -105,7 +105,7 @@ pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
     }
 
     #[cfg(target_os = "linux")]
-    if let Ok(true) = sd_notify::booted() {
+    if matches!(sd_notify::booted(), Ok(true)) {
         use std::time::Duration;
         tokio::spawn(async {
             if let Err(error) = async {
@@ -165,7 +165,7 @@ pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
 pub async fn watch_config_and_reload(path: PathBuf, services: Services) -> Result<()> {
     let mut reload_event = watch_config(path, services.config.clone())?;
 
-    while let Ok(()) = reload_event.recv().await {
+    while reload_event.recv().await == Ok(()) {
         let state = services.state.lock().await;
         let mut cp = services.config_provider.lock().await;
         for (id, session) in &state.sessions {

@@ -4,7 +4,7 @@ use warpgate_common::{TlsCertificateBundle, TlsPrivateKey};
 
 use crate::config::load_config;
 
-pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
+pub async fn command(cli: &crate::Cli) -> Result<()> {
     let config = load_config(&cli.config, true)?;
     if config.store.http.enable {
         TlsCertificateBundle::from_file(

@@ -38,4 +38,8 @@ uuid = "1.10"
 sd-notify = "0.4"
 
 [features]
+default = ["sqlite"]
 tokio-console = ["dep:console-subscriber", "tokio/tracing"]
+postgres = ["warpgate-core/postgres"]
+mysql = ["warpgate-core/mysql"]
+sqlite = ["warpgate-core/sqlite"]
