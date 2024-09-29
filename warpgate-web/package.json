@@ -19,7 +19,8 @@
   },
   "resolutions": {
     "path-to-regexp": "3.3.0",
-    "picomatch": "^2 || ^3 || ^4"
+    "picomatch": "^2 || ^3 || ^4",
+    "rollup": "4.22.5"
   },
   "devDependencies": {
     "@fontsource/work-sans": "^5.1.0",
