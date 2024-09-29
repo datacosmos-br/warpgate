@@ -7,7 +7,7 @@ use std::path::PathBuf;
 use anyhow::Result;
 use clap::{ArgAction, Parser};
 use logging::init_logging;
-use tracing::{Callsite, Subscriber, error};
+use tracing::error;
 
 use crate::config::load_config;
 

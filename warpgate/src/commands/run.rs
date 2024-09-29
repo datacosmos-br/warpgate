@@ -5,7 +5,7 @@ use futures::StreamExt;
 #[cfg(target_os = "linux")]
 use sd_notify::NotifyState;
 use tokio::signal::unix::SignalKind;
-use tracing::{Callsite, Subscriber, debug, error, info, warn};
+use tracing::{debug, error, info, warn};
 use warpgate_core::db::cleanup_db;
 use warpgate_core::logging::install_database_logger;
 use warpgate_core::{ProtocolServer, Services};

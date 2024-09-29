@@ -1,7 +1,7 @@
 use anyhow::Result;
 use dialoguer::theme::ColorfulTheme;
 use sea_orm::{ActiveModelTrait, EntityTrait, QueryOrder, Set};
-use tracing::{Callsite, Subscriber, info};
+use tracing::info;
 use warpgate_common::auth::CredentialKind;
 use warpgate_common::helpers::hash::hash_password;
 use warpgate_common::{Secret, User as UserConfig, UserAuthCredential, UserPasswordCredential};

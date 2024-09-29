@@ -1,6 +1,6 @@
 use std::io::{self, IsTerminal};
 
-use tracing::{Callsite, Subscriber, error, info};
+use tracing::{error, info};
 
 pub(crate) fn assert_interactive_terminal() {
     let stdin = io::stdin();

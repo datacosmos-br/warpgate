@@ -9,7 +9,7 @@ use anyhow::Result;
 use dialoguer::theme::ColorfulTheme;
 use rcgen::CertificateParams;
 use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, QueryFilter, Set};
-use tracing::{Callsite, Subscriber, error, info};
+use tracing::{error, info};
 use uuid::Uuid;
 use warpgate_common::helpers::fs::{secure_directory, secure_file};
 use warpgate_common::helpers::hash::hash_password;

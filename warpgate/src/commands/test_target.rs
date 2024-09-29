@@ -1,5 +1,5 @@
 use anyhow::Result;
-use tracing::{Callsite, Subscriber, error, info};
+use tracing::{error, info};
 use warpgate_common::TargetOptions;
 use warpgate_core::{ProtocolServer, Services, TargetTestError};
 
