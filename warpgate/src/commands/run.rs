@@ -5,7 +5,7 @@ use futures::StreamExt;
 #[cfg(target_os = "linux")]
 use sd_notify::NotifyState;
 use tokio::signal::unix::SignalKind;
-use tracing::*;
+use tracing::{Callsite, Subscriber, debug, error, info, warn};
 use warpgate_core::db::cleanup_db;
 use warpgate_core::logging::install_database_logger;
 use warpgate_core::{ProtocolServer, Services};
@@ -66,16 +66,12 @@ pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
                 let retention = { services.config.lock().await.store.log.retention };
                 let interval = retention / 10;
                 #[allow(clippy::explicit_auto_deref)]
-                match cleanup_db(
+                if let Err(error) = cleanup_db(
                     &mut *services.db.lock().await,
                     &mut *services.recordings.lock().await,
                     &retention,
                 )
-                .await
-                {
-                    Err(error) => error!(?error, "Failed to cleanup the database"),
-                    Ok(_) => debug!("Database cleaned up, next in {:?}", interval),
-                }
+                .await { error!(?error, "Failed to cleanup the database") } else { debug!("Database cleaned up, next in {:?}", interval) }
                 tokio::time::sleep(interval).await;
             }
         }
@@ -172,7 +168,7 @@ pub async fn watch_config_and_reload(path: PathBuf, services: Services) -> Resul
     while let Ok(()) = reload_event.recv().await {
         let state = services.state.lock().await;
         let mut cp = services.config_provider.lock().await;
-        for (id, session) in state.sessions.iter() {
+        for (id, session) in &state.sessions {
             let mut session = session.lock().await;
             if let (Some(username), Some(target)) =
                 (session.username.as_ref(), session.target.as_ref())

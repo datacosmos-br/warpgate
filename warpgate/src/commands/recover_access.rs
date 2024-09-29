@@ -1,7 +1,7 @@
 use anyhow::Result;
 use dialoguer::theme::ColorfulTheme;
 use sea_orm::{ActiveModelTrait, EntityTrait, QueryOrder, Set};
-use tracing::*;
+use tracing::{Callsite, Subscriber, info};
 use warpgate_common::auth::CredentialKind;
 use warpgate_common::helpers::hash::hash_password;
 use warpgate_common::{Secret, User as UserConfig, UserAuthCredential, UserPasswordCredential};
@@ -27,7 +27,7 @@ pub(crate) async fn command(cli: &crate::Cli, username: &Option<String>) -> Resu
         .all(&*db)
         .await?;
 
-    let users: Result<Vec<UserConfig>, _> = users.into_iter().map(|t| t.try_into()).collect();
+    let users: Result<Vec<UserConfig>, _> = users.into_iter().map(std::convert::TryInto::try_into).collect();
     let mut users = users?;
     let usernames = users.iter().map(|x| x.username.clone()).collect::<Vec<_>>();
 

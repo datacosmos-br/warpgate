@@ -7,7 +7,7 @@ use std::path::PathBuf;
 use anyhow::Result;
 use clap::{ArgAction, Parser};
 use logging::init_logging;
-use tracing::*;
+use tracing::{Callsite, Subscriber, error};
 
 use crate::config::load_config;
 
@@ -51,11 +51,11 @@ pub(crate) enum Commands {
         #[clap(long)]
         ssh_port: Option<u16>,
 
-        /// Enable MySQL and set port
+        /// Enable `MySQL` and set port
         #[clap(long)]
         mysql_port: Option<u16>,
 
-        /// Enable PostgreSQL and set port
+        /// Enable `PostgreSQL` and set port
         #[clap(long)]
         postgres_port: Option<u16>,
 
@@ -63,7 +63,7 @@ pub(crate) enum Commands {
         #[clap(long)]
         record_sessions: bool,
 
-        /// Password for the initial user (required if WARPGATE_ADMIN_PASSWORD env var is not set)
+        /// Password for the initial user (required if `WARPGATE_ADMIN_PASSWORD` env var is not set)
         #[clap(long)]
         admin_password: Option<String>,
     },

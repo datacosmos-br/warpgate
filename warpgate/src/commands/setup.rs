@@ -9,7 +9,7 @@ use anyhow::Result;
 use dialoguer::theme::ColorfulTheme;
 use rcgen::CertificateParams;
 use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, QueryFilter, Set};
-use tracing::*;
+use tracing::{Callsite, Subscriber, error, info};
 use uuid::Uuid;
 use warpgate_common::helpers::fs::{secure_directory, secure_file};
 use warpgate_common::helpers::hash::hash_password;
@@ -40,7 +40,7 @@ fn prompt_endpoint(prompt: &str, default: ListenEndpoint) -> ListenEndpoint {
                 }
             },
             Err(err) => {
-                error!("Failed to resolve this endpoint: {err}")
+                error!("Failed to resolve this endpoint: {err}");
             }
         }
     }
@@ -308,28 +308,24 @@ pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
             .next()
             .ok_or_else(|| anyhow::anyhow!("Database inconsistent: no admin role"))?;
 
-        let admin_user = match User::Entity::find()
+        let admin_user = if let Some(x) = User::Entity::find()
             .filter(User::Column::Username.eq(BUILTIN_ADMIN_USERNAME))
             .all(&*db)
             .await?
-            .first()
-        {
-            Some(x) => x.to_owned(),
-            None => {
-                let values = User::ActiveModel {
-                    id: Set(Uuid::new_v4()),
-                    username: Set(BUILTIN_ADMIN_USERNAME.to_owned()),
-                    credentials: Set(serde_json::to_value(vec![UserAuthCredential::Password(
-                        UserPasswordCredential {
-                            hash: Secret::new(hash_password(&admin_password)),
-                        },
-                    )])?),
-                    credential_policy: Set(serde_json::to_value(
-                        None::<UserRequireCredentialsPolicy>,
-                    )?),
-                };
-                values.insert(&*db).await.map_err(WarpgateError::from)?
-            }
+            .first() { x.to_owned() } else {
+            let values = User::ActiveModel {
+                id: Set(Uuid::new_v4()),
+                username: Set(BUILTIN_ADMIN_USERNAME.to_owned()),
+                credentials: Set(serde_json::to_value(vec![UserAuthCredential::Password(
+                    UserPasswordCredential {
+                        hash: Secret::new(hash_password(&admin_password)),
+                    },
+                )])?),
+                credential_policy: Set(serde_json::to_value(
+                    None::<UserRequireCredentialsPolicy>,
+                )?),
+            };
+            values.insert(&*db).await.map_err(WarpgateError::from)?
         };
 
         if UserRoleAssignment::Entity::find()

@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use tracing::*;
+use tracing::{Callsite, Subscriber, info};
 use warpgate_common::{TlsCertificateBundle, TlsPrivateKey};
 
 use crate::config::load_config;
