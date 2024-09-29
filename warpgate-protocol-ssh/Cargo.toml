@@ -12,8 +12,8 @@ bimap = "0.6"
 bytes = "1.7"
 dialoguer = "0.11"
 futures = "0.3"
-russh = { version = "0.45", features = ["legacy-ed25519-pkcs8-parser", "openssl", "flate2"] }
-sea-orm = { version = "1.1.0-rc.1", features = [
+russh = { version = "0.45", features = ["legacy-ed25519-pkcs8-parser"] }
+sea-orm = { version = "1.0", features = [
     "runtime-tokio-rustls",
 ], default-features = false }
 thiserror = "1.0"

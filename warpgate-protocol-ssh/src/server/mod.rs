@@ -93,7 +93,7 @@ pub async fn run_server(services: Services, address: SocketAddr) -> Result<()> {
             .name(&format!("SSH {id} session"))
             .spawn(session)?;
 
-            tokio::task::Builder::new()
+        tokio::task::Builder::new()
             .name(&format!("SSH {id} protocol"))
             .spawn(_run_stream(russh_config, socket, handler))?;
     }

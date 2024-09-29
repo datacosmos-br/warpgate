@@ -14,36 +14,24 @@ function toggle () {
     } else {
         setCurrentTheme('auto')
     }
-  }
+}
 </script>
 
-<Button
-  id="button"
-  color="link"
-  title="Switch theme"
-  on:click={toggle}>
-  {#if $currentTheme === 'dark'}
-    <Fa
-      fw
-      icon={faMoon} />
-  {:else if $currentTheme === 'light'}
-    <Fa
-      fw
-      icon={faSun} />
-  {:else}
-    <Fa
-      fw
-      icon={faCloudSun} />
-  {/if}
+<Button color="link" on:click={toggle} id="button" title="Switch theme">
+    {#if $currentTheme === 'dark'}
+        <Fa fw icon={faMoon} />
+    {:else if $currentTheme === 'light'}
+        <Fa fw icon={faSun} />
+    {:else}
+        <Fa fw icon={faCloudSun} />
+    {/if}
 </Button>
-<Tooltip
-  animation
-  target="button">
-  {#if $currentTheme === 'dark'}
-    Dark theme
-  {:else if $currentTheme === 'light'}
-    Light theme
-  {:else}
-    Automatic theme
-  {/if}
+<Tooltip target="button" animation>
+    {#if $currentTheme === 'dark'}
+        Dark theme
+    {:else if $currentTheme === 'light'}
+        Light theme
+    {:else}
+        Automatic theme
+    {/if}
 </Tooltip>

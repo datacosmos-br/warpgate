@@ -14,9 +14,9 @@
 
 <script lang="ts" generics="T">
     import { onDestroy } from 'svelte'
-    import { writable } from 'svelte/store';
     import { Subject, switchMap, map, Observable, distinctUntilChanged, share, combineLatest, tap, debounceTime } from 'rxjs'
     import Pagination from './Pagination.svelte'
+    import { writable } from 'svelte/store';
     import { Input } from '@sveltestrap/sveltestrap'
     import DelayedSpinner from './DelayedSpinner.svelte'
 
