@@ -21,7 +21,7 @@ use russh::keys::key::PublicKey;
 use russh::{cipher, kex, mac, Preferred, Sig};
 use tokio::sync::mpsc::{unbounded_channel, UnboundedReceiver, UnboundedSender};
 use tokio::sync::{oneshot, Mutex};
-use tokio::task::{Builder, JoinHandle};
+use tokio::task::JoinHandle;
 use tracing::*;
 use uuid::Uuid;
 use warpgate_common::{SSHTargetAuth, SessionId, TargetSSHOptions};
@@ -257,7 +257,7 @@ impl RemoteClient {
 
     pub fn start(mut self) -> io::Result<JoinHandle<anyhow::Result<()>>> {
         let name = format!("SSH {} client commands", self.id);
-        Builder::new().name(&name).spawn(
+        tokio::task::Builder::new().name(&name).spawn(
             async move {
                 async {
                     loop {
@@ -340,7 +340,7 @@ impl RemoteClient {
         let session_channel = SessionChannel::new(channel, id, rx, self.tx.clone(), self.id);
 
         self.child_tasks.push(
-            Builder::new()
+            tokio::task::Builder::new()
                 .name(&format!("SSH {} {:?} ops", self.id, id))
                 .spawn(session_channel.run())?,
         );
@@ -412,9 +412,10 @@ impl RemoteClient {
                     kex::ECDH_SHA2_NISTP384,
                     kex::ECDH_SHA2_NISTP521,
                     kex::DH_G16_SHA512,
+                    kex::DH_G14_SHA256, // non-default
                     kex::DH_G14_SHA256,
                     kex::DH_G14_SHA256,
-                    kex::DH_G1_SHA1,
+                    kex::DH_G1_SHA1, // non-default
                     kex::EXTENSION_SUPPORT_AS_CLIENT,
                     kex::EXTENSION_SUPPORT_AS_SERVER,
                     kex::EXTENSION_OPENSSH_STRICT_KEX_AS_CLIENT,
@@ -572,7 +573,7 @@ impl RemoteClient {
 
             let channel = SessionChannel::new(channel, channel_id, rx, self.tx.clone(), self.id);
             self.child_tasks.push(
-                Builder::new()
+                tokio::task::Builder::new()
                     .name(&format!("SSH {} {:?} ops", self.id, channel_id))
                     .spawn(channel.run())
                     .map_err(|e| SshClientError::Other(Box::new(e)))?,
@@ -603,7 +604,7 @@ impl RemoteClient {
             let channel =
                 DirectTCPIPChannel::new(channel, channel_id, rx, self.tx.clone(), self.id);
             self.child_tasks.push(
-                Builder::new()
+                tokio::task::Builder::new()
                     .name(&format!("SSH {} {:?} ops", self.id, channel_id))
                     .spawn(channel.run())
                     .map_err(|e| SshClientError::Other(Box::new(e)))?,

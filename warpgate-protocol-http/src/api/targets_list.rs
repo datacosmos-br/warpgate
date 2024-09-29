@@ -78,7 +78,13 @@ impl Api {
                 .into_iter()
                 .map(|t| TargetSnapshot {
                     name: t.name.clone(),
-                    kind: (&t.options).into(),
+                    kind: match t.options {
+                        TargetOptions::Ssh(_) => Target::TargetKind::Ssh,
+                        TargetOptions::Http(_) => Target::TargetKind::Http,
+                        TargetOptions::MySql(_) => Target::TargetKind::MySql,
+                        TargetOptions::Postgres(_) => Target::TargetKind::Postgres,
+                        TargetOptions::WebAdmin(_) => Target::TargetKind::WebAdmin,
+                    },
                     external_host: match t.options {
                         TargetOptions::Http(ref opt) => opt.external_host.clone(),
                         _ => None,

@@ -5,14 +5,6 @@ name = "warpgate"
 version = "0.10.2"
 
 [dependencies]
-warpgate-common = { version = "*", path = "../warpgate-common" }
-warpgate-core = { version = "*", path = "../warpgate-core" }
-warpgate-db-entities = { version = "*", path = "../warpgate-db-entities" }
-warpgate-protocol-http = { version = "*", path = "../warpgate-protocol-http" }
-warpgate-protocol-mysql = { version = "*", path = "../warpgate-protocol-mysql" }
-warpgate-protocol-postgres = { version = "*", path = "../warpgate-protocol-postgres" }
-warpgate-protocol-ssh = { version = "*", path = "../warpgate-protocol-ssh" }
-
 anyhow = { version = "1.0", features = ["backtrace"] }
 clap = { version = "4.5.18", features = ["derive"] }
 config = { version = "0.14", features = ["yaml"], default-features = false }
@@ -33,6 +25,13 @@ tracing-subscriber = { version = "0.3", features = [
     "local-time",
 ] }
 uuid = "1.10"
+warpgate-common = { version = "*", path = "../warpgate-common" }
+warpgate-core = { version = "*", path = "../warpgate-core" }
+warpgate-db-entities = { version = "*", path = "../warpgate-db-entities" }
+warpgate-protocol-http = { version = "*", path = "../warpgate-protocol-http" }
+warpgate-protocol-mysql = { version = "*", path = "../warpgate-protocol-mysql" }
+warpgate-protocol-postgres = { version = "*", path = "../warpgate-protocol-postgres" }
+warpgate-protocol-ssh = { version = "*", path = "../warpgate-protocol-ssh" }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 sd-notify = "0.4"

@@ -5,11 +5,6 @@ name = "warpgate-admin"
 version = "0.10.2"
 
 [dependencies]
-warpgate-common = { version = "*", path = "../warpgate-common" }
-warpgate-core = { version = "*", path = "../warpgate-core" }
-warpgate-db-entities = { version = "*", path = "../warpgate-db-entities" }
-warpgate-protocol-ssh = { version = "*", path = "../warpgate-protocol-ssh" }
-
 anyhow = { version = "1.0", features = ["std"] }
 bytes = "1.7"
 chrono = { version = "0.4", default-features = false }
@@ -37,4 +32,8 @@ serde_json = "1.0"
 tokio = { version = "1.40", features = ["tracing"] }
 tracing = "0.1"
 uuid = { version = "1.10", features = ["v4", "serde"] }
+warpgate-common = { version = "*", path = "../warpgate-common" }
+warpgate-core = { version = "*", path = "../warpgate-core" }
+warpgate-db-entities = { version = "*", path = "../warpgate-db-entities" }
+warpgate-protocol-ssh = { version = "*", path = "../warpgate-protocol-ssh" }
 regex = "1.11"

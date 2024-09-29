@@ -1,18 +1,18 @@
 <script lang="ts">
-  import Fa from 'svelte-fa'
-  import { faCloudSun, faMoon, faSun } from '@fortawesome/free-solid-svg-icons'
-  import { Button, Tooltip } from '@sveltestrap/sveltestrap'
-  import { get } from 'svelte/store'
+import Fa from 'svelte-fa'
+import { faCloudSun, faMoon, faSun } from '@fortawesome/free-solid-svg-icons'
+import { Button, Tooltip } from '@sveltestrap/sveltestrap'
+import { get } from 'svelte/store'
 
-  import { currentTheme, setCurrentTheme } from 'theme'
+import { currentTheme, setCurrentTheme } from 'theme'
 
-  function toggle () {
+function toggle () {
     if (get(currentTheme) === 'auto') {
-      setCurrentTheme('dark')
+        setCurrentTheme('dark')
     } else if (get(currentTheme) === 'dark') {
-      setCurrentTheme('light')
+        setCurrentTheme('light')
     } else {
-      setCurrentTheme('auto')
+        setCurrentTheme('auto')
     }
   }
 </script>
