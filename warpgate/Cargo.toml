@@ -6,7 +6,7 @@ version = "0.10.2"
 
 [dependencies]
 anyhow = { version = "1.0", features = ["backtrace"] }
-clap = { version = "4.5.18", features = ["derive"] }
+clap = { version = "4.5.20", features = ["derive"] }
 config = { version = "0.14", features = ["yaml"], default-features = false }
 console = { version = "0.15", default-features = false }
 console-subscriber = { version = "0.4", optional = true }
@@ -24,7 +24,7 @@ tracing-subscriber = { version = "0.3", features = [
     "env-filter",
     "local-time",
 ] }
-uuid = "1.10"
+uuid = "1.11"
 warpgate-common = { version = "*", path = "../warpgate-common" }
 warpgate-core = { version = "*", path = "../warpgate-core" }
 warpgate-db-entities = { version = "*", path = "../warpgate-db-entities" }
