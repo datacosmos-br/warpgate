@@ -70,6 +70,9 @@ feature-depth = 1
 # A list of advisory IDs to ignore. Note that ignored advisories will still
 # output a note when they are encountered.
 ignore = [
+    "RUSTSEC-2023-0071",
+    "RUSTSEC-2024-0320",
+    "RUSTSEC-2024-0370"
     #"RUSTSEC-0000-0000",
     #{ id = "RUSTSEC-0000-0000", reason = "you can specify a reason the advisory is ignored" },
     #"a-crate-that-is-yanked@0.1.1", # you can also ignore yanked crate versions if you wish
@@ -143,9 +146,47 @@ deny = [
 #exact = true
 
 # Certain crates/versions that will be skipped when doing duplicate detection.
-skip = [
-    #"ansi_term@0.11.0",
-    #{ crate = "ansi_term@0.11.0", reason = "you can specify a reason why it can't be updated/removed" },
+skip = [ 
+    "async-channel",
+    "base64",
+    "bindgen",
+    "bitflags",
+    "event-listener",
+    "h2",
+    "hashbrown",
+    "heck",
+    "hermit-abi",
+    "http-body",
+    "http",
+    "hyper-rustls",
+    "hyper",
+    "itertools",
+    "mio",
+    "ordered-float",
+    "password-hash",
+    "pbkdf2",
+    "regex-automata",
+    "regex-syntax",
+    "reqwest",
+    "rustls-native-certs",
+    "rustls-pemfile",
+    "rustls-webpki",
+    "rustls",
+    "syn",
+    "sync_wrapper",
+    "tokio-rustls",
+    "tokio-tungstenite",
+    "tungstenite",
+    "webpki-roots",
+    "windows_aarch64_gnullvm",
+    "windows_aarch64_msvc",
+    "windows_i686_gnu",
+    "windows_i686_msvc",
+    "windows_x86_64_gnu",
+    "windows_x86_64_gnullvm",
+    "windows_x86_64_msvc",
+    "windows-sys",
+    "windows-targets",
 ]
 # Similarly to `skip` allows you to skip certain crates during duplicate
 # detection. Unlike skip, it also includes the entire tree of transitive
@@ -179,3 +220,13 @@ github = []
 gitlab = []
 # bitbucket.org organizations to allow git sources for
 bitbucket = []
+
+[licenses]
+allow = ["MIT", "Apache-2.0", "Unicode-DFS-2016", "ISC", "BSD-3-Clause", "LGPL-3.0", "MPL-2.0", "WTFPL", "CC0-1.0", "OpenSSL"]
+
+[[licenses.clarify]]
+name = "ring"
+expression = "MIT AND ISC AND OpenSSL"
+license-files = [
+    { path = "LICENSE", hash = 0xbd0eed23 }
+]

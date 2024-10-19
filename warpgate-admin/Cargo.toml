@@ -22,7 +22,7 @@ poem-openapi = { version = "5.1", features = [
     "uuid",
     "static-files",
 ] }
-russh-keys = { version = "0.45.0", features = ["legacy-ed25519-pkcs8-parser", "vendored-openssl"] }
+russh-keys = { version = "0.45.0", features = ["legacy-ed25519-pkcs8-parser"] }
 sea-orm = { version = "1.0", features = [
     "runtime-tokio-rustls",
     "macros",
