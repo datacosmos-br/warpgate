@@ -71,10 +71,11 @@ impl TlsPrivateKey {
             });
             new_bytes
         };
-        let mut key = rustls_pemfile::pkcs8_private_keys(&mut bytes.as_slice())?
-            .drain(..)
-            .next()
-            .and_then(|x| PrivateKeyDer::try_from(x).ok());
+        let mut key = None;
+        for key_result in rustls_pemfile::pkcs8_private_keys(&mut bytes.as_slice()) {
+            let private_key = key_result?;
+            key = Some(PrivateKeyDer::from(private_key));
+        }
 
         if key.is_none() {
             for key_result in rustls_pemfile::rsa_private_keys(&mut bytes.as_slice()) {

@@ -3,7 +3,6 @@ use std::fmt::Debug;
 
 use bytes::Bytes;
 use data_encoding::HEXLOWER;
-use delegate::delegate;
 use poem_openapi::registry::{MetaSchemaRef, Registry};
 use poem_openapi::types::{ParseError, ParseFromJSON, ToJSON};
 use rand::Rng;
@@ -82,15 +81,22 @@ impl<T: poem_openapi::types::Type> poem_openapi::types::Type for Secret<T> {
         T::register(registry)
     }
 
-    delegate! {
-        to self.0 {
-            fn as_raw_value(&self) -> Option<&Self::RawValueType>;
-            fn raw_element_iter<'a>(
-                &'a self,
-            ) -> Box<dyn Iterator<Item = &'a Self::RawElementValueType> + 'a>;
-            fn is_empty(&self) -> bool;
-            fn is_none(&self) -> bool;
-        }
+    fn as_raw_value(&self) -> Option<&Self::RawValueType> {
+        self.0.as_raw_value()
+    }
+
+    fn raw_element_iter<'a>(
+        &'a self,
+    ) -> Box<dyn Iterator<Item = &'a Self::RawElementValueType> + 'a> {
+        self.0.raw_element_iter()
+    }
+
+    fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+
+    fn is_none(&self) -> bool {
+        self.0.is_none()
     }
 }
 

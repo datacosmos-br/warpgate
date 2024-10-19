@@ -180,17 +180,6 @@ dependencies = [
 
 [[package]]
 name = "argon2"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db4ce4441f99dbd377ca8a8f57b698c44d0d6e712d8329b5040da5a64aa1ce73"
-dependencies = [
- "base64ct",
- "blake2",
- "password-hash 0.4.2",
-]
-
-[[package]]
-name = "argon2"
 version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3c3610892ee6e0cbce8ae2700349fcf8f98adb0dbfbee85aec3c9179d29cc072"
@@ -5870,7 +5859,7 @@ version = "0.11.0"
 dependencies = [
  "aho-corasick",
  "anyhow",
- "argon2 0.5.3",
+ "argon2",
  "async-trait",
  "bytes",
  "chrono",
@@ -5906,7 +5895,7 @@ name = "warpgate-core"
 version = "0.11.0"
 dependencies = [
  "anyhow",
- "argon2 0.4.1",
+ "argon2",
  "async-trait",
  "bytes",
  "chrono",
@@ -6021,7 +6010,7 @@ dependencies = [
  "password-hash 0.5.0",
  "rand",
  "rustls 0.23.15",
- "rustls-pemfile 1.0.4",
+ "rustls-pemfile 2.2.0",
  "sha1",
  "thiserror",
  "tokio",
@@ -6045,7 +6034,7 @@ dependencies = [
  "rsasl",
  "rustls 0.23.15",
  "rustls-native-certs 0.6.3",
- "rustls-pemfile 1.0.4",
+ "rustls-pemfile 2.2.0",
  "thiserror",
  "tokio",
  "tokio-rustls 0.26.0",

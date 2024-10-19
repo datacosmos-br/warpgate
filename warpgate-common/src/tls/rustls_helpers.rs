@@ -7,8 +7,6 @@ use rustls::pki_types::{CertificateDer, ServerName, UnixTime};
 use rustls::server::{ClientHello, ResolvesServerCert};
 use rustls::sign::CertifiedKey;
 use rustls::{CertificateError, ClientConfig, Error as TlsError, SignatureScheme};
-use crate::RustlsSetupError;
-
 use super::{RustlsSetupError, ROOT_CERT_STORE};
 
 #[derive(Debug)]
