@@ -2102,7 +2102,7 @@ dependencies = [
  "hyper 1.5.0",
  "hyper-util",
  "rustls 0.23.15",
- "rustls-native-certs 0.8.0",
+ "rustls-native-certs",
  "rustls-pki-types",
  "tokio",
  "tokio-rustls 0.26.0",
@@ -2401,7 +2401,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4979f22fdb869068da03c9f7528f8297c6fd2606bc3a4affe42e6a823fdb8da4"
 dependencies = [
  "cfg-if",
- "windows-targets 0.52.6",
+ "windows-targets 0.48.5",
 ]
 
 [[package]]
@@ -3838,7 +3838,7 @@ dependencies = [
  "pin-project-lite",
  "quinn",
  "rustls 0.23.15",
- "rustls-native-certs 0.8.0",
+ "rustls-native-certs",
  "rustls-pemfile 2.2.0",
  "rustls-pki-types",
  "serde",
@@ -4196,18 +4196,6 @@ dependencies = [
  "rustls-webpki 0.102.8",
  "subtle",
  "zeroize",
-]
-
-[[package]]
-name = "rustls-native-certs"
-version = "0.6.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a9aace74cb666635c918e9c12bc0d348266037aa8eb599b5cba565709a8dff00"
-dependencies = [
- "openssl-probe",
- "rustls-pemfile 1.0.4",
- "schannel",
- "security-framework",
 ]
 
 [[package]]
@@ -5391,7 +5379,7 @@ dependencies = [
  "futures-util",
  "log",
  "rustls 0.23.15",
- "rustls-native-certs 0.8.0",
+ "rustls-native-certs",
  "rustls-pki-types",
  "tokio",
  "tokio-rustls 0.26.0",
@@ -5874,7 +5862,7 @@ dependencies = [
  "rand_chacha",
  "rand_core",
  "rustls 0.23.15",
- "rustls-native-certs 0.8.0",
+ "rustls-native-certs",
  "rustls-pemfile 2.2.0",
  "sea-orm",
  "serde",
@@ -5903,7 +5891,7 @@ dependencies = [
  "dialoguer",
  "once_cell",
  "packet",
- "password-hash 0.4.2",
+ "password-hash 0.5.0",
  "poem",
  "poem-openapi",
  "rand",
@@ -6033,7 +6021,7 @@ dependencies = [
  "pgwire",
  "rsasl",
  "rustls 0.23.15",
- "rustls-native-certs 0.6.3",
+ "rustls-native-certs",
  "rustls-pemfile 2.2.0",
  "thiserror",
  "tokio",
@@ -6268,7 +6256,7 @@ version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf221c93e13a30d793f7645a0e7762c55d169dbb0a49671918a2319d289b10bb"
 dependencies = [
- "windows-sys 0.59.0",
+ "windows-sys 0.48.0",
 ]
 
 [[package]]
