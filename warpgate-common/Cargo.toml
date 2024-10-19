@@ -2,7 +2,7 @@
 edition = "2021"
 license = "Apache-2.0"
 name = "warpgate-common"
-version = "0.10.2"
+version = "0.11.0"
 
 [dependencies]
 anyhow = "1.0"
@@ -43,3 +43,4 @@ warpgate-sso = { version = "*", path = "../warpgate-sso" }
 rustls = { version = "0.23", features = ["ring"], default-features = false}
 rustls-pemfile = "2.1"
 webpki = { version = "0.22", features = ["std"] }
+aho-corasick = "1.1.3"

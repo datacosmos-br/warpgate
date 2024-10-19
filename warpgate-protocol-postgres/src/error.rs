@@ -3,6 +3,7 @@ use std::string::FromUtf8Error;
 
 use pgwire::error::PgWireError;
 use pgwire::messages::response::ErrorResponse;
+use rsasl::prelude::{SASLError, SessionError};
 use warpgate_common::{MaybeTlsStreamError, RustlsSetupError, WarpgateError};
 
 use crate::stream::PostgresStreamError;
@@ -21,8 +22,6 @@ pub enum PostgresError {
     Stream(#[from] PostgresStreamError),
     #[error("server doesn't offer TLS")]
     TlsNotSupported,
-    // #[error("client doesn't support TLS")]
-    // TlsNotSupportedByClient,
     #[error("TLS setup failed: {0}")]
     TlsSetup(#[from] RustlsSetupError),
     #[error("TLS stream error: {0}")]
@@ -33,10 +32,12 @@ pub enum PostgresError {
     Io(#[from] std::io::Error),
     #[error("UTF-8: {0}")]
     Utf8(#[from] FromUtf8Error),
+    #[error("SASL: {0}")]
+    Sasl(#[from] SASLError),
+    #[error("SASL session: {0}")]
+    SaslSession(#[from] SessionError),
     #[error("Password is required for authentication")]
     PasswordRequired,
-    // #[error("packet decode error: {0}")]
-    // Decode(Box<dyn Error + Send + Sync>),
     #[error(transparent)]
     Warpgate(#[from] WarpgateError),
     #[error(transparent)]

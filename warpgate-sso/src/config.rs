@@ -153,7 +153,17 @@ impl SsoInternalProviderConfig {
             SsoInternalProviderConfig::Azure { tenant, .. } => {
                 IssuerUrl::new(format!("https://login.microsoftonline.com/{tenant}/v2.0"))?
             }
-            SsoInternalProviderConfig::Custom { issuer_url, .. } => issuer_url.clone(),
+            SsoInternalProviderConfig::Custom { issuer_url, .. } => {
+                let mut url = issuer_url.url().clone();
+                let path = url.path().to_owned();
+                if let Some(path) = path.strip_suffix("/.well-known/openid-configuration") {
+                    url.set_path(path);
+                    let url_string = url.to_string();
+                    IssuerUrl::new(url_string.trim_end_matches('/').into())?
+                } else {
+                    issuer_url.clone()
+                }
+            }
         })
     }
 

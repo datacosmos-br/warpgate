@@ -7,87 +7,92 @@ jobs:
     strategy:
       matrix:
         include:
-          - arch: x86_64-linux
-            target: x86_64-unknown-linux-gnu
-            os: ubuntu-22.04
-          - arch: arm64-linux
-            target: aarch64-unknown-linux-gnu
-            os: ubuntu-22.04
+        - arch: x86_64-linux
+          target: x86_64-unknown-linux-gnu
+          os: ubuntu-22.04
+        - arch: arm64-linux
+          target: aarch64-unknown-linux-gnu
+          os: ubuntu-22.04
       fail-fast: false
 
     name: Build (${{ matrix.arch }})
     runs-on: ${{ matrix.os }}
 
     steps:
-      - if: startsWith(matrix.os, 'ubuntu')
-        run: sudo apt install -y libssl-dev pkg-config
+    - if: startsWith(matrix.os, 'ubuntu')
+      run: sudo apt install -y libssl-dev pkg-config
 
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
 
-      - uses: rlespinasse/github-slug-action@v4.4.1
+    - uses: rlespinasse/github-slug-action@v4.4.1
 
-      - uses: mkroening/rust-toolchain-toml@main
-        with:
-          override: true
-          target: ${{ matrix.target }}
-          toolchain-file: 'rust-toolchain.toml'
-    
-      - uses: Swatinem/rust-cache@v2
-        with:
-          key: "build"
+    - uses: mkroening/rust-toolchain-toml@main
+      with:
+        override: true
+        target: ${{ matrix.target }}
+        toolchain-file: 'rust-toolchain.toml'
 
-      - name: Set up Node.js 20
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
+    - uses: Swatinem/rust-cache@v2
+      with:
+        key: "build"
 
-      - name: Install just
-        run: |
-          cargo install just
+    - name: Set up Node.js 20
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
 
-      - name: Install admin UI deps
-        run: |
-          just yarn --network-timeout 1000000000
+    - name: Install tools
+      run: |
+        cargo install just
+        cargo install cargo-deny
 
-      - name: Build admin UI
-        run: |
-          just yarn build
+    - name: cargo-deny
+      run: |
+        cargo deny check bans
 
-      - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          use-cross: true
-          args: --all-features --release --target ${{ matrix.target }}
-        env:
-          CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS: "--cfg tokio_unstable"
-          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS: "--cfg tokio_unstable"
-          CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS: "--cfg tokio_unstable"
-          CARGO_TARGET_AARCH64_APPLE_DARWIN_RUSTFLAGS: "--cfg tokio_unstable"
+    - name: Install admin UI deps
+      run: |
+        just yarn --network-timeout 1000000000
+
+    - name: Build admin UI
+      run: |
+        just yarn build
+
+    - name: Build
+      uses: actions-rs/cargo@v1
+      with:
+        command: build
+        use-cross: true
+        args: --all-features --release --target ${{ matrix.target }}
+      env:
+        CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS: "--cfg tokio_unstable"
+        CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS: "--cfg tokio_unstable"
+        CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS: "--cfg tokio_unstable"
+        CARGO_TARGET_AARCH64_APPLE_DARWIN_RUSTFLAGS: "--cfg tokio_unstable"
         # env:
         #   CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS: "-C target-feature=+crt-static --cfg tokio_unstable"
         #   CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS: "-C target-feature=+crt-static --cfg tokio_unstable"
         #   CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS: "-C target-feature=+crt-static --cfg tokio_unstable"
         #   CARGO_TARGET_AARCH64_APPLE_DARWIN_RUSTFLAGS: "-C target-feature=+crt-static --cfg tokio_unstable"
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@master
-        with:
-          name: warpgate-${{ env.GITHUB_REF_SLUG }}-${{ matrix.arch }}
-          path: target/${{ matrix.target }}/release/warpgate
+    - name: Upload artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: warpgate-${{ env.GITHUB_REF_SLUG }}-${{ matrix.arch }}
+        path: target/${{ matrix.target }}/release/warpgate
 
-      - name: Rename artifact
-        run: |
-          mkdir dist
-          mv target/${{ matrix.target }}/release/warpgate dist/warpgate-${{ env.GITHUB_REF_SLUG }}-${{ matrix.arch }}
+    - name: Rename artifact
+      run: |
+        mkdir dist
+        mv target/${{ matrix.target }}/release/warpgate dist/warpgate-${{ env.GITHUB_REF_SLUG }}-${{ matrix.arch }}
 
-      - name: Upload release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/v')
-        with:
-          draft: true
-          generate_release_notes: true
-          files: dist/*
-          token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/v')
+      with:
+        draft: true
+        generate_release_notes: true
+        files: dist/*
+        token: ${{ secrets.GITHUB_TOKEN }}
