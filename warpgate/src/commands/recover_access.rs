@@ -27,7 +27,10 @@ pub async fn command(cli: &crate::Cli, username: &Option<String>) -> Result<()> 
         .all(&*db)
         .await?;
 
-    let users: Result<Vec<UserConfig>, _> = users.into_iter().map(std::convert::TryInto::try_into).collect();
+    let users: Result<Vec<UserConfig>, _> = users
+        .into_iter()
+        .map(std::convert::TryInto::try_into)
+        .collect();
     let mut users = users?;
     let usernames = users.iter().map(|x| x.username.clone()).collect::<Vec<_>>();
 

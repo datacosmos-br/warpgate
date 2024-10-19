@@ -71,7 +71,12 @@ pub async fn command(cli: &crate::Cli) -> Result<()> {
                     &mut *services.recordings.lock().await,
                     &retention,
                 )
-                .await { error!(?error, "Failed to cleanup the database") } else { debug!("Database cleaned up, next in {:?}", interval) }
+                .await
+                {
+                    error!(?error, "Failed to cleanup the database")
+                } else {
+                    debug!("Database cleaned up, next in {:?}", interval)
+                }
                 tokio::time::sleep(interval).await;
             }
         }

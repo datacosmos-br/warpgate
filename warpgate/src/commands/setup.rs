@@ -312,7 +312,10 @@ pub async fn command(cli: &crate::Cli) -> Result<()> {
             .filter(User::Column::Username.eq(BUILTIN_ADMIN_USERNAME))
             .all(&*db)
             .await?
-            .first() { x.to_owned() } else {
+            .first()
+        {
+            x.to_owned()
+        } else {
             let values = User::ActiveModel {
                 id: Set(Uuid::new_v4()),
                 username: Set(BUILTIN_ADMIN_USERNAME.to_owned()),
@@ -321,9 +324,7 @@ pub async fn command(cli: &crate::Cli) -> Result<()> {
                         hash: Secret::new(hash_password(&admin_password)),
                     },
                 )])?),
-                credential_policy: Set(serde_json::to_value(
-                    None::<UserRequireCredentialsPolicy>,
-                )?),
+                credential_policy: Set(serde_json::to_value(None::<UserRequireCredentialsPolicy>)?),
             };
             values.insert(&*db).await.map_err(WarpgateError::from)?
         };
