@@ -34,16 +34,15 @@ impl TlsCertificateBundle {
     }
 
     pub fn from_bytes(bytes: Vec<u8>) -> Result<Self, RustlsSetupError> {
-        let mut cursor = &bytes[..];
-        let certificates = rustls_pemfile::certs(&mut cursor)
-            .filter_map(|cert_result| cert_result.ok())
+        let certificates = rustls_pemfile::certs(&mut &bytes[..])
+            .collect::<Result<Vec<_>, _>>()?
+            .into_iter()
             .map(CertificateDer::from)
             .collect::<Vec<CertificateDer>>();
-
+        
         if certificates.is_empty() {
             return Err(RustlsSetupError::NoCertificates);
         }
-
         Ok(Self {
             bytes,
             certificates,
@@ -71,17 +70,27 @@ impl TlsPrivateKey {
             });
             new_bytes
         };
-        let mut key = None;
-        for key_result in rustls_pemfile::pkcs8_private_keys(&mut bytes.as_slice()) {
-            let private_key = key_result?;
-            key = Some(PrivateKeyDer::from(private_key));
+
+        let mut key = rustls_pemfile::pkcs8_private_keys(&mut bytes.as_slice())
+            .collect::<Result<Vec<_>, _>>()?
+            .into_iter()
+            .next()
+            .and_then(|x| PrivateKeyDer::try_from(x).ok());
+
+        if key.is_none() {
+            key = rustls_pemfile::ec_private_keys(&mut bytes.as_slice())
+                .collect::<Result<Vec<_>, _>>()?
+                .into_iter()
+                .next()
+                .and_then(|x| PrivateKeyDer::try_from(x).ok());
         }
 
         if key.is_none() {
-            for key_result in rustls_pemfile::rsa_private_keys(&mut bytes.as_slice()) {
-                let private_key = key_result?;
-                key = Some(PrivateKeyDer::from(private_key));
-            }
+            key = rustls_pemfile::rsa_private_keys(&mut bytes.as_slice())
+                .collect::<Result<Vec<_>, _>>()?
+                .into_iter()
+                .next()
+                .and_then(|x| PrivateKeyDer::try_from(x).ok());
         }
 
         let key = key.ok_or(RustlsSetupError::NoKeys)?;
