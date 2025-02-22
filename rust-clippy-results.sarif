@@ -1,0 +1,2608 @@
+{
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0.json",
+  "runs": [
+    {
+      "results": [
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-database-protocols/src/io/encode.rs"
+                },
+                "region": {
+                  "byteLength": 3,
+                  "byteOffset": 239,
+                  "endColumn": 9,
+                  "endLine": 12,
+                  "startColumn": 6,
+                  "startLine": 12
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "the following explicit lifetimes could be elided: 'en"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "elide the lifetimes \"\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-database-protocols/src/io/encode.rs"
+                },
+                "region": {
+                  "byteLength": 5,
+                  "byteOffset": 239,
+                  "endColumn": 11,
+                  "endLine": 12,
+                  "startColumn": 6,
+                  "startLine": 12
+                }
+              }
+            },
+            {
+              "message": {
+                "text": "elide the lifetimes \"\" \"'_\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-database-protocols/src/io/encode.rs"
+                },
+                "region": {
+                  "byteLength": 3,
+                  "byteOffset": 254,
+                  "endColumn": 24,
+                  "endLine": 12,
+                  "startColumn": 21,
+                  "startLine": 12
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_lifetimes",
+          "ruleIndex": 0
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-database-protocols/src/io/encode.rs"
+                },
+                "region": {
+                  "byteLength": 3,
+                  "byteOffset": 254,
+                  "endColumn": 24,
+                  "endLine": 12,
+                  "startColumn": 21,
+                  "startLine": 12
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "the following explicit lifetimes could be elided: 'en"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "elide the lifetimes \"\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-database-protocols/src/io/encode.rs"
+                },
+                "region": {
+                  "byteLength": 5,
+                  "byteOffset": 239,
+                  "endColumn": 11,
+                  "endLine": 12,
+                  "startColumn": 6,
+                  "startLine": 12
+                }
+              }
+            },
+            {
+              "message": {
+                "text": "elide the lifetimes \"\" \"'_\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-database-protocols/src/io/encode.rs"
+                },
+                "region": {
+                  "byteLength": 3,
+                  "byteOffset": 254,
+                  "endColumn": 24,
+                  "endLine": 12,
+                  "startColumn": 21,
+                  "startLine": 12
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_lifetimes",
+          "ruleIndex": 0
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-database-protocols/src/io/write_and_flush.rs"
+                },
+                "region": {
+                  "byteLength": 2,
+                  "byteOffset": 1104,
+                  "endColumn": 8,
+                  "endLine": 42,
+                  "startColumn": 6,
+                  "startLine": 42
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "the following explicit lifetimes could be elided: 'a"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "elide the lifetimes \"\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-database-protocols/src/io/write_and_flush.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 1104,
+                  "endColumn": 10,
+                  "endLine": 42,
+                  "startColumn": 6,
+                  "startLine": 42
+                }
+              }
+            },
+            {
+              "message": {
+                "text": "elide the lifetimes \"\" \"'_\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-database-protocols/src/io/write_and_flush.rs"
+                },
+                "region": {
+                  "byteLength": 2,
+                  "byteOffset": 1134,
+                  "endColumn": 38,
+                  "endLine": 42,
+                  "startColumn": 36,
+                  "startLine": 42
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_lifetimes",
+          "ruleIndex": 0
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-database-protocols/src/io/write_and_flush.rs"
+                },
+                "region": {
+                  "byteLength": 2,
+                  "byteOffset": 1134,
+                  "endColumn": 38,
+                  "endLine": 42,
+                  "startColumn": 36,
+                  "startLine": 42
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "the following explicit lifetimes could be elided: 'a"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "elide the lifetimes \"\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-database-protocols/src/io/write_and_flush.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 1104,
+                  "endColumn": 10,
+                  "endLine": 42,
+                  "startColumn": 6,
+                  "startLine": 42
+                }
+              }
+            },
+            {
+              "message": {
+                "text": "elide the lifetimes \"\" \"'_\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-database-protocols/src/io/write_and_flush.rs"
+                },
+                "region": {
+                  "byteLength": 2,
+                  "byteOffset": 1134,
+                  "endColumn": 38,
+                  "endLine": 42,
+                  "startColumn": 36,
+                  "startLine": 42
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_lifetimes",
+          "ruleIndex": 0
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-sso/src/config.rs"
+                },
+                "region": {
+                  "byteLength": 108,
+                  "byteOffset": 922,
+                  "endColumn": 54,
+                  "endLine": 34,
+                  "startColumn": 9,
+                  "startLine": 31
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "unneeded `return` statement"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "remove `return` \"self\n            .label\n            .as_deref()\n            .unwrap_or_else(|| self.provider.label())\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-sso/src/config.rs"
+                },
+                "region": {
+                  "byteLength": 108,
+                  "byteOffset": 922,
+                  "endColumn": 54,
+                  "endLine": 34,
+                  "startColumn": 9,
+                  "startLine": 31
+                }
+              }
+            },
+            {
+              "message": {
+                "text": "remove `return` \"self\n            .label\n            .as_deref()\n            .unwrap_or_else(|| self.provider.label())\" \"\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-sso/src/config.rs"
+                },
+                "region": {
+                  "byteLength": 1,
+                  "byteOffset": 1030,
+                  "endColumn": 55,
+                  "endLine": 34,
+                  "startColumn": 54,
+                  "startLine": 34
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_return",
+          "ruleIndex": 1
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-common/src/eventhub.rs"
+                },
+                "region": {
+                  "byteLength": 2,
+                  "byteOffset": 1948,
+                  "endColumn": 8,
+                  "endLine": 73,
+                  "startColumn": 6,
+                  "startLine": 73
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "the following explicit lifetimes could be elided: 'h"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "elide the lifetimes \"\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-common/src/eventhub.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 1948,
+                  "endColumn": 10,
+                  "endLine": 73,
+                  "startColumn": 6,
+                  "startLine": 73
+                }
+              }
+            },
+            {
+              "message": {
+                "text": "elide the lifetimes \"\" \"\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-common/src/eventhub.rs"
+                },
+                "region": {
+                  "byteLength": 3,
+                  "byteOffset": 2311,
+                  "endColumn": 13,
+                  "endLine": 85,
+                  "startColumn": 10,
+                  "startLine": 85
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_lifetimes",
+          "ruleIndex": 0
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-common/src/eventhub.rs"
+                },
+                "region": {
+                  "byteLength": 2,
+                  "byteOffset": 2311,
+                  "endColumn": 12,
+                  "endLine": 85,
+                  "startColumn": 10,
+                  "startLine": 85
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "the following explicit lifetimes could be elided: 'h"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "elide the lifetimes \"\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-common/src/eventhub.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 1948,
+                  "endColumn": 10,
+                  "endLine": 73,
+                  "startColumn": 6,
+                  "startLine": 73
+                }
+              }
+            },
+            {
+              "message": {
+                "text": "elide the lifetimes \"\" \"\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-common/src/eventhub.rs"
+                },
+                "region": {
+                  "byteLength": 3,
+                  "byteOffset": 2311,
+                  "endColumn": 13,
+                  "endLine": 85,
+                  "startColumn": 10,
+                  "startLine": 85
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_lifetimes",
+          "ruleIndex": 0
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-common/src/tls/cert.rs"
+                },
+                "region": {
+                  "byteLength": 23,
+                  "byteOffset": 2380,
+                  "endColumn": 50,
+                  "endLine": 78,
+                  "startColumn": 27,
+                  "startLine": 78
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "use of a fallible conversion when an infallible one could be used"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "use \"From::from\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-common/src/tls/cert.rs"
+                },
+                "region": {
+                  "byteLength": 23,
+                  "byteOffset": 2380,
+                  "endColumn": 50,
+                  "endLine": 78,
+                  "startColumn": 27,
+                  "startLine": 78
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::unnecessary_fallible_conversions",
+          "ruleIndex": 2
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-common/src/tls/cert.rs"
+                },
+                "region": {
+                  "byteLength": 23,
+                  "byteOffset": 2647,
+                  "endColumn": 54,
+                  "endLine": 85,
+                  "startColumn": 31,
+                  "startLine": 85
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "use of a fallible conversion when an infallible one could be used"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "use \"From::from\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-common/src/tls/cert.rs"
+                },
+                "region": {
+                  "byteLength": 23,
+                  "byteOffset": 2647,
+                  "endColumn": 54,
+                  "endLine": 85,
+                  "startColumn": 31,
+                  "startLine": 85
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::unnecessary_fallible_conversions",
+          "ruleIndex": 2
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-common/src/tls/cert.rs"
+                },
+                "region": {
+                  "byteLength": 23,
+                  "byteOffset": 2925,
+                  "endColumn": 54,
+                  "endLine": 93,
+                  "startColumn": 31,
+                  "startLine": 93
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "use of a fallible conversion when an infallible one could be used"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "use \"From::from\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-common/src/tls/cert.rs"
+                },
+                "region": {
+                  "byteLength": 23,
+                  "byteOffset": 2925,
+                  "endColumn": 54,
+                  "endLine": 93,
+                  "startColumn": 31,
+                  "startLine": 93
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::unnecessary_fallible_conversions",
+          "ruleIndex": 2
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 1606,
+                  "endColumn": 21,
+                  "endLine": 50,
+                  "startColumn": 17,
+                  "startLine": 50
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref on an immutable reference"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "if you would like to reborrow, try removing `&*` \"db\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 1606,
+                  "endColumn": 21,
+                  "endLine": 50,
+                  "startColumn": 17,
+                  "startLine": 50
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::borrow_deref_ref",
+          "ruleIndex": 3
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 1844,
+                  "endColumn": 21,
+                  "endLine": 58,
+                  "startColumn": 17,
+                  "startLine": 58
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref on an immutable reference"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "if you would like to reborrow, try removing `&*` \"db\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 1844,
+                  "endColumn": 21,
+                  "endLine": 58,
+                  "startColumn": 17,
+                  "startLine": 58
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::borrow_deref_ref",
+          "ruleIndex": 3
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 10,
+                  "byteOffset": 2334,
+                  "endColumn": 19,
+                  "endLine": 76,
+                  "startColumn": 9,
+                  "startLine": 76
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "question mark operator is useless here"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try removing question mark and `Ok()` \"users\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 10,
+                  "byteOffset": 2334,
+                  "endColumn": 19,
+                  "endLine": 76,
+                  "startColumn": 9,
+                  "startLine": 76
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_question_mark",
+          "ruleIndex": 4
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 341,
+                  "byteOffset": 7135,
+                  "endColumn": 25,
+                  "endLine": 221,
+                  "startColumn": 20,
+                  "startLine": 212
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "question mark operator is useless here"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try removing question mark and `Ok()` \"self\n                .maybe_autocreate_sso_user(\n                    &*db,\n                    UserSsoCredential {\n                        email: client_email.clone(),\n                        provider: Some(client_provider.clone()),\n                    },\n                    preferred_username,\n                )\n                .await\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 341,
+                  "byteOffset": 7135,
+                  "endColumn": 25,
+                  "endLine": 221,
+                  "startColumn": 20,
+                  "startLine": 212
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_question_mark",
+          "ruleIndex": 4
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 7207,
+                  "endColumn": 25,
+                  "endLine": 214,
+                  "startColumn": 21,
+                  "startLine": 214
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&db\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 7207,
+                  "endColumn": 25,
+                  "endLine": 214,
+                  "startColumn": 21,
+                  "startLine": 214
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 406,
+                  "byteOffset": 8566,
+                  "endColumn": 24,
+                  "endLine": 266,
+                  "startColumn": 17,
+                  "startLine": 258
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "unneeded `return` statement"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "remove `return` \"Ok(user_details\n                    .credentials\n                    .iter()\n                    .any(|credential| match credential {\n                        UserAuthCredential::PublicKey(UserPublicKeyCredential {\n                            key: ref user_key,\n                        }) => &openssh_public_key == user_key.expose_secret(),\n                        _ => false,\n                    }))\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 406,
+                  "byteOffset": 8566,
+                  "endColumn": 24,
+                  "endLine": 266,
+                  "startColumn": 17,
+                  "startLine": 258
+                }
+              }
+            },
+            {
+              "message": {
+                "text": "remove `return` \"Ok(user_details\n                    .credentials\n                    .iter()\n                    .any(|credential| match credential {\n                        UserAuthCredential::PublicKey(UserPublicKeyCredential {\n                            key: ref user_key,\n                        }) => &openssh_public_key == user_key.expose_secret(),\n                        _ => false,\n                    }))\" \"\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 1,
+                  "byteOffset": 8972,
+                  "endColumn": 25,
+                  "endLine": 266,
+                  "startColumn": 24,
+                  "startLine": 266
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_return",
+          "ruleIndex": 1
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 856,
+                  "byteOffset": 9063,
+                  "endColumn": 24,
+                  "endLine": 287,
+                  "startColumn": 17,
+                  "startLine": 269
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "unneeded `return` statement"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "remove `return` \"Ok(user_details\n                    .credentials\n                    .iter()\n                    .any(|credential| match credential {\n                        UserAuthCredential::Password(UserPasswordCredential {\n                            hash: ref user_password_hash,\n                        }) => verify_password_hash(\n                            client_password.expose_secret(),\n                            user_password_hash.expose_secret(),\n                        )\n                        .unwrap_or_else(|e| {\n                            error!(\n                                username = &user_details.username[..],\n                                \"Error verifying password hash: {}\", e\n                            );\n                            false\n                        }),\n                        _ => false,\n                    }))\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 856,
+                  "byteOffset": 9063,
+                  "endColumn": 24,
+                  "endLine": 287,
+                  "startColumn": 17,
+                  "startLine": 269
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_return",
+          "ruleIndex": 1
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 406,
+                  "byteOffset": 9999,
+                  "endColumn": 24,
+                  "endLine": 298,
+                  "startColumn": 17,
+                  "startLine": 290
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "unneeded `return` statement"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "remove `return` \"Ok(user_details\n                    .credentials\n                    .iter()\n                    .any(|credential| match credential {\n                        UserAuthCredential::Totp(UserTotpCredential {\n                            key: ref user_otp_key,\n                        }) => verify_totp(client_otp.expose_secret(), user_otp_key),\n                        _ => false,\n                    }))\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 406,
+                  "byteOffset": 9999,
+                  "endColumn": 24,
+                  "endLine": 298,
+                  "startColumn": 17,
+                  "startLine": 290
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_return",
+          "ruleIndex": 1
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 16,
+                  "byteOffset": 11120,
+                  "endColumn": 33,
+                  "endLine": 317,
+                  "startColumn": 17,
+                  "startLine": 317
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "unneeded `return` statement"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "remove `return` \"Ok(false)\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 16,
+                  "byteOffset": 11120,
+                  "endColumn": 33,
+                  "endLine": 317,
+                  "startColumn": 17,
+                  "startLine": 317
+                }
+              }
+            },
+            {
+              "message": {
+                "text": "remove `return` \"Ok(false)\" \"\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 1,
+                  "byteOffset": 11136,
+                  "endColumn": 34,
+                  "endLine": 317,
+                  "startColumn": 33,
+                  "startLine": 317
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_return",
+          "ruleIndex": 1
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 48,
+                  "byteOffset": 11169,
+                  "endColumn": 66,
+                  "endLine": 319,
+                  "startColumn": 18,
+                  "startLine": 319
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "unneeded `return` statement"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "remove `return` \"Err(WarpgateError::InvalidCredentialType)\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/config_providers/db.rs"
+                },
+                "region": {
+                  "byteLength": 48,
+                  "byteOffset": 11169,
+                  "endColumn": 66,
+                  "endLine": 319,
+                  "startColumn": 18,
+                  "startLine": 319
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_return",
+          "ruleIndex": 1
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/logging/values.rs"
+                },
+                "region": {
+                  "byteLength": 2,
+                  "byteOffset": 990,
+                  "endColumn": 8,
+                  "endLine": 48,
+                  "startColumn": 6,
+                  "startLine": 48
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "the following explicit lifetimes could be elided: 'a"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "elide the lifetimes \"\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/logging/values.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 989,
+                  "endColumn": 9,
+                  "endLine": 48,
+                  "startColumn": 5,
+                  "startLine": 48
+                }
+              }
+            },
+            {
+              "message": {
+                "text": "elide the lifetimes \"\" \"'_\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/logging/values.rs"
+                },
+                "region": {
+                  "byteLength": 2,
+                  "byteOffset": 1018,
+                  "endColumn": 36,
+                  "endLine": 48,
+                  "startColumn": 34,
+                  "startLine": 48
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_lifetimes",
+          "ruleIndex": 0
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/logging/values.rs"
+                },
+                "region": {
+                  "byteLength": 2,
+                  "byteOffset": 1018,
+                  "endColumn": 36,
+                  "endLine": 48,
+                  "startColumn": 34,
+                  "startLine": 48
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "the following explicit lifetimes could be elided: 'a"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "elide the lifetimes \"\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/logging/values.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 989,
+                  "endColumn": 9,
+                  "endLine": 48,
+                  "startColumn": 5,
+                  "startLine": 48
+                }
+              }
+            },
+            {
+              "message": {
+                "text": "elide the lifetimes \"\" \"'_\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-core/src/logging/values.rs"
+                },
+                "region": {
+                  "byteLength": 2,
+                  "byteOffset": 1018,
+                  "endColumn": 36,
+                  "endLine": 48,
+                  "startColumn": 34,
+                  "startLine": 48
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_lifetimes",
+          "ruleIndex": 0
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-postgres/src/client.rs"
+                },
+                "region": {
+                  "byteLength": 2,
+                  "byteOffset": 1015,
+                  "endColumn": 8,
+                  "endLine": 39,
+                  "startColumn": 6,
+                  "startLine": 39
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "the following explicit lifetimes could be elided: 'a"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "elide the lifetimes \"\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-postgres/src/client.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 1014,
+                  "endColumn": 9,
+                  "endLine": 39,
+                  "startColumn": 5,
+                  "startLine": 39
+                }
+              }
+            },
+            {
+              "message": {
+                "text": "elide the lifetimes \"\" \"'_\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-postgres/src/client.rs"
+                },
+                "region": {
+                  "byteLength": 2,
+                  "byteOffset": 1046,
+                  "endColumn": 39,
+                  "endLine": 39,
+                  "startColumn": 37,
+                  "startLine": 39
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_lifetimes",
+          "ruleIndex": 0
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-postgres/src/client.rs"
+                },
+                "region": {
+                  "byteLength": 2,
+                  "byteOffset": 1046,
+                  "endColumn": 39,
+                  "endLine": 39,
+                  "startColumn": 37,
+                  "startLine": 39
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "the following explicit lifetimes could be elided: 'a"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "elide the lifetimes \"\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-postgres/src/client.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 1014,
+                  "endColumn": 9,
+                  "endLine": 39,
+                  "startColumn": 5,
+                  "startLine": 39
+                }
+              }
+            },
+            {
+              "message": {
+                "text": "elide the lifetimes \"\" \"'_\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-postgres/src/client.rs"
+                },
+                "region": {
+                  "byteLength": 2,
+                  "byteOffset": 1046,
+                  "endColumn": 39,
+                  "endLine": 39,
+                  "startColumn": 37,
+                  "startLine": 39
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_lifetimes",
+          "ruleIndex": 0
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-ssh/src/client/handler.rs"
+                },
+                "region": {
+                  "byteLength": 406,
+                  "byteOffset": 2165,
+                  "endColumn": 19,
+                  "endLine": 77,
+                  "startColumn": 17,
+                  "startLine": 70
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "unneeded `return` statement"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "remove `return` \"Err(ClientHandlerError::ConnectionError(\n                    ConnectionError::HostKeyMismatch {\n                        received_key_type: server_public_key.algorithm(),\n                        received_key_base64: server_public_key.public_key_base64(),\n                        known_key_type: key_type,\n                        known_key_base64: key_base64,\n                    },\n                ))\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-ssh/src/client/handler.rs"
+                },
+                "region": {
+                  "byteLength": 406,
+                  "byteOffset": 2165,
+                  "endColumn": 19,
+                  "endLine": 77,
+                  "startColumn": 17,
+                  "startLine": 70
+                }
+              }
+            },
+            {
+              "message": {
+                "text": "remove `return` \"Err(ClientHandlerError::ConnectionError(\n                    ConnectionError::HostKeyMismatch {\n                        received_key_type: server_public_key.algorithm(),\n                        received_key_base64: server_public_key.public_key_base64(),\n                        known_key_type: key_type,\n                        known_key_base64: key_base64,\n                    },\n                ))\" \"\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-ssh/src/client/handler.rs"
+                },
+                "region": {
+                  "byteLength": 1,
+                  "byteOffset": 2571,
+                  "endColumn": 20,
+                  "endLine": 77,
+                  "startColumn": 19,
+                  "startLine": 77
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_return",
+          "ruleIndex": 1
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/api_tokens.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 2046,
+                  "endColumn": 52,
+                  "endLine": 90,
+                  "startColumn": 48,
+                  "startLine": 90
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&db\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/api_tokens.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 2046,
+                  "endColumn": 52,
+                  "endLine": 90,
+                  "startColumn": 48,
+                  "startLine": 90
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/api_tokens.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 2808,
+                  "endColumn": 47,
+                  "endLine": 115,
+                  "startColumn": 41,
+                  "startLine": 115
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "this expression creates a reference which is immediately dereferenced by the compiler"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "change this to \"*auth\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/api_tokens.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 2808,
+                  "endColumn": 47,
+                  "endLine": 115,
+                  "startColumn": 41,
+                  "startLine": 115
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_borrow",
+          "ruleIndex": 6
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/api_tokens.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 2808,
+                  "endColumn": 47,
+                  "endLine": 115,
+                  "startColumn": 41,
+                  "startLine": 115
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&auth\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/api_tokens.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 2808,
+                  "endColumn": 47,
+                  "endLine": 115,
+                  "startColumn": 41,
+                  "startLine": 115
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/api_tokens.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 2816,
+                  "endColumn": 53,
+                  "endLine": 115,
+                  "startColumn": 49,
+                  "startLine": 115
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&db\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/api_tokens.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 2816,
+                  "endColumn": 53,
+                  "endLine": 115,
+                  "startColumn": 49,
+                  "startLine": 115
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/api_tokens.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 3985,
+                  "endColumn": 47,
+                  "endLine": 152,
+                  "startColumn": 41,
+                  "startLine": 152
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "this expression creates a reference which is immediately dereferenced by the compiler"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "change this to \"*auth\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/api_tokens.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 3985,
+                  "endColumn": 47,
+                  "endLine": 152,
+                  "startColumn": 41,
+                  "startLine": 152
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_borrow",
+          "ruleIndex": 6
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/api_tokens.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 3985,
+                  "endColumn": 47,
+                  "endLine": 152,
+                  "startColumn": 41,
+                  "startLine": 152
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&auth\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/api_tokens.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 3985,
+                  "endColumn": 47,
+                  "endLine": 152,
+                  "startColumn": 41,
+                  "startLine": 152
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/api_tokens.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 3993,
+                  "endColumn": 53,
+                  "endLine": 152,
+                  "startColumn": 49,
+                  "startLine": 152
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&db\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/api_tokens.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 3993,
+                  "endColumn": 53,
+                  "endLine": 152,
+                  "startColumn": 49,
+                  "startLine": 152
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 4901,
+                  "endColumn": 52,
+                  "endLine": 185,
+                  "startColumn": 48,
+                  "startLine": 185
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&db\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 4901,
+                  "endColumn": 52,
+                  "endLine": 185,
+                  "startColumn": 48,
+                  "startLine": 185
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 6675,
+                  "endColumn": 47,
+                  "endLine": 235,
+                  "startColumn": 41,
+                  "startLine": 235
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "this expression creates a reference which is immediately dereferenced by the compiler"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "change this to \"*auth\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 6675,
+                  "endColumn": 47,
+                  "endLine": 235,
+                  "startColumn": 41,
+                  "startLine": 235
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_borrow",
+          "ruleIndex": 6
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 6675,
+                  "endColumn": 47,
+                  "endLine": 235,
+                  "startColumn": 41,
+                  "startLine": 235
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&auth\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 6675,
+                  "endColumn": 47,
+                  "endLine": 235,
+                  "startColumn": 41,
+                  "startLine": 235
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 6683,
+                  "endColumn": 53,
+                  "endLine": 235,
+                  "startColumn": 49,
+                  "startLine": 235
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&db\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 6683,
+                  "endColumn": 53,
+                  "endLine": 235,
+                  "startColumn": 49,
+                  "startLine": 235
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 8064,
+                  "endColumn": 47,
+                  "endLine": 276,
+                  "startColumn": 41,
+                  "startLine": 276
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "this expression creates a reference which is immediately dereferenced by the compiler"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "change this to \"*auth\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 8064,
+                  "endColumn": 47,
+                  "endLine": 276,
+                  "startColumn": 41,
+                  "startLine": 276
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_borrow",
+          "ruleIndex": 6
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 8064,
+                  "endColumn": 47,
+                  "endLine": 276,
+                  "startColumn": 41,
+                  "startLine": 276
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&auth\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 8064,
+                  "endColumn": 47,
+                  "endLine": 276,
+                  "startColumn": 41,
+                  "startLine": 276
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 8072,
+                  "endColumn": 53,
+                  "endLine": 276,
+                  "startColumn": 49,
+                  "startLine": 276
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&db\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 8072,
+                  "endColumn": 53,
+                  "endLine": 276,
+                  "startColumn": 49,
+                  "startLine": 276
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 9178,
+                  "endColumn": 47,
+                  "endLine": 311,
+                  "startColumn": 41,
+                  "startLine": 311
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "this expression creates a reference which is immediately dereferenced by the compiler"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "change this to \"*auth\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 9178,
+                  "endColumn": 47,
+                  "endLine": 311,
+                  "startColumn": 41,
+                  "startLine": 311
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_borrow",
+          "ruleIndex": 6
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 9178,
+                  "endColumn": 47,
+                  "endLine": 311,
+                  "startColumn": 41,
+                  "startLine": 311
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&auth\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 9178,
+                  "endColumn": 47,
+                  "endLine": 311,
+                  "startColumn": 41,
+                  "startLine": 311
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 9186,
+                  "endColumn": 53,
+                  "endLine": 311,
+                  "startColumn": 49,
+                  "startLine": 311
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&db\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 9186,
+                  "endColumn": 53,
+                  "endLine": 311,
+                  "startColumn": 49,
+                  "startLine": 311
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 10145,
+                  "endColumn": 47,
+                  "endLine": 342,
+                  "startColumn": 41,
+                  "startLine": 342
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "this expression creates a reference which is immediately dereferenced by the compiler"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "change this to \"*auth\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 10145,
+                  "endColumn": 47,
+                  "endLine": 342,
+                  "startColumn": 41,
+                  "startLine": 342
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_borrow",
+          "ruleIndex": 6
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 10145,
+                  "endColumn": 47,
+                  "endLine": 342,
+                  "startColumn": 41,
+                  "startLine": 342
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&auth\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 10145,
+                  "endColumn": 47,
+                  "endLine": 342,
+                  "startColumn": 41,
+                  "startLine": 342
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 10153,
+                  "endColumn": 53,
+                  "endLine": 342,
+                  "startColumn": 49,
+                  "startLine": 342
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&db\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 10153,
+                  "endColumn": 53,
+                  "endLine": 342,
+                  "startColumn": 49,
+                  "startLine": 342
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 10639,
+                  "endColumn": 51,
+                  "endLine": 357,
+                  "startColumn": 47,
+                  "startLine": 357
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&db\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 10639,
+                  "endColumn": 51,
+                  "endLine": 357,
+                  "startColumn": 47,
+                  "startLine": 357
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 11484,
+                  "endColumn": 47,
+                  "endLine": 385,
+                  "startColumn": 41,
+                  "startLine": 385
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "this expression creates a reference which is immediately dereferenced by the compiler"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "change this to \"*auth\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 11484,
+                  "endColumn": 47,
+                  "endLine": 385,
+                  "startColumn": 41,
+                  "startLine": 385
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::needless_borrow",
+          "ruleIndex": 6
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 11484,
+                  "endColumn": 47,
+                  "endLine": 385,
+                  "startColumn": 41,
+                  "startLine": 385
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&auth\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 6,
+                  "byteOffset": 11484,
+                  "endColumn": 47,
+                  "endLine": 385,
+                  "startColumn": 41,
+                  "startLine": 385
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 11492,
+                  "endColumn": 53,
+                  "endLine": 385,
+                  "startColumn": 49,
+                  "startLine": 385
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "deref which would be done by auto-deref"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "try \"&db\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/credentials.rs"
+                },
+                "region": {
+                  "byteLength": 4,
+                  "byteOffset": 11492,
+                  "endColumn": 53,
+                  "endLine": 385,
+                  "startColumn": 49,
+                  "startLine": 385
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::explicit_auto_deref",
+          "ruleIndex": 5
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/info.rs"
+                },
+                "region": {
+                  "byteLength": 115,
+                  "byteOffset": 2055,
+                  "endColumn": 69,
+                  "endLine": 73,
+                  "startColumn": 52,
+                  "startLine": 71
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "this `map_or` is redundant"
+          },
+          "relatedLocations": [
+            {
+              "message": {
+                "text": "use is_some_and instead \"session\n                .get_sso_login_state().is_some_and(|state| state.supports_single_logout)\""
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate-protocol-http/src/api/info.rs"
+                },
+                "region": {
+                  "byteLength": 115,
+                  "byteOffset": 2055,
+                  "endColumn": 69,
+                  "endLine": 73,
+                  "startColumn": 52,
+                  "startLine": 71
+                }
+              }
+            }
+          ],
+          "ruleId": "clippy::unnecessary_map_or",
+          "ruleIndex": 7
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "warpgate/src/protocols.rs"
+                },
+                "region": {
+                  "byteLength": 131,
+                  "byteOffset": 359,
+                  "endColumn": 2,
+                  "endLine": 15,
+                  "startColumn": 1,
+                  "startLine": 10
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "all variants have the same postfix: `ProtocolServer`"
+          },
+          "relatedLocations": [],
+          "ruleId": "clippy::enum_variant_names",
+          "ruleIndex": 8
+        }
+      ],
+      "tool": {
+        "driver": {
+          "informationUri": "https://rust-lang.github.io/rust-clippy/",
+          "name": "clippy",
+          "rules": [
+            {
+              "fullDescription": {
+                "text": "for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_lifetimes\n`#[warn(clippy::needless_lifetimes)]` on by default\n"
+              },
+              "helpUri": "https://rust-lang.github.io/rust-clippy/master/index.html#needless_lifetimes",
+              "id": "clippy::needless_lifetimes"
+            },
+            {
+              "fullDescription": {
+                "text": "for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_return\n`#[warn(clippy::needless_return)]` on by default\n"
+              },
+              "helpUri": "https://rust-lang.github.io/rust-clippy/master/index.html#needless_return",
+              "id": "clippy::needless_return"
+            },
+            {
+              "fullDescription": {
+                "text": "converting `PrivatePkcs8KeyDer<'_>` to `PrivateKeyDer<'_>` cannot fail\nfor further information visit https://rust-lang.github.io/rust-clippy/master/index.html#unnecessary_fallible_conversions\n`#[warn(clippy::unnecessary_fallible_conversions)]` on by default\n"
+              },
+              "helpUri": "https://rust-lang.github.io/rust-clippy/master/index.html#unnecessary_fallible_conversions",
+              "id": "clippy::unnecessary_fallible_conversions"
+            },
+            {
+              "fullDescription": {
+                "text": "for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#borrow_deref_ref\n`#[warn(clippy::borrow_deref_ref)]` on by default\n"
+              },
+              "helpUri": "https://rust-lang.github.io/rust-clippy/master/index.html#borrow_deref_ref",
+              "id": "clippy::borrow_deref_ref"
+            },
+            {
+              "fullDescription": {
+                "text": "for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_question_mark\n`#[warn(clippy::needless_question_mark)]` on by default\n"
+              },
+              "helpUri": "https://rust-lang.github.io/rust-clippy/master/index.html#needless_question_mark",
+              "id": "clippy::needless_question_mark"
+            },
+            {
+              "fullDescription": {
+                "text": "for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#explicit_auto_deref\n`#[warn(clippy::explicit_auto_deref)]` on by default\n"
+              },
+              "helpUri": "https://rust-lang.github.io/rust-clippy/master/index.html#explicit_auto_deref",
+              "id": "clippy::explicit_auto_deref"
+            },
+            {
+              "fullDescription": {
+                "text": "for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow\n`#[warn(clippy::needless_borrow)]` on by default\n"
+              },
+              "helpUri": "https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow",
+              "id": "clippy::needless_borrow"
+            },
+            {
+              "fullDescription": {
+                "text": "for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#unnecessary_map_or\n`#[warn(clippy::unnecessary_map_or)]` on by default\n"
+              },
+              "helpUri": "https://rust-lang.github.io/rust-clippy/master/index.html#unnecessary_map_or",
+              "id": "clippy::unnecessary_map_or"
+            },
+            {
+              "fullDescription": {
+                "text": "remove the postfixes and use full paths to the variants instead of glob imports\nfor further information visit https://rust-lang.github.io/rust-clippy/master/index.html#enum_variant_names\n`#[warn(clippy::enum_variant_names)]` on by default\n"
+              },
+              "id": "clippy::enum_variant_names"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}
