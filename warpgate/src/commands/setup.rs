@@ -9,11 +9,12 @@ use anyhow::Result;
 use dialoguer::theme::ColorfulTheme;
 use rcgen::CertificateParams;
 use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, QueryFilter, Set};
-use tracing::{error, info};
+use tracing::*;
 use uuid::Uuid;
 use warpgate_common::helpers::fs::{secure_directory, secure_file};
 use warpgate_common::{
-    HttpConfig, ListenEndpoint, MySqlConfig, PostgresConfig, Secret, SshConfig, UserPasswordCredential, UserRequireCredentialsPolicy, WarpgateConfigStore, WarpgateError
+    HttpConfig, ListenEndpoint, MySqlConfig, PostgresConfig, Secret, SshConfig, 
+    UserPasswordCredential, UserRequireCredentialsPolicy, WarpgateConfigStore, WarpgateError
 };
 use warpgate_core::consts::{BUILTIN_ADMIN_ROLE_NAME, BUILTIN_ADMIN_USERNAME};
 use warpgate_core::Services;
@@ -44,7 +45,7 @@ fn prompt_endpoint(prompt: &str, default: ListenEndpoint) -> ListenEndpoint {
     }
 }
 
-pub async fn command(cli: &crate::Cli) -> Result<()> {
+pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
     let version = env!("CARGO_PKG_VERSION");
     info!("Welcome to Warpgate {version}");
 
