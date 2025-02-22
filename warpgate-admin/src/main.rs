@@ -1,5 +1,4 @@
 mod api;
-
 use poem_openapi::OpenApiService;
 use regex::Regex;
 
