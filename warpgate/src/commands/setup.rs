@@ -39,7 +39,7 @@ fn prompt_endpoint(prompt: &str, default: ListenEndpoint) -> ListenEndpoint {
                 }
             },
             Err(err) => {
-                error!("Failed to resolve this endpoint: {err}");
+                error!("Failed to resolve this endpoint: {err}")
             }
         }
     }
@@ -307,7 +307,7 @@ pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
             .next()
             .ok_or_else(|| anyhow::anyhow!("Database inconsistent: no admin role"))?;
 
-        let admin_user = match User::Entity::find()   
+        let admin_user = match User::Entity::find()
             .filter(User::Column::Username.eq(BUILTIN_ADMIN_USERNAME))
             .all(&*db)
             .await?

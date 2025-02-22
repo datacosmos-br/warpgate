@@ -7,7 +7,6 @@ use dialoguer::Error as DialoguerError;
 pub use handle::{SessionHandle, WarpgateServerHandle};
 use warpgate_common::{ListenEndpoint, Target};
 
-
 #[derive(Debug, thiserror::Error)]
 pub enum TargetTestError {
     #[error("unreachable")]
