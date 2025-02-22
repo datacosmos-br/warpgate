@@ -1,10 +1,10 @@
 use anyhow::{Context, Result};
-use tracing::info;
+use tracing::*;
 use warpgate_common::{TlsCertificateBundle, TlsPrivateKey};
 
 use crate::config::load_config;
 
-pub async fn command(cli: &crate::Cli) -> Result<()> {
+pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
     let config = load_config(&cli.config, true)?;
     if config.store.http.enable {
         TlsCertificateBundle::from_file(

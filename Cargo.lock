@@ -5287,6 +5287,7 @@ dependencies = [
 name = "warpgate"
 version = "0.13.1"
 dependencies = [
+ "ansi_term",
  "anyhow",
  "async-trait",
  "bytes",
@@ -5310,6 +5311,7 @@ dependencies = [
  "tracing",
  "tracing-subscriber",
  "uuid",
+ "warpgate-admin",
  "warpgate-common",
  "warpgate-core",
  "warpgate-db-entities",

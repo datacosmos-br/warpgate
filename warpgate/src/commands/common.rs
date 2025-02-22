@@ -12,6 +12,6 @@ pub(crate) fn assert_interactive_terminal() {
     }
 }
 
-pub fn is_docker() -> bool {
+pub(crate) fn is_docker() -> bool {
     std::env::var("DOCKER").is_ok()
 }

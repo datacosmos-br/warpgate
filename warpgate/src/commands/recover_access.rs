@@ -11,7 +11,7 @@ use warpgate_db_entities::{PasswordCredential, User};
 use crate::commands::common::assert_interactive_terminal;
 use crate::config::load_config;
 
-pub async fn command(cli: &crate::Cli, username: &Option<String>) -> Result<()> {
+pub(crate) async fn command(cli: &crate::Cli, username: &Option<String>) -> Result<()> {
     assert_interactive_terminal();
 
     let config = load_config(&cli.config, true)?;

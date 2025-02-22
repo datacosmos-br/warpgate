@@ -20,13 +20,11 @@ pub enum TargetTestError {
     Misconfigured(String),
     #[error("I/O: {0}")]
     Io(#[from] std::io::Error),
-    #[error("dialoguer error: {0}")]
-    DialoguerError(DialoguerError),
 }
 
 impl From<DialoguerError> for TargetTestError {
     fn from(err: DialoguerError) -> Self {
-        TargetTestError::DialoguerError(err)
+        TargetTestError::ConnectionError(format!("Dialoguer error: {}", err))
     }
 }
 

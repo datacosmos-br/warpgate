@@ -5,6 +5,7 @@ name = "warpgate"
 version = "0.13.1"
 
 [dependencies]
+ansi_term = "0.12"
 anyhow = { version = "1.0", features = ["backtrace"] }
 async-trait = "0.1"
 bytes.workspace = true
@@ -17,7 +18,7 @@ dialoguer = "0.11"
 enum_dispatch.workspace = true
 futures.workspace = true
 notify = "6.1"
-rcgen = { version = "0.13", features = ["pem", "zeroize"] }
+rcgen = { version = "0.13", features = ["zeroize"] }
 rustls.workspace = true
 serde_json.workspace = true
 serde_yaml = "0.9"
@@ -30,6 +31,7 @@ tracing-subscriber = { version = "0.3", features = [
     "local-time",
 ] }
 uuid = "1.10"
+warpgate-admin = { version = "*", path = "../warpgate-admin" }
 warpgate-common = { version = "*", path = "../warpgate-common" }
 warpgate-core = { version = "*", path = "../warpgate-core" }
 warpgate-db-entities = { version = "*", path = "../warpgate-db-entities" }

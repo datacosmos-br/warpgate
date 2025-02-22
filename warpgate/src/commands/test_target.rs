@@ -1,12 +1,12 @@
 use anyhow::Result;
-use tracing::{error, info};
+use tracing::*;
 use warpgate_common::TargetOptions;
 use warpgate_core::{ConfigProvider, ProtocolServer, Services, TargetTestError};
 
 use crate::config::load_config;
 use crate::protocols::ProtocolServerEnum;
 
-pub async fn command(cli: &crate::Cli, target_name: &String) -> Result<()> {
+pub(crate) async fn command(cli: &crate::Cli, target_name: &String) -> Result<()> {
     let config = load_config(&cli.config, true)?;
     let services = Services::new(config.clone(), None).await?;
 
@@ -58,9 +58,6 @@ pub async fn command(cli: &crate::Cli, target_name: &String) -> Result<()> {
         }
         Err(TargetTestError::Unreachable) => {
             error!("Target is unreachable");
-        }
-        Err(TargetTestError::DialoguerError(_)) => {
-            error!("Dialog error");
         }
         Ok(()) => {
             info!("Connection successful!");
