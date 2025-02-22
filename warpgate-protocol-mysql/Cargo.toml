@@ -7,6 +7,7 @@ version = "0.13.1"
 [dependencies]
 warpgate-common = { version = "*", path = "../warpgate-common" }
 warpgate-core = { version = "*", path = "../warpgate-core" }
+warpgate-db-entities = { version = "*", path = "../warpgate-db-entities" }
 warpgate-database-protocols = { version = "*", path = "../warpgate-database-protocols" }
 anyhow = { version = "1.0", features = ["std"] }
 async-trait = "0.1"

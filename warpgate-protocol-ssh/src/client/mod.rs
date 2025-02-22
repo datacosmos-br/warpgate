@@ -17,7 +17,7 @@ use futures::pin_mut;
 use handler::ClientHandler;
 use russh::client::Handle;
 use russh::keys::PublicKey;
-use russh::{kex, mac, Preferred, Sig};
+use russh::{kex, Preferred, Sig};
 use tokio::sync::mpsc::{unbounded_channel, UnboundedReceiver, UnboundedSender};
 use tokio::sync::{oneshot, Mutex};
 use tokio::task::JoinHandle;
@@ -469,13 +469,13 @@ impl RemoteClient {
                     russh::keys::Algorithm::Rsa { hash: None },
                 ]),
                 mac: Cow::Borrowed(&[
-                    mac::HMAC_SHA512,
-                    mac::HMAC_SHA256,
-                    mac::HMAC_SHA512_ETM,
-                    mac::HMAC_SHA256_ETM,
-                    mac::HMAC_SHA1_ETM,
-                    mac::HMAC_SHA1,
-                    mac::NONE,
+                    russh::mac::HMAC_SHA512,
+                    russh::mac::HMAC_SHA256,
+                    russh::mac::HMAC_SHA512_ETM,
+                    russh::mac::HMAC_SHA256_ETM,
+                    russh::mac::HMAC_SHA1_ETM,
+                    russh::mac::HMAC_SHA1,
+                    russh::mac::NONE,
                 ]),
                 cipher: Cow::Borrowed(&[
                     russh::cipher::CHACHA20_POLY1305,

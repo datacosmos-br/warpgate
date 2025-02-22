@@ -99,6 +99,7 @@ pub enum ColumnType {
 // https://mariadb.com/kb/en/resultset/#column-definition-packet
 // https://dev.mysql.com/doc/internals/en/com-query-response.html#packet-Protocol::ColumnDefinition41
 
+#[derive(Debug)]
 pub struct ColumnDefinition {
     #[allow(unused)]
     catalog: Bytes,

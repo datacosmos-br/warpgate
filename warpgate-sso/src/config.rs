@@ -196,7 +196,6 @@ impl SsoInternalProviderConfig {
     }
 
     #[inline]
-    #[must_use]
     pub fn auth_type(&self) -> AuthType {
         #[allow(clippy::match_like_matches_macro)]
         match self {
