@@ -19,8 +19,10 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - if: startsWith(matrix.os, 'ubuntu')
-      run: sudo apt install -y libssl-dev pkg-config
+      - if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt update
+          sudo apt install -y libssl-dev pkg-config
 
     - uses: actions/checkout@v2
       with:
@@ -48,9 +50,9 @@ jobs:
         cargo install just
         cargo install cargo-deny
 
-    - name: cargo-deny
-      run: |
-        cargo deny check bans
+      - name: cargo-deny
+        run: |
+          cargo deny check
 
     - name: Install admin UI deps
       run: |

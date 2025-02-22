@@ -1,6 +1,4 @@
-#![feature(decl_macro, proc_macro_hygiene)]
-mod api;
-
+pub mod api;
 use poem::{EndpointExt, IntoEndpoint, Route};
 use poem_openapi::OpenApiService;
 use warpgate_core::Services;
@@ -8,7 +6,7 @@ use warpgate_core::Services;
 pub fn admin_api_app(services: &Services) -> impl IntoEndpoint {
     let api_service = OpenApiService::new(
         crate::api::get(),
-        "Warpgate Web Admin",
+        "Warpgate admin API",
         env!("CARGO_PKG_VERSION"),
     )
     .server("/@warpgate/admin/api");

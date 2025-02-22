@@ -1,10 +1,8 @@
 mod db;
-mod file;
 use std::sync::Arc;
 
-use async_trait::async_trait;
 pub use db::DatabaseConfigProvider;
-pub use file::FileConfigProvider;
+use enum_dispatch::enum_dispatch;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter};
 use tokio::sync::Mutex;
@@ -13,8 +11,15 @@ use uuid::Uuid;
 use warpgate_common::auth::{AuthCredential, CredentialKind, CredentialPolicy};
 use warpgate_common::{Secret, Target, User, WarpgateError};
 use warpgate_db_entities::Ticket;
+use warpgate_sso::SsoProviderConfig;
 
-#[async_trait]
+#[enum_dispatch]
+pub enum ConfigProviderEnum {
+    Database(DatabaseConfigProvider),
+}
+
+#[enum_dispatch(ConfigProviderEnum)]
+#[allow(async_fn_in_trait)]
 pub trait ConfigProvider {
     async fn list_users(&mut self) -> Result<Vec<User>, WarpgateError>;
 
@@ -29,6 +34,8 @@ pub trait ConfigProvider {
     async fn username_for_sso_credential(
         &mut self,
         client_credential: &AuthCredential,
+        preferred_username: Option<String>,
+        sso_config: SsoProviderConfig,
     ) -> Result<Option<String>, WarpgateError>;
 
     async fn apply_sso_role_mappings(
@@ -49,6 +56,13 @@ pub trait ConfigProvider {
         username: &str,
         target: &str,
     ) -> Result<bool, WarpgateError>;
+
+    async fn update_public_key_last_used(
+        &self,
+        credential: Option<AuthCredential>,
+    ) -> Result<(), WarpgateError>;
+
+    async fn validate_api_token(&mut self, token: &str) -> Result<Option<User>, WarpgateError>;
 }
 
 //TODO: move this somewhere

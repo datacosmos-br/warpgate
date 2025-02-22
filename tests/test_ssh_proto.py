@@ -6,15 +6,7 @@ import time
 import pytest
 from textwrap import dedent
 
-from tests.api_client import (
-    api_add_role_to_target,
-    api_add_role_to_user,
-    api_admin_session,
-    api_create_role,
-    api_create_target,
-    api_create_user,
-)
-
+from .api_client import admin_client, sdk
 from .conftest import ProcessManager, WarpgateProcess
 from .util import wait_port, alloc_port
 
@@ -33,49 +25,51 @@ common_args = [
 
 
 def setup_user_and_target(
-    processes: ProcessManager, wg: WarpgateProcess, wg_c_ed25519_pubkey
+    processes: ProcessManager,
+    wg: WarpgateProcess,
+    warpgate_client_key,
+    extra_config='',
 ):
     ssh_port = processes.start_ssh_server(
-        trusted_keys=[wg_c_ed25519_pubkey.read_text()]
+        trusted_keys=[warpgate_client_key.read_text()],
+        extra_config=extra_config,
     )
     wait_port(ssh_port)
 
     url = f"https://localhost:{wg.http_port}"
-    with api_admin_session(url) as session:
-        role = api_create_role(url, session, {"name": f"role-{uuid4()}"})
-        user = api_create_user(
-            url,
-            session,
-            {
-                "username": f"user-{uuid4()}",
-                "credentials": [
-                    {
-                        "kind": "Password",
-                        "hash": "123",
-                    },
-                    {
-                        "kind": "PublicKey",
-                        "key": open("ssh-keys/id_ed25519.pub").read().strip(),
-                    },
-                ],
-            },
+    with admin_client(url) as api:
+        role = api.create_role(
+            sdk.RoleDataRequest(name=f"role-{uuid4()}"),
         )
-        api_add_role_to_user(url, session, user["id"], role["id"])
-        ssh_target = api_create_target(
-            url,
-            session,
-            {
-                "name": f"ssh-{uuid4()}",
-                "options": {
-                    "kind": "Ssh",
-                    "host": "localhost",
-                    "port": ssh_port,
-                    "username": "root",
-                    "auth": {"kind": "PublicKey"},
-                },
-            },
+        user = api.create_user(sdk.CreateUserRequest(username=f"user-{uuid4()}"))
+        api.create_password_credential(
+            user.id, sdk.NewPasswordCredential(password="123")
         )
-        api_add_role_to_target(url, session, ssh_target["id"], role["id"])
+        api.create_public_key_credential(
+            user.id,
+            sdk.NewPublicKeyCredential(
+                label="Public Key",
+                openssh_public_key=open("ssh-keys/id_ed25519.pub").read().strip(),
+            ),
+        )
+        api.add_user_role(user.id, role.id)
+        ssh_target = api.create_target(
+            sdk.TargetDataRequest(
+                name=f"ssh-{uuid4()}",
+                options=sdk.TargetOptions(
+                    sdk.TargetOptionsTargetSSHOptions(
+                        kind="Ssh",
+                        host="localhost",
+                        port=ssh_port,
+                        username="root",
+                        auth=sdk.SSHTargetAuth(
+                            sdk.SSHTargetAuthSshTargetPublicKeyAuth(kind="PublicKey")
+                        ),
+                    )
+                ),
+            )
+        )
+        api.add_target_role(ssh_target.id, role.id)
         return user, ssh_target
 
 
@@ -91,7 +85,7 @@ class Test:
             processes, shared_wg, wg_c_ed25519_pubkey
         )
         ssh_client = processes.start_ssh_client(
-            f"{user['username']}:{ssh_target['name']}@localhost",
+            f"{user.username}:{ssh_target.name}@localhost",
             "-p",
             str(shared_wg.ssh_port),
             *common_args,
@@ -117,7 +111,7 @@ class Test:
             processes, shared_wg, wg_c_ed25519_pubkey
         )
         ssh_client = processes.start_ssh_client(
-            f"{user['username']}:{ssh_target['name']}@localhost",
+            f"{user.username}:{ssh_target.name}@localhost",
             "-p",
             str(shared_wg.ssh_port),
             "-tt",
@@ -142,7 +136,7 @@ class Test:
             processes, shared_wg, wg_c_ed25519_pubkey
         )
         ssh_client = processes.start_ssh_client(
-            f"{user['username']}:{ssh_target['name']}@localhost",
+            f"{user.username}:{ssh_target.name}@localhost",
             "-p",
             str(shared_wg.ssh_port),
             "-v",
@@ -167,13 +161,13 @@ class Test:
         )
         local_port = alloc_port()
         ssh_client = processes.start_ssh_client(
-            f"{user['username']}:{ssh_target['name']}@localhost",
+            f"{user.username}:{ssh_target.name}@localhost",
             "-p",
             str(shared_wg.ssh_port),
             "-v",
             *common_args,
             "-L",
-            f"{local_port}:neverssl.com:80",
+            f"{local_port}:github.com:443",
             "-N",
             password="123",
         )
@@ -184,8 +178,8 @@ class Test:
 
         s = requests.Session()
         retries = requests.adapters.Retry(total=5, backoff_factor=1)
-        s.mount("http://", requests.adapters.HTTPAdapter(max_retries=retries))
-        response = s.get(f"http://localhost:{local_port}", timeout=timeout)
+        s.mount("https://", requests.adapters.HTTPAdapter(max_retries=retries))
+        response = s.get(f"https://localhost:{local_port}", timeout=timeout, verify=False)
         assert response.status_code == 200
         ssh_client.kill()
 
@@ -199,32 +193,35 @@ class Test:
         user, ssh_target = setup_user_and_target(
             processes, shared_wg, wg_c_ed25519_pubkey
         )
+        fw_port = alloc_port()
         pf_client = processes.start_ssh_client(
-            f"{user['username']}:{ssh_target['name']}@localhost",
+            f"{user.username}:{ssh_target.name}@localhost",
             "-p",
             str(shared_wg.ssh_port),
             "-v",
             *common_args,
             "-R",
-            "1234:neverssl.com:80",
+            f"{fw_port}:www.google.com:443",
             "-N",
             password="123",
         )
-        time.sleep(5)
+        # time.sleep(5)
         ssh_client = processes.start_ssh_client(
-            f"{user['username']}:{ssh_target['name']}@localhost",
+            f"{user.username}:{ssh_target.name}@localhost",
             "-p",
             str(shared_wg.ssh_port),
             "-v",
             *common_args,
             "curl",
-            "-v",
-            "http://localhost:1234",
+            "-vk",
+            "--http1.1",
+            "-H", "Host: www.google.com",
+            f"https://localhost:{fw_port}",
             password="123",
         )
         output = ssh_client.communicate(timeout=timeout)[0]
         assert ssh_client.returncode == 0
-        assert b"<html>" in output
+        assert b"</html>" in output
         pf_client.kill()
 
     def test_shell(
@@ -241,7 +238,7 @@ class Test:
             f"""
             set timeout {timeout - 5}
 
-            spawn ssh -tt {user['username']}:{ssh_target['name']}@localhost -p {shared_wg.ssh_port} -o StrictHostKeychecking=no -o UserKnownHostsFile=/dev/null -o PreferredAuthentications=password
+            spawn ssh -tt {user.username}:{ssh_target.name}@localhost -p {shared_wg.ssh_port} -o StrictHostKeychecking=no -o UserKnownHostsFile=/dev/null -o PreferredAuthentications=password
 
             expect "password:"
             sleep 0.5
@@ -278,7 +275,7 @@ class Test:
             processes, shared_wg, wg_c_ed25519_pubkey
         )
         ssh_client = processes.start_ssh_client(
-            f"{user['username']}:{ssh_target['name']}@localhost",
+            f"{user.username}:{ssh_target.name}@localhost",
             "-p",
             str(shared_wg.ssh_port),
             "-tt",
@@ -308,7 +305,7 @@ class Test:
                     "-P",
                     str(shared_wg.ssh_port),
                     "-o",
-                    f"User={user['username']}:{ssh_target['name']}",
+                    f"User={user.username}:{ssh_target.name}",
                     "-o",
                     "IdentitiesOnly=yes",
                     "-o",
@@ -326,3 +323,50 @@ class Test:
             )
 
             assert "root:x:0:0:root" in open(f + "/passwd").read()
+
+    def test_insecure_protos(
+        self,
+        processes: ProcessManager,
+        timeout,
+        wg_c_rsa_pubkey,
+        shared_wg: WarpgateProcess,
+    ):
+        user, ssh_target = setup_user_and_target(
+            processes, shared_wg, wg_c_rsa_pubkey,
+            extra_config='''
+            PubkeyAcceptedKeyTypes=ssh-rsa
+            ''',
+        )
+
+        ssh_client = processes.start_ssh_client(
+            f"{user.username}:{ssh_target.name}@localhost",
+            "-p",
+            str(shared_wg.ssh_port),
+            *common_args,
+            "echo", "123",
+            password="123",
+            stderr=subprocess.PIPE,
+        )
+
+        ssh_client.wait(timeout=timeout)
+        assert ssh_client.returncode != 0
+
+        ssh_target.options.actual_instance.allow_insecure_algos = True
+        url = f"https://localhost:{shared_wg.http_port}"
+        with admin_client(url) as api:
+            api.update_target(ssh_target.id, sdk.TargetDataRequest(
+                name=ssh_target.name,
+                options=ssh_target.options,
+            ))
+
+        ssh_client = processes.start_ssh_client(
+            f"{user.username}:{ssh_target.name}@localhost",
+            "-p",
+            str(shared_wg.ssh_port),
+            *common_args,
+            "echo", "123",
+            password="123",
+        )
+
+        stdout, _ = ssh_client.communicate(timeout=timeout)
+        assert b"123\n" == stdout

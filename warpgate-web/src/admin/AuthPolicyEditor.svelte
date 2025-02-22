@@ -1,12 +1,21 @@
 <script lang="ts">
 import { Input } from '@sveltestrap/sveltestrap'
+import { CredentialKind, type UserRequireCredentialsPolicy } from './lib/api'
+    import type { ExistingCredential } from './CredentialEditor.svelte'
 
-import { CredentialKind, type User, type UserRequireCredentialsPolicy } from './lib/api'
+interface Props {
+    value: UserRequireCredentialsPolicy
+    possibleCredentials: Set<CredentialKind>
+    existingCredentials: ExistingCredential[]
+    protocolId: 'http' | 'ssh' | 'mysql' | 'postgres'
+}
 
-export let user: User
-export let value: UserRequireCredentialsPolicy
-export let possibleCredentials: Set<CredentialKind>
-export let protocolId: 'http' | 'ssh' | 'mysql' | 'postgres'
+let {
+    value = $bindable(),
+    possibleCredentials,
+    existingCredentials,
+    protocolId,
+}: Props = $props()
 
 const labels = {
     Password: 'Password',
@@ -16,17 +25,17 @@ const labels = {
     WebUserApproval: 'In-browser auth',
 }
 
-let isAny = false
-let validCredentials = new Set<CredentialKind>()
+let isAny = $state(false)
+const validCredentials = $derived.by(() => {
+    let vc = new Set<CredentialKind>()
+    vc = new Set(existingCredentials.map(x => x.kind as CredentialKind))
+    vc.add(CredentialKind.WebUserApproval)
+    return vc
+})
 
-$: {
-    validCredentials = new Set(user.credentials.map(x => x.kind as CredentialKind))
-    validCredentials.add(CredentialKind.WebUserApproval)
-
-    setTimeout(() => {
-        isAny = !value[protocolId]
-    })
-}
+$effect(() => {
+    isAny = !value[protocolId]
+})
 
 function updateAny () {
     if (isAny) {
@@ -51,7 +60,7 @@ function toggle (type: CredentialKind) {
 
 <div class="d-flex wrapper">
     <Input
-        id={'policy-editor-' + user.username + protocolId}
+        id={'policy-editor-' + protocolId}
         type="switch"
         bind:checked={isAny}
         label="Any credential"
@@ -61,7 +70,7 @@ function toggle (type: CredentialKind) {
         {#each [...validCredentials] as type}
             {#if possibleCredentials.has(type)}
                 <Input
-                    id={'policy-editor-' + user.username + protocolId + type}
+                    id={'policy-editor-' + protocolId + type}
                     type="switch"
                     checked={value[protocolId]?.includes(type)}
                     label={labels[type]}

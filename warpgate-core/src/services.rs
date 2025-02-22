@@ -8,9 +8,9 @@ use warpgate_common::{ConfigProviderKind, WarpgateConfig};
 
 use crate::db::{connect_to_db, populate_db};
 use crate::recordings::SessionRecordings;
-use crate::{AuthStateStore, ConfigProvider, DatabaseConfigProvider, FileConfigProvider, State};
+use crate::{AuthStateStore, ConfigProviderEnum, DatabaseConfigProvider, State};
 
-type ConfigProviderArc = Arc<Mutex<dyn ConfigProvider + Send + 'static>>;
+type ConfigProviderArc = Arc<Mutex<ConfigProviderEnum>>;
 
 #[derive(Clone)]
 pub struct Services {
@@ -20,10 +20,11 @@ pub struct Services {
     pub state: Arc<Mutex<State>>,
     pub config_provider: ConfigProviderArc,
     pub auth_state_store: Arc<Mutex<AuthStateStore>>,
+    pub admin_token: Arc<Mutex<Option<String>>>,
 }
 
 impl Services {
-    pub async fn new(mut config: WarpgateConfig) -> Result<Self> {
+    pub async fn new(mut config: WarpgateConfig, admin_token: Option<String>) -> Result<Self> {
         let mut db = connect_to_db(&config).await?;
         populate_db(&mut db, &mut config).await?;
         let db = Arc::new(Mutex::new(db));
@@ -36,10 +37,11 @@ impl Services {
 
         let config_provider = match provider {
             ConfigProviderKind::File => {
-                Arc::new(Mutex::new(FileConfigProvider::new(&config).await)) as ConfigProviderArc
+                anyhow::bail!("File based config provider in no longer supported");
             }
             ConfigProviderKind::Database => {
-                Arc::new(Mutex::new(DatabaseConfigProvider::new(&db).await)) as ConfigProviderArc
+                Arc::new(Mutex::new(DatabaseConfigProvider::new(&db).await.into()))
+                    as ConfigProviderArc
             }
         };
 
@@ -62,6 +64,7 @@ impl Services {
             state: State::new(&db),
             config_provider,
             auth_state_store,
+            admin_token: Arc::new(Mutex::new(admin_token)),
         })
     }
 }

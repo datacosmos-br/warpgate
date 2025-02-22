@@ -5,10 +5,10 @@ use poem_openapi::payload::Json;
 use poem_openapi::{ApiResponse, Object, OpenApi};
 use serde::Serialize;
 use warpgate_common::TargetOptions;
-use warpgate_core::Services;
+use warpgate_core::{ConfigProvider, Services};
 use warpgate_db_entities::Target;
 
-use crate::common::{endpoint_auth, SessionAuthorization};
+use crate::common::{endpoint_auth, RequestAuthorization, SessionAuthorization};
 
 pub struct Api;
 
@@ -36,16 +36,21 @@ impl Api {
     async fn api_get_all_targets(
         &self,
         services: Data<&Services>,
-        auth: Data<&SessionAuthorization>,
+        auth: Data<&RequestAuthorization>,
         search: Query<Option<String>>,
     ) -> poem::Result<GetTargetsResponse> {
+        let RequestAuthorization::Session(auth) = *auth else {
+            return Ok(GetTargetsResponse::Ok(Json(vec![])));
+        };
+
         let mut targets = {
             let mut config_provider = services.config_provider.lock().await;
             config_provider.list_targets().await?
         };
 
         if let Some(ref search) = *search {
-            targets.retain(|t| t.name.contains(search))
+            let search = search.to_lowercase();
+            targets.retain(|t| t.name.to_lowercase().contains(&search))
         }
 
         let mut targets = stream::iter(targets)

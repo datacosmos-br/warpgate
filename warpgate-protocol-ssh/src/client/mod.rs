@@ -16,9 +16,8 @@ pub use error::SshClientError;
 use futures::pin_mut;
 use handler::ClientHandler;
 use russh::client::Handle;
-use russh::keys::key;
-use russh::keys::key::PublicKey;
-use russh::{cipher, kex, mac, Preferred, Sig};
+use russh::keys::PublicKey;
+use russh::{kex, mac, Preferred, Sig};
 use tokio::sync::mpsc::{unbounded_channel, UnboundedReceiver, UnboundedSender};
 use tokio::sync::{oneshot, Mutex};
 use tokio::task::JoinHandle;
@@ -30,15 +29,13 @@ use warpgate_core::Services;
 use self::handler::ClientHandlerEvent;
 use super::{ChannelOperation, DirectTCPIPParams};
 use crate::client::handler::ClientHandlerError;
-use crate::helpers::PublicKeyAsOpenSSH;
-use crate::keys::load_client_keys;
-use crate::ForwardedTcpIpParams;
+use crate::{load_all_usable_private_keys, ForwardedStreamlocalParams, ForwardedTcpIpParams};
 
 #[derive(Debug, thiserror::Error)]
 pub enum ConnectionError {
     #[error("Host key mismatch")]
     HostKeyMismatch {
-        received_key_type: String,
+        received_key_type: russh::keys::Algorithm,
         received_key_base64: String,
         known_key_type: String,
         known_key_base64: String,
@@ -94,6 +91,8 @@ pub enum RCEvent {
     HostKeyReceived(PublicKey),
     HostKeyUnknown(PublicKey, oneshot::Sender<bool>),
     ForwardedTcpIp(Uuid, ForwardedTcpIpParams),
+    ForwardedStreamlocal(Uuid, ForwardedStreamlocalParams),
+    ForwardedAgent(Uuid),
     X11(Uuid, String, u32),
 }
 
@@ -105,6 +104,8 @@ pub enum RCCommand {
     Channel(Uuid, ChannelOperation),
     ForwardTCPIP(String, u32),
     CancelTCPIPForward(String, u32),
+    StreamlocalForward(String),
+    CancelStreamlocalForward(String),
     Disconnect,
 }
 
@@ -129,6 +130,7 @@ pub struct RemoteClient {
     channel_pipes: Arc<Mutex<HashMap<Uuid, UnboundedSender<ChannelOperation>>>>,
     pending_ops: Vec<(Uuid, ChannelOperation)>,
     pending_forwards: Vec<(String, u32)>,
+    pending_streamlocal_forwards: Vec<String>,
     state: RCState,
     abort_rx: UnboundedReceiver<()>,
     inner_event_rx: UnboundedReceiver<InnerEvent>,
@@ -158,6 +160,7 @@ impl RemoteClient {
             channel_pipes: Arc::new(Mutex::new(HashMap::new())),
             pending_ops: vec![],
             pending_forwards: vec![],
+            pending_streamlocal_forwards: vec![],
             state: RCState::NotInitialized,
             inner_event_rx,
             inner_event_tx: inner_event_tx.clone(),
@@ -312,6 +315,16 @@ impl RemoteClient {
                         let id = self.setup_server_initiated_channel(channel).await?;
                         let _ = self.tx.send(RCEvent::ForwardedTcpIp(id, params));
                     }
+                    ClientHandlerEvent::ForwardedStreamlocal(channel, params) => {
+                        info!("New forwarded socket connection: {params:?}");
+                        let id = self.setup_server_initiated_channel(channel).await?;
+                        let _ = self.tx.send(RCEvent::ForwardedStreamlocal(id, params));
+                    }
+                    ClientHandlerEvent::ForwardedAgent(channel) => {
+                        info!("New forwarded agent connection");
+                        let id = self.setup_server_initiated_channel(channel).await?;
+                        let _ = self.tx.send(RCEvent::ForwardedAgent(id));
+                    }
                     ClientHandlerEvent::X11(channel, originator_address, originator_port) => {
                         info!("New X11 connection from {originator_address}:{originator_port:?}");
                         let id = self.setup_server_initiated_channel(channel).await?;
@@ -358,9 +371,18 @@ impl RemoteClient {
                     for (id, op) in ops {
                         self.apply_channel_op(id, op).await?;
                     }
+
                     let forwards = self.pending_forwards.drain(..).collect::<Vec<_>>();
                     for (address, port) in forwards {
                         self.tcpip_forward(address, port).await?;
+                    }
+
+                    let forwards = self
+                        .pending_streamlocal_forwards
+                        .drain(..)
+                        .collect::<Vec<_>>();
+                    for socket_path in forwards {
+                        self.streamlocal_forward(socket_path).await?;
                     }
                 }
                 Err(e) => {
@@ -378,6 +400,12 @@ impl RemoteClient {
             }
             RCCommand::CancelTCPIPForward(address, port) => {
                 self.cancel_tcpip_forward(address, port).await?;
+            }
+            RCCommand::StreamlocalForward(socket_path) => {
+                self.streamlocal_forward(socket_path).await?;
+            }
+            RCCommand::CancelStreamlocalForward(socket_path) => {
+                self.cancel_streamlocal_forward(socket_path).await?;
             }
             RCCommand::Disconnect => {
                 self.disconnect().await;
@@ -421,27 +449,24 @@ impl RemoteClient {
                     kex::EXTENSION_OPENSSH_STRICT_KEX_AS_SERVER,
                     kex::NONE,
                 ]),
-                cipher: Cow::Borrowed(&[
-                    cipher::AES_256_GCM,
-                    cipher::CHACHA20_POLY1305,
-                    cipher::AES_256_CTR,
-                    cipher::AES_192_CTR,
-                    cipher::AES_128_CTR,
-                    cipher::AES_256_CBC,
-                    cipher::AES_192_CBC,
-                    cipher::AES_128_CBC,
-                    cipher::TRIPLE_DES_CBC,
-                    cipher::CLEAR,
-                    cipher::NONE,
-                ]),
                 key: Cow::Borrowed(&[
-                    key::ECDSA_SHA2_NISTP521,
-                    key::ECDSA_SHA2_NISTP384,
-                    key::ECDSA_SHA2_NISTP256,
-                    key::RSA_SHA2_512,
-                    key::RSA_SHA2_256,
-                    key::SSH_RSA,
-                    key::NONE,
+                    russh::keys::Algorithm::Ed25519,
+                    russh::keys::Algorithm::Ecdsa {
+                        curve: russh::keys::EcdsaCurve::NistP256,
+                    },
+                    russh::keys::Algorithm::Ecdsa {
+                        curve: russh::keys::EcdsaCurve::NistP384,
+                    },
+                    russh::keys::Algorithm::Ecdsa {
+                        curve: russh::keys::EcdsaCurve::NistP521,
+                    },
+                    russh::keys::Algorithm::Rsa {
+                        hash: Some(russh::keys::HashAlg::Sha256),
+                    },
+                    russh::keys::Algorithm::Rsa {
+                        hash: Some(russh::keys::HashAlg::Sha512),
+                    },
+                    russh::keys::Algorithm::Rsa { hash: None },
                 ]),
                 mac: Cow::Borrowed(&[
                     mac::HMAC_SHA512,
@@ -451,6 +476,19 @@ impl RemoteClient {
                     mac::HMAC_SHA1_ETM,
                     mac::HMAC_SHA1,
                     mac::NONE,
+                ]),
+                cipher: Cow::Borrowed(&[
+                    russh::cipher::CHACHA20_POLY1305,
+                    russh::cipher::AES_256_GCM,
+                    russh::cipher::AES_256_CTR,
+                    russh::cipher::AES_256_CBC,
+                    russh::cipher::AES_192_CTR,
+                    russh::cipher::AES_192_CBC,
+                    russh::cipher::AES_128_CTR,
+                    russh::cipher::AES_128_CBC,
+                    russh::cipher::TRIPLE_DES_CBC,
+                    russh::cipher::CLEAR,
+                    russh::cipher::NONE,
                 ]),
                 ..<_>::default()
             }
@@ -512,19 +550,22 @@ impl RemoteClient {
                         SSHTargetAuth::Password(auth) => {
                             auth_result = session
                                 .authenticate_password(ssh_options.username.clone(), auth.password.expose_secret())
-                                .await?;
+                                .await?.success();
                             if auth_result {
                                 debug!(username=&ssh_options.username[..], "Authenticated with password");
                             }
                         }
                         SSHTargetAuth::PublicKey(_) => {
                             #[allow(clippy::explicit_auto_deref)]
-                            let keys = load_client_keys(&*self.services.config.lock().await)?;
+                            let keys = load_all_usable_private_keys(&*self.services.config.lock().await, ssh_options.allow_insecure_algos.unwrap_or(false))?;
                             for key in keys.into_iter() {
-                                let key_str = key.as_openssh();
+                                let key_str = key.public_key().to_openssh().map_err(russh::Error::from)?;
                                 auth_result = session
-                                    .authenticate_publickey(ssh_options.username.clone(), Arc::new(key))
-                                    .await?;
+                                    .authenticate_publickey(
+                                        ssh_options.username.clone(),
+                                        key
+                                    )
+                                    .await?.success();
                                 if auth_result {
                                     debug!(username=&ssh_options.username[..], key=%key_str, "Authenticated with key");
                                     break;
@@ -633,6 +674,30 @@ impl RemoteClient {
         } else {
             self.pending_forwards
                 .retain(|x| x.0 != address || x.1 != port);
+        }
+        Ok(())
+    }
+
+    async fn streamlocal_forward(&mut self, socket_path: String) -> Result<(), SshClientError> {
+        if let Some(session) = &self.session {
+            let mut session = session.lock().await;
+            session.streamlocal_forward(socket_path).await?;
+        } else {
+            self.pending_streamlocal_forwards.push(socket_path);
+        }
+        Ok(())
+    }
+
+    async fn cancel_streamlocal_forward(
+        &mut self,
+        socket_path: String,
+    ) -> Result<(), SshClientError> {
+        if let Some(session) = &self.session {
+            let session = session.lock().await;
+            session.cancel_streamlocal_forward(socket_path).await?;
+        } else {
+            self.pending_streamlocal_forwards
+                .retain(|x| x != &socket_path);
         }
         Ok(())
     }

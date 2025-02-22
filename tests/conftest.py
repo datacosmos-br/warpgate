@@ -20,6 +20,12 @@ from .test_http_common import echo_server_port  # noqa
 
 
 cargo_root = Path(os.getcwd()).parent
+enable_coverage = os.getenv("ENABLE_COVERAGE", "0") == "1"
+binary_path = (
+    "target/llvm-cov-target/debug/warpgate"
+    if enable_coverage
+    else "target/debug/warpgate"
+)
 
 
 @dataclass
@@ -77,7 +83,7 @@ class ProcessManager:
                         pass
                 p.kill()
 
-    def start_ssh_server(self, trusted_keys=[]):
+    def start_ssh_server(self, trusted_keys=[], extra_config=''):
         port = alloc_port()
         data_dir = self.ctx.tmpdir / f"sshd-{uuid.uuid4()}"
         data_dir.mkdir(parents=True)
@@ -99,6 +105,8 @@ class ProcessManager:
                 PermitRootLogin yes
                 HostKey /ssh-keys/id_ed25519
                 Subsystem	sftp	/usr/lib/ssh/sftp-server
+                LogLevel DEBUG3
+                {extra_config}
                 """
             )
         )
@@ -135,7 +143,16 @@ class ProcessManager:
         port = alloc_port()
         container_name = f"warpgate-e2e-postgres-server-{uuid.uuid4()}"
         self.start(
-            ["docker", "run", "--rm", '--name', container_name, "-p", f"{port}:5432", "warpgate-e2e-postgres-server"]
+            [
+                "docker",
+                "run",
+                "--rm",
+                "--name",
+                container_name,
+                "-p",
+                f"{port}:5432",
+                "warpgate-e2e-postgres-server",
+            ]
         )
 
         def wait_postgres():
@@ -169,7 +186,7 @@ class ProcessManager:
         stderr=None,
         stdout=None,
     ) -> WarpgateProcess:
-        args = args or ["run"]
+        args = args or ["run", "--enable-admin-token"]
 
         if share_with:
             config_path = share_with.config_path
@@ -206,7 +223,7 @@ class ProcessManager:
         def run(args, env={}):
             return self.start(
                 [
-                    f"{cargo_root}/target/llvm-cov-target/debug/warpgate",
+                    os.path.join(cargo_root, binary_path),
                     "--config",
                     str(config_path),
                     *args,
@@ -215,6 +232,7 @@ class ProcessManager:
                 env={
                     **os.environ,
                     "LLVM_PROFILE_FILE": f"{cargo_root}/target/llvm-cov-target/warpgate-%m.profraw",
+                    "WARPGATE_ADMIN_TOKEN": "token-value",
                     **env,
                 },
                 stop_signal=signal.SIGINT,
@@ -315,9 +333,22 @@ def processes(ctx, timeout, report_generation):
 
 @pytest.fixture(scope="session", autouse=True)
 def report_generation():
+    if not enable_coverage:
+        yield None
+        return
     # subprocess.call(['cargo', 'llvm-cov', 'clean', '--workspace'])
     subprocess.check_call(
-        ["cargo", "llvm-cov", "run", "--no-cfg-coverage-nightly", "--all-features", "--no-report", "--", "--version"], cwd=cargo_root
+        [
+            "cargo",
+            "llvm-cov",
+            "run",
+            "--no-cfg-coverage-nightly",
+            "--all-features",
+            "--no-report",
+            "--",
+            "--version",
+        ],
+        cwd=cargo_root,
     )
     yield
     # subprocess.check_call(['cargo', 'llvm-cov', '--no-run', '--hide-instantiations', '--html'], cwd=cargo_root)
@@ -337,6 +368,11 @@ def shared_wg(processes: ProcessManager):
 @pytest.fixture(scope="session")
 def wg_c_ed25519_pubkey():
     return Path(os.getcwd()) / "ssh-keys/wg/client-ed25519.pub"
+
+
+@pytest.fixture(scope="session")
+def wg_c_rsa_pubkey():
+    return Path(os.getcwd()) / "ssh-keys/wg/client-rsa.pub"
 
 
 @pytest.fixture(scope="session")

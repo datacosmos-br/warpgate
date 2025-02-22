@@ -1,14 +1,14 @@
 use std::path::PathBuf;
 
 use anyhow::Result;
-use futures::StreamExt;
+use futures::{FutureExt, StreamExt};
 #[cfg(target_os = "linux")]
 use sd_notify::NotifyState;
 use tokio::signal::unix::SignalKind;
 use tracing::{debug, error, info, warn};
 use warpgate_core::db::cleanup_db;
 use warpgate_core::logging::install_database_logger;
-use warpgate_core::{ProtocolServer, Services};
+use warpgate_core::{ConfigProvider, ProtocolServer, Services};
 use warpgate_protocol_http::HTTPProtocolServer;
 use warpgate_protocol_mysql::MySQLProtocolServer;
 use warpgate_protocol_postgres::PostgresProtocolServer;
@@ -16,12 +16,26 @@ use warpgate_protocol_ssh::SSHProtocolServer;
 
 use crate::config::{load_config, watch_config};
 
-pub async fn command(cli: &crate::Cli) -> Result<()> {
+pub(crate) async fn command(cli: &crate::Cli, enable_admin_token: bool) -> Result<()> {
     let version = env!("CARGO_PKG_VERSION");
     info!(%version, "Warpgate");
 
-    let config = load_config(&cli.config, true)?;
-    let services = Services::new(config.clone()).await?;
+    let admin_token = enable_admin_token.then(|| {
+        std::env::var("WARPGATE_ADMIN_TOKEN").unwrap_or_else(|_| {
+            error!("`WARPGATE_ADMIN_TOKEN` env variable must set when using --enable-admin-token");
+            std::process::exit(1);
+        })
+    });
+
+    let config = match load_config(&cli.config, true) {
+        Ok(config) => config,
+        Err(error) => {
+            error!(?error, "Failed to load config file");
+            std::process::exit(1);
+        }
+    };
+
+    let services = Services::new(config.clone(), admin_token).await?;
 
     install_database_logger(services.db.clone());
 
@@ -31,7 +45,8 @@ pub async fn command(cli: &crate::Cli) -> Result<()> {
         protocol_futures.push(
             SSHProtocolServer::new(&services)
                 .await?
-                .run(*config.store.ssh.listen),
+                .run(config.store.ssh.listen.clone())
+                .boxed(),
         );
     }
 
@@ -39,7 +54,8 @@ pub async fn command(cli: &crate::Cli) -> Result<()> {
         protocol_futures.push(
             HTTPProtocolServer::new(&services)
                 .await?
-                .run(*config.store.http.listen),
+                .run(config.store.http.listen.clone())
+                .boxed(),
         );
     }
 
@@ -47,7 +63,8 @@ pub async fn command(cli: &crate::Cli) -> Result<()> {
         protocol_futures.push(
             MySQLProtocolServer::new(&services)
                 .await?
-                .run(*config.store.mysql.listen),
+                .run(config.store.mysql.listen.clone())
+                .boxed(),
         );
     }
 
@@ -55,7 +72,8 @@ pub async fn command(cli: &crate::Cli) -> Result<()> {
         protocol_futures.push(
             PostgresProtocolServer::new(&services)
                 .await?
-                .run(*config.store.postgres.listen),
+                .run(config.store.postgres.listen.clone())
+                .boxed(),
         );
     }
 

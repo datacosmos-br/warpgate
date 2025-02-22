@@ -20,7 +20,9 @@ async function singleLogout () {
 
 {#if $serverInfo?.username}
     <div class="ms-auto">
-        {$serverInfo.username}
+        <a href="/#/profile">
+            {$serverInfo.username}
+        </a>
         {#if $serverInfo.authorizedViaTicket}
             <span class="ml-2">(ticket auth)</span>
         {/if}
@@ -43,7 +45,7 @@ async function singleLogout () {
             </DropdownMenu>
         </Dropdown>
     {:else}
-        <Button color="link" on:click={logout} title="Log out">
+        <Button color="link" on:click={logout} title="Log out" class="p-0 ms-2">
             <Fa icon={faSignOut} fw />
         </Button>
     {/if}

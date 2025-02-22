@@ -1,49 +1,50 @@
 <script lang="ts">
-import { api, type Ticket } from 'admin/lib/api'
-import { link } from 'svelte-spa-router'
-import { Alert } from '@sveltestrap/sveltestrap'
-import RelativeDate from './RelativeDate.svelte'
-import Fa from 'svelte-fa'
-import { faCalendarXmark, faCalendarCheck, faSquareXmark, faSquareCheck } from '@fortawesome/free-solid-svg-icons'
+    import { api, type Ticket } from 'admin/lib/api'
+    import { link } from 'svelte-spa-router'
+    import RelativeDate from '../RelativeDate.svelte'
+    import Fa from 'svelte-fa'
+    import { faCalendarXmark, faCalendarCheck, faSquareXmark, faSquareCheck } from '@fortawesome/free-solid-svg-icons'
+    import { stringifyError } from 'common/errors'
+    import Alert from 'common/sveltestrap-s5-ports/Alert.svelte'
+    import EmptyState from 'common/EmptyState.svelte'
 
-let error: Error|undefined
-let tickets: Ticket[]|undefined
+    let error: string|undefined = $state()
+    let tickets: Ticket[]|undefined = $state()
 
-async function load () {
-    tickets = await api.getTickets()
-}
+    async function load () {
+        tickets = await api.getTickets()
+    }
 
-load().catch(e => {
-    error = e
-})
+    load().catch(async e => {
+        error = await stringifyError(e)
+    })
 
-async function deleteTicket (ticket: Ticket) {
-    await api.deleteTicket(ticket)
-    load()
-}
-
+    async function deleteTicket (ticket: Ticket) {
+        await api.deleteTicket(ticket)
+        load()
+    }
 </script>
 
 {#if error}
 <Alert color="danger">{error}</Alert>
 {/if}
 
-{#if tickets }
+{#if tickets}
     <div class="page-summary-bar">
         {#if tickets.length }
-            <h1>Access tickets: {tickets.length}</h1>
+            <h1>access tickets: <span class="counter">{tickets.length}</span></h1>
         {:else}
-            <h1>No tickets created yet</h1>
+            <h1>access tickets</h1>
         {/if}
         <a
-            class="btn btn-outline-secondary ms-auto"
-            href="/tickets/create"
+            class="btn btn-primary ms-auto"
+            href="/config/tickets/create"
             use:link>
             Create a ticket
         </a>
     </div>
 
-    {#if tickets.length }
+    {#if tickets.length}
         <div class="list-group list-group-flush">
             {#each tickets as ticket}
                 <div class="list-group-item">
@@ -70,14 +71,18 @@ async function deleteTicket (ticket: Ticket) {
                     <small class="text-muted me-4 ms-auto">
                         <RelativeDate date={ticket.created} />
                     </small>
-                    <a href={''} on:click|preventDefault={() => deleteTicket(ticket)}>Delete</a>
+                    <a href={''} onclick={e => {
+                        deleteTicket(ticket)
+                        e.preventDefault()
+                    }}>Delete</a>
                 </div>
             {/each}
         </div>
     {:else}
-        <Alert color="info" fade={false}>
-            Tickets are secret keys that allow access to one specific target without any additional authentication.
-        </Alert>
+        <EmptyState
+            title="No tickets yet"
+            hint="Tickets are secret keys that allow access to one specific target without any additional authentication"
+        />
     {/if}
 {/if}
 

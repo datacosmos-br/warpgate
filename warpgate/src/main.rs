@@ -1,7 +1,7 @@
-#![feature(type_alias_impl_trait)]
 mod commands;
 mod config;
 mod logging;
+mod protocols;
 use std::path::PathBuf;
 
 use anyhow::Result;
@@ -70,8 +70,12 @@ pub(crate) enum Commands {
     /// Show Warpgate's SSH client keys
     ClientKeys,
     /// Run Warpgate
-    Run,
-    /// Create a password hash for use in the config file
+    Run {
+        /// Enable an API token (passed via the `WARPGATE_ADMIN_TOKEN` env var) that automatically maps to the first admin user
+        #[clap(long, action=ArgAction::SetTrue)]
+        enable_admin_token: bool,
+    },
+    /// Perform basic config checks
     Check,
     /// Test the connection to a target host
     TestTarget {
@@ -90,8 +94,15 @@ async fn _main() -> Result<()> {
 
     init_logging(load_config(&cli.config, false).ok().as_ref(), &cli).await;
 
+    #[allow(clippy::unwrap_used)]
+    rustls::crypto::aws_lc_rs::default_provider()
+        .install_default()
+        .unwrap();
+
     match &cli.command {
-        Commands::Run => crate::commands::run::command(&cli).await,
+        Commands::Run { enable_admin_token } => {
+            crate::commands::run::command(&cli, *enable_admin_token).await
+        }
         Commands::Check => crate::commands::check::command(&cli).await,
         Commands::TestTarget { target_name } => {
             crate::commands::test_target::command(&cli, target_name).await

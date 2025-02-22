@@ -12,9 +12,8 @@ use anyhow::{Context, Result};
 use bimap::BiMap;
 use bytes::Bytes;
 use futures::{Future, FutureExt};
-use russh::keys::key::{PublicKey, SignatureHash};
-use russh::keys::PublicKeyBase64;
-use russh::{CryptoVec, MethodSet, Sig};
+use russh::keys::{PublicKey, PublicKeyBase64};
+use russh::{CryptoVec, MethodKind, MethodSet, Sig};
 use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
 use tokio::sync::{broadcast, oneshot, Mutex};
 use tracing::*;
@@ -29,7 +28,9 @@ use warpgate_core::recordings::{
     self, ConnectionRecorder, TerminalRecorder, TerminalRecordingStreamId, TrafficConnectionParams,
     TrafficRecorder,
 };
-use warpgate_core::{authorize_ticket, consume_ticket, Services, WarpgateServerHandle};
+use warpgate_core::{
+    authorize_ticket, consume_ticket, ConfigProvider, Services, WarpgateServerHandle,
+};
 
 use super::channel_writer::ChannelWriter;
 use super::russh_handler::ServerHandlerEvent;
@@ -70,6 +71,21 @@ struct CachedSuccessfulTicketAuth {
     username: String,
 }
 
+#[derive(Debug, Hash, PartialEq, Eq, Clone)]
+pub enum TrafficRecorderKey {
+    Tcp(String, u32),
+    Socket(String),
+}
+
+impl TrafficRecorderKey {
+    pub fn to_name(&self) -> String {
+        match self {
+            TrafficRecorderKey::Tcp(addr, port) => format!("{addr}-{port}"),
+            TrafficRecorderKey::Socket(path) => path.clone().replace("/", "-"),
+        }
+    }
+}
+
 pub struct ServerSession {
     pub id: SessionId,
     username: Option<String>,
@@ -86,7 +102,7 @@ pub struct ServerSession {
     services: Services,
     server_handle: Arc<Mutex<WarpgateServerHandle>>,
     target: TargetSelection,
-    traffic_recorders: HashMap<(String, u32), TrafficRecorder>,
+    traffic_recorders: HashMap<TrafficRecorderKey, TrafficRecorder>,
     traffic_connection_recorders: HashMap<Uuid, ConnectionRecorder>,
     hub: EventHub<Event>,
     event_sender: EventSender<Event>,
@@ -555,6 +571,21 @@ impl ServerSession {
                 let _ = reply.send(true);
             }
 
+            ServerHandlerEvent::StreamlocalForward(socket_path, reply) => {
+                self._streamlocal_forward(socket_path).await?;
+                let _ = reply.send(true);
+            }
+
+            ServerHandlerEvent::CancelStreamlocalForward(socket_path, reply) => {
+                self._cancel_streamlocal_forward(socket_path).await?;
+                let _ = reply.send(true);
+            }
+
+            ServerHandlerEvent::AgentForward(channel, reply) => {
+                self._agent_forward(channel).await?;
+                let _ = reply.send(true);
+            }
+
             ServerHandlerEvent::Disconnect => (),
         }
 
@@ -765,7 +796,7 @@ impl ServerSession {
             RCEvent::HostKeyReceived(key) => {
                 self.emit_service_message(&format!(
                     "Host key ({}): {}",
-                    key.name(),
+                    key.algorithm(),
                     key.public_key_base64()
                 ))
                 .await?;
@@ -790,14 +821,16 @@ impl ServerSession {
 
                     let recorder = self
                         .traffic_recorder_for(
-                            &params.originator_address,
-                            params.originator_port,
+                            TrafficRecorderKey::Tcp(
+                                params.originator_address,
+                                params.originator_port,
+                            ),
                             "forwarded-tcpip",
                         )
                         .await;
                     if let Some(recorder) = recorder {
                         #[allow(clippy::unwrap_used)]
-                        let mut recorder = recorder.connection(TrafficConnectionParams {
+                        let mut recorder = recorder.connection(TrafficConnectionParams::Tcp {
                             dst_addr: Ipv4Addr::from_str("2.2.2.2").unwrap(),
                             dst_port: params.connected_port as u16,
                             src_addr: Ipv4Addr::from_str("1.1.1.1").unwrap(),
@@ -808,6 +841,43 @@ impl ServerSession {
                         }
                         self.traffic_connection_recorders.insert(id, recorder);
                     }
+                }
+            }
+            RCEvent::ForwardedStreamlocal(id, params) => {
+                if let Some(session) = &mut self.session_handle {
+                    let server_channel = session
+                        .channel_open_forwarded_streamlocal(params.socket_path.clone())
+                        .await?;
+
+                    self.channel_map
+                        .insert(ServerChannelId(server_channel.id()), id);
+                    self.all_channels.push(id);
+
+                    let recorder = self
+                        .traffic_recorder_for(
+                            TrafficRecorderKey::Socket(params.socket_path.clone()),
+                            "forwarded-streamlocal",
+                        )
+                        .await;
+                    if let Some(recorder) = recorder {
+                        #[allow(clippy::unwrap_used)]
+                        let mut recorder = recorder.connection(TrafficConnectionParams::Socket {
+                            socket_path: params.socket_path,
+                        });
+                        if let Err(error) = recorder.write_connection_setup().await {
+                            error!(channel=%id, ?error, "Failed to record connection setup");
+                        }
+                        self.traffic_connection_recorders.insert(id, recorder);
+                    }
+                }
+            }
+            RCEvent::ForwardedAgent(id) => {
+                if let Some(session) = &mut self.session_handle {
+                    let server_channel = session.channel_open_agent().await?;
+
+                    self.channel_map
+                        .insert(ServerChannelId(server_channel.id()), id);
+                    self.all_channels.push(id);
                 }
             }
             RCEvent::X11(id, originator_address, originator_port) => {
@@ -864,7 +934,7 @@ impl ServerSession {
 
         self.emit_service_message(&format!(
             "There is no trusted {} key for this host.",
-            key.name()
+            key.algorithm()
         ))
         .await?;
         self.emit_service_message("Trust this key? (y/n)").await?;
@@ -932,14 +1002,13 @@ impl ServerSession {
 
                 let recorder = self
                     .traffic_recorder_for(
-                        &params.host_to_connect,
-                        params.port_to_connect,
+                        TrafficRecorderKey::Tcp(params.host_to_connect, params.port_to_connect),
                         "direct-tcpip",
                     )
                     .await;
                 if let Some(recorder) = recorder {
                     #[allow(clippy::unwrap_used)]
-                    let mut recorder = recorder.connection(TrafficConnectionParams {
+                    let mut recorder = recorder.connection(TrafficConnectionParams::Tcp {
                         dst_addr: Ipv4Addr::from_str("2.2.2.2").unwrap(),
                         dst_port: params.port_to_connect as u16,
                         src_addr: Ipv4Addr::from_str("1.1.1.1").unwrap(),
@@ -1071,29 +1140,27 @@ impl ServerSession {
 
     async fn traffic_recorder_for(
         &mut self,
-        host: &str,
-        port: u32,
+        key: TrafficRecorderKey,
         tag: &str,
     ) -> Option<&mut TrafficRecorder> {
-        let host = host.to_owned();
-        if let Vacant(e) = self.traffic_recorders.entry((host.clone(), port)) {
+        if let Vacant(e) = self.traffic_recorders.entry(key.clone()) {
             match self
                 .services
                 .recordings
                 .lock()
                 .await
-                .start(&self.id, format!("{tag}-{host}-{port}"))
+                .start(&self.id, format!("{tag}-{}", key.to_name()))
                 .await
             {
                 Ok(recorder) => {
                     e.insert(recorder);
                 }
                 Err(error) => {
-                    error!(%host, %port, ?error, "Failed to start recording");
+                    error!(?key, ?error, "Failed to start recording");
                 }
             }
         }
-        self.traffic_recorders.get_mut(&(host, port))
+        self.traffic_recorders.get_mut(&key)
     }
 
     pub async fn _channel_subsystem_request(
@@ -1179,24 +1246,31 @@ impl ServerSession {
             .map_err(anyhow::Error::from)
     }
 
-    fn _get_public_keys_from_of(&self, key: PublicKey) -> Vec<PublicKey> {
-        let mut keys = vec![key.clone()];
-        // Try all supported hash algorithms
-        if let PublicKey::RSA { key, hash } = &key {
-            for h in [
-                SignatureHash::SHA1,
-                SignatureHash::SHA2_256,
-                SignatureHash::SHA2_512,
-            ] {
-                if &h != hash {
-                    keys.push(PublicKey::RSA {
-                        key: key.clone(),
-                        hash: h,
-                    });
-                }
-            }
-        }
-        keys
+    async fn _streamlocal_forward(&mut self, socket_path: String) -> Result<()> {
+        info!(%socket_path, "Remote UNIX socket forwarding requested");
+        let _ = self.maybe_connect_remote().await;
+        self.send_command_and_wait(RCCommand::StreamlocalForward(socket_path))
+            .await
+            .map_err(anyhow::Error::from)
+    }
+
+    pub async fn _cancel_streamlocal_forward(&mut self, socket_path: String) -> Result<()> {
+        info!(%socket_path, "Remote UNIX socket forwarding cancelled");
+        self.send_command_and_wait(RCCommand::CancelStreamlocalForward(socket_path))
+            .await
+            .map_err(anyhow::Error::from)
+    }
+
+    async fn _agent_forward(&mut self, server_channel_id: ServerChannelId) -> Result<()> {
+        let channel_id = self.map_channel(&server_channel_id)?;
+        debug!(channel=%channel_id, "Requested Agent Forwarding");
+        let _ = self.maybe_connect_remote().await;
+        self.send_command_and_wait(RCCommand::Channel(
+            channel_id,
+            ChannelOperation::AgentForward,
+        ))
+        .await?;
+        Ok(())
     }
 
     async fn _auth_publickey_offer(
@@ -1204,22 +1278,19 @@ impl ServerSession {
         ssh_username: Secret<String>,
         key: PublicKey,
     ) -> russh::server::Auth {
-        let keys = self._get_public_keys_from_of(key);
         let selector: AuthSelector = ssh_username.expose_secret().into();
 
-        for key in keys {
-            if let Ok(true) = self
-                .try_validate_public_key_offer(
-                    &selector,
-                    Some(AuthCredential::PublicKey {
-                        kind: key.name().to_string(),
-                        public_key_bytes: Bytes::from(key.public_key_bytes()),
-                    }),
-                )
-                .await
-            {
-                return russh::server::Auth::Accept;
-            }
+        if let Ok(true) = self
+            .try_validate_public_key_offer(
+                &selector,
+                Some(AuthCredential::PublicKey {
+                    kind: key.algorithm(),
+                    public_key_bytes: Bytes::from(key.public_key_bytes()),
+                }),
+            )
+            .await
+        {
+            return russh::server::Auth::Accept;
         }
 
         let selector: AuthSelector = ssh_username.expose_secret().into();
@@ -1246,26 +1317,28 @@ impl ServerSession {
             key.public_key_base64()
         );
 
-        let keys = self._get_public_keys_from_of(key);
+        let key = Some(AuthCredential::PublicKey {
+            kind: key.algorithm(),
+            public_key_bytes: Bytes::from(key.public_key_bytes()),
+        });
 
-        let mut result = Ok(AuthResult::Rejected);
-        for key in keys {
-            result = self
-                .try_auth_lazy(
-                    &selector,
-                    Some(AuthCredential::PublicKey {
-                        kind: key.name().to_string(),
-                        public_key_bytes: Bytes::from(key.public_key_bytes()),
-                    }),
-                )
-                .await;
-            if let Ok(AuthResult::Accepted { .. }) = result {
-                break;
-            }
-        }
+        let result = self.try_auth_lazy(&selector, key.clone()).await;
 
         match result {
-            Ok(AuthResult::Accepted { .. }) => russh::server::Auth::Accept,
+            Ok(AuthResult::Accepted { .. }) => {
+                // Update last_used timestamp
+                if let Err(err) = self
+                    .services
+                    .config_provider
+                    .lock()
+                    .await
+                    .update_public_key_last_used(key.clone())
+                    .await
+                {
+                    warn!(?err, "Failed to update last_used for public key");
+                }
+                russh::server::Auth::Accept
+            }
             Ok(AuthResult::Rejected) => russh::server::Auth::Reject {
                 proceed_with_methods: Some(MethodSet::all()),
             },
@@ -1370,7 +1443,7 @@ impl ServerSession {
                         .config
                         .lock()
                         .await
-                        .construct_external_url(None)
+                        .construct_external_url(None, None)
                     {
                         Ok(url) => url,
                         Err(error) => {
@@ -1422,11 +1495,11 @@ impl ServerSession {
         let mut m = MethodSet::empty();
         for kind in kinds {
             match kind {
-                CredentialKind::Password => m.insert(MethodSet::PASSWORD),
-                CredentialKind::Totp => m.insert(MethodSet::KEYBOARD_INTERACTIVE),
-                CredentialKind::WebUserApproval => m.insert(MethodSet::KEYBOARD_INTERACTIVE),
-                CredentialKind::PublicKey => m.insert(MethodSet::PUBLICKEY),
-                CredentialKind::Sso => m.insert(MethodSet::KEYBOARD_INTERACTIVE),
+                CredentialKind::Password => m.push(MethodKind::Password),
+                CredentialKind::Totp => m.push(MethodKind::KeyboardInteractive),
+                CredentialKind::WebUserApproval => m.push(MethodKind::KeyboardInteractive),
+                CredentialKind::PublicKey => m.push(MethodKind::PublicKey),
+                CredentialKind::Sso => m.push(MethodKind::KeyboardInteractive),
             }
         }
         m

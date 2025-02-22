@@ -1,11 +1,17 @@
 <br/>
 
+
 <p align="center">
-<img src="warpgate-web/public/assets/logo.svg" width="100" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/readme/brand-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="warpgate-web/public/assets/brand.svg">
+  <img alt="Shows a black logo in light color mode and a white one in dark color mode." src=".github/readme/brand-dark.svg">
+</picture>
 </p>
+
 <br/>
 <p align="center">
-<a href="https://github.com/warp-tech/warpgate/releases/latest"><img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/warp-tech/warpgate/total.svg?label=DOWNLOADS&logo=github&style=for-the-badge"></a> &nbsp; <a href="https://nightly.link/warp-tech/warpgate/workflows/build/main"><img src="https://shields.io/badge/-Nightly%20Builds-orange?logo=hackthebox&logoColor=fff&style=for-the-badge"/></a> &nbsp; <a href="https://discord.gg/Vn7BjmzhtF"><img alt="Discord" src="https://img.shields.io/discord/1280890060195233934?style=for-the-badge&color=blue&logo=discord&logoColor=white&label=Discord"></a>
+<a href="https://github.com/warp-tech/warpgate/releases/latest"><img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/warp-tech/warpgate/total.svg?label=DOWNLOADS&logo=github&style=for-the-badge&color=8f8"></a> &nbsp; <a href="https://nightly.link/warp-tech/warpgate/workflows/build/main"><img src="https://shields.io/badge/-Nightly%20Builds-fa5?logo=hackthebox&logoColor=444&style=for-the-badge"/></a> &nbsp; <a href="https://discord.gg/Vn7BjmzhtF"><img alt="Discord" src="https://img.shields.io/discord/1280890060195233934?style=for-the-badge&color=acc&logo=discord&logoColor=white&label=Discord"></a>
 </p>
 
 
@@ -110,6 +116,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Gurkengewuerz"><img src="https://avatars.githubusercontent.com/u/10966337?v=4?s=100" width="100px;" alt="Niklas"/><br /><sub><b>Niklas</b></sub></a><br /><a href="https://github.com/Eugeny/warpgate/commits?author=Gurkengewuerz" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/notnooblord"><img src="https://avatars.githubusercontent.com/u/11678665?v=4?s=100" width="100px;" alt="Nooblord"/><br /><sub><b>Nooblord</b></sub></a><br /><a href="https://github.com/Eugeny/warpgate/commits?author=notnooblord" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://shea.nz/"><img src="https://avatars.githubusercontent.com/u/51303984?v=4?s=100" width="100px;" alt="Shea Smith"/><br /><sub><b>Shea Smith</b></sub></a><br /><a href="https://github.com/Eugeny/warpgate/commits?author=SheaSmith" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/samtoxie"><img src="https://avatars.githubusercontent.com/u/7732658?v=4?s=100" width="100px;" alt="samtoxie"/><br /><sub><b>samtoxie</b></sub></a><br /><a href="https://github.com/Eugeny/warpgate/commits?author=samtoxie" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

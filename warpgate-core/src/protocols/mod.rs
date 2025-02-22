@@ -1,11 +1,11 @@
 mod handle;
-use std::net::SocketAddr;
+
+use std::future::Future;
 
 use anyhow::Result;
-use async_trait::async_trait;
 use dialoguer::Error as DialoguerError;
 pub use handle::{SessionHandle, WarpgateServerHandle};
-use warpgate_common::Target;
+use warpgate_common::{ListenEndpoint, Target};
 
 #[derive(Debug, thiserror::Error)]
 pub enum TargetTestError {
@@ -23,8 +23,10 @@ pub enum TargetTestError {
     DialoguerError(DialoguerError),
 }
 
-#[async_trait]
 pub trait ProtocolServer {
-    async fn run(self, address: SocketAddr) -> Result<()>;
-    async fn test_target(&self, target: Target) -> Result<(), TargetTestError>;
+    fn run(self, address: ListenEndpoint) -> impl Future<Output = Result<()>> + Send;
+    fn test_target(
+        &self,
+        target: Target,
+    ) -> impl Future<Output = Result<(), TargetTestError>> + Send;
 }

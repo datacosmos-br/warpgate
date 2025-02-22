@@ -1,4 +1,4 @@
-cargo-features = ["profile-rustflags"]
+# cargo-features = ["profile-rustflags"]
 
 [workspace]
 members = [
@@ -19,6 +19,34 @@ members = [
 default-members = ["warpgate"]
 resolver = "2"
 
+[workspace.dependencies]
+bytes = "1.7"
+data-encoding = "2.3"
+serde = "1.0"
+serde_json = "1.0"
+russh = { version = "0.50.2", features = ["des"] }
+futures = "0.3"
+tokio-stream = { version = "0.1.17", features = ["net"] }
+tokio-rustls = "0.26"
+enum_dispatch = "0.3.13"
+rustls = "0.23"
+sqlx = { version = "0.8", features = ["tls-rustls-aws-lc-rs"] }
+sea-orm = { version = "1.0", default-features = false, features = ["runtime-tokio", "macros"] }
+sea-orm-migration = { version = "1.0", default-features = false, features = [
+    "cli",
+] }
+poem = { version = "3.1", features = [
+    "cookie",
+    "session",
+    "anyhow",
+    "websocket",
+    "rustls",
+    "embed",
+] }
+password-hash = { version = "0.5", features = ["std"] }
+delegate = "0.13"
+tracing = "0.1"
+
 [profile.release]
 lto = true
 panic = "abort"
@@ -26,4 +54,4 @@ strip = "debuginfo"
 
 [profile.coverage]
 inherits = "dev"
-rustflags = ["-Cinstrument-coverage"]
+# rustflags = ["-Cinstrument-coverage"]

@@ -1,11 +1,9 @@
-use std::io::{self, IsTerminal};
+use std::io::IsTerminal;
 
-use tracing::{error, info};
+use tracing::*;
 
-pub fn assert_interactive_terminal() {
-    let stdin = io::stdin();
-
-    if !stdin.is_terminal() {
+pub(crate) fn assert_interactive_terminal() {
+    if !std::io::stdin().is_terminal() {
         error!("Please run this command from an interactive terminal.");
         if is_docker() {
             info!("(have you forgotten `-it`?)");

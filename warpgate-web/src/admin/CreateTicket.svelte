@@ -4,17 +4,19 @@ import AsyncButton from 'common/AsyncButton.svelte'
 import ConnectionInstructions from 'common/ConnectionInstructions.svelte'
 import { TargetKind } from 'gateway/lib/api'
 import { link } from 'svelte-spa-router'
-import { Alert, FormGroup } from '@sveltestrap/sveltestrap'
+import { FormGroup } from '@sveltestrap/sveltestrap'
 import { firstBy } from 'thenby'
+import { stringifyError } from 'common/errors'
+import Alert from 'common/sveltestrap-s5-ports/Alert.svelte'
 
-let error: Error|null = null
-let targets: Target[]|undefined
-let users: User[]|undefined
-let selectedTarget: Target|undefined
-let selectedUser: User|undefined
-let selectedExpiry: string|undefined
-let selectedNumberOfUses: number|undefined
-let result: TicketAndSecret|undefined
+let error: string|null = $state(null)
+let targets: Target[]|undefined = $state()
+let users: User[]|undefined = $state()
+let selectedTarget: Target|undefined = $state()
+let selectedUser: User|undefined = $state()
+let selectedExpiry: string|undefined = $state()
+let selectedNumberOfUses: number|undefined = $state()
+let result: TicketAndSecret|undefined = $state()
 
 async function load () {
     [targets, users] = await Promise.all([
@@ -26,8 +28,8 @@ async function load () {
     users.sort(firstBy('username'))
 }
 
-load().catch(e => {
-    error = e
+load().catch(async e => {
+    error = await stringifyError(e)
 })
 
 async function create () {
@@ -44,7 +46,7 @@ async function create () {
             },
         })
     } catch (err) {
-        error = err as Error
+        error = await stringifyError(err)
     }
 }
 
@@ -56,7 +58,7 @@ async function create () {
 
 {#if result}
     <div class="page-summary-bar">
-        <h1>Ticket created</h1>
+        <h1>ticket created</h1>
     </div>
 
     <Alert color="warning" fade={false}>
@@ -75,13 +77,13 @@ async function create () {
 
     <a
         class="btn btn-secondary"
-        href="/tickets"
+        href="/config/tickets"
         use:link
     >Done</a>
 {:else}
 <div class="narrow-page">
     <div class="page-summary-bar">
-        <h1>Create an access ticket</h1>
+        <h1>create an access ticket</h1>
     </div>
 
     {#if users}
@@ -117,7 +119,7 @@ async function create () {
     </FormGroup>
 
     <AsyncButton
-        outline
+    color="primary"
         click={create}
     >Create ticket</AsyncButton>
 </div>

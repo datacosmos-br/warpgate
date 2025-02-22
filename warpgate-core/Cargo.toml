@@ -2,7 +2,7 @@
 edition = "2021"
 license = "Apache-2.0"
 name = "warpgate-core"
-version = "0.11.0"
+version = "0.13.1"
 
 [dependencies]
 warpgate-common = { version = "*", path = "../warpgate-common" }
@@ -10,13 +10,19 @@ warpgate-db-entities = { version = "*", path = "../warpgate-db-entities" }
 warpgate-db-migrations = { version = "*", path = "../warpgate-db-migrations" }
 
 anyhow = { version = "1.0", features = ["std"] }
+argon2 = "0.5"
 async-trait = "0.1"
-bytes = "1.3"
+bytes.workspace = true
 chrono = { version = "0.4", default-features = false, features = ["serde"] }
-data-encoding = "2.3"
+data-encoding.workspace = true
 dialoguer = "0.11"
+enum_dispatch.workspace = true
+humantime-serde = "1.1"
+futures.workspace = true
 once_cell = "1.20"
 packet = "0.1"
+password-hash.workspace = true
+poem.workspace = true
 poem-openapi = { version = "5.1", features = [
     "swagger-ui",
     "chrono",
@@ -24,20 +30,23 @@ poem-openapi = { version = "5.1", features = [
     "static-files",
 ] }
 rand = "0.8"
-sea-orm = { version = "1.0", features = [
-    "sqlx-sqlite", "sqlx-postgres", "sqlx-mysql",
-    "runtime-tokio-rustls",
-    "macros",
-], default-features = false }
-serde = "1.0"
-serde_json = "1.0"
+rand_chacha = "0.3"
+rand_core = { version = "0.6", features = ["std"] }
+sea-orm.workspace = true
+serde.workspace = true
+serde_json.workspace = true
 thiserror = "1.0"
 tokio = { version = "1.40", features = ["tracing"] }
-tracing = "0.1"
+totp-rs = { version = "5.0", features = ["otpauth"] }
+tracing.workspace = true
 tracing-core = "0.1"
 tracing-subscriber = "0.3"
 url = "2.2"
 uuid = { version = "1.3", features = ["v4", "serde"] }
+warpgate-sso = { version = "*", path = "../warpgate-sso" }
+rustls.workspace = true
+rustls-pemfile = "1.0"
+webpki = "0.22"
 
 [features]
 postgres = ["sea-orm/sqlx-postgres"]

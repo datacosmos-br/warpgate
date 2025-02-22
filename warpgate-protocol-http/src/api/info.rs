@@ -4,7 +4,9 @@ use poem::Request;
 use poem_openapi::payload::Json;
 use poem_openapi::{ApiResponse, Object, OpenApi};
 use serde::Serialize;
+use warpgate_common::WarpgateError;
 use warpgate_core::Services;
+use warpgate_db_entities::Parameters;
 
 use crate::common::{SessionAuthorization, SessionExt};
 
@@ -20,23 +22,20 @@ pub struct PortsInfo {
 
 #[derive(Serialize, Object)]
 pub struct Info {
-    version: String,
+    version: Option<String>,
     username: Option<String>,
     selected_target: Option<String>,
     external_host: Option<String>,
     ports: PortsInfo,
     authorized_via_ticket: bool,
     authorized_via_sso_with_single_logout: bool,
+    own_credential_management_allowed: bool,
 }
 
 #[derive(ApiResponse)]
 enum InstanceInfoResponse {
     #[oai(status = 200)]
     Ok(Json<Info>),
-}
-
-fn strip_port(host: &str) -> Option<&str> {
-    host.split(':').next()
 }
 
 #[OpenApi]
@@ -47,21 +46,24 @@ impl Api {
         req: &Request,
         session: &Session,
         services: Data<&Services>,
-    ) -> poem::Result<InstanceInfoResponse> {
+    ) -> Result<InstanceInfoResponse, WarpgateError> {
         let config = services.config.lock().await;
         let external_host = config
-            .store
-            .external_host
-            .as_deref()
-            .and_then(strip_port)
-            .or_else(|| req.header(http::header::HOST).and_then(strip_port))
-            .or_else(|| req.original_uri().host());
+            .construct_external_url(Some(req), None)
+            .ok()
+            .as_ref()
+            .and_then(|x| x.host())
+            .map(|x| x.to_string());
+
+        let parameters = Parameters::Entity::get(&*services.db.lock().await).await?;
 
         Ok(InstanceInfoResponse::Ok(Json(Info {
-            version: env!("CARGO_PKG_VERSION").to_string(),
+            version: session
+                .is_authenticated()
+                .then(|| env!("CARGO_PKG_VERSION").to_string()),
             username: session.get_username(),
             selected_target: session.get_target_name(),
-            external_host: external_host.map(str::to_string),
+            external_host,
             authorized_via_ticket: matches!(
                 session.get_auth(),
                 Some(SessionAuthorization::Ticket { .. })
@@ -100,6 +102,7 @@ impl Api {
                     postgres: None,
                 }
             },
+            own_credential_management_allowed: parameters.allow_own_credential_management,
         })))
     }
 }

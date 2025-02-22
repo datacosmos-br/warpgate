@@ -1,19 +1,20 @@
 <script lang="ts">
 import { api, type SSHKey, type SSHKnownHost } from 'admin/lib/api'
+import Alert from 'common/sveltestrap-s5-ports/Alert.svelte'
 import CopyButton from 'common/CopyButton.svelte'
-import { Alert } from '@sveltestrap/sveltestrap'
+import { stringifyError } from 'common/errors'
 
-let error: Error|undefined
-let knownHosts: SSHKnownHost[]|undefined
-let ownKeys: SSHKey[]|undefined
+let error: string|undefined = $state()
+let knownHosts: SSHKnownHost[]|undefined = $state()
+let ownKeys: SSHKey[]|undefined = $state()
 
 async function load () {
     ownKeys = await api.getSshOwnKeys()
     knownHosts = await api.getSshKnownHosts()
 }
 
-load().catch(e => {
-    error = e
+load().catch(async e => {
+    error = await stringifyError(e)
 })
 
 async function deleteHost (host: SSHKnownHost) {
@@ -61,7 +62,10 @@ async function deleteHost (host: SSHKnownHost) {
                         {host.host}:{host.port}
                     </strong>
 
-                    <a class="ms-auto" href={''} on:click|preventDefault={() => deleteHost(host)}>Delete</a>
+                    <a class="ms-auto" href={''} onclick={e => {
+                        e.preventDefault()
+                        deleteHost(host)
+                    }}>Delete</a>
                 </div>
                 <pre>{host.keyType} {host.keyBase64}</pre>
             </div>

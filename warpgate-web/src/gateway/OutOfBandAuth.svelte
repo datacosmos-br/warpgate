@@ -1,33 +1,37 @@
 <script lang="ts">
-import { Alert } from '@sveltestrap/sveltestrap'
+    import { api, ApiAuthState, type AuthStateResponseInternal } from 'gateway/lib/api'
+    import AsyncButton from 'common/AsyncButton.svelte'
+    import RelativeDate from 'admin/RelativeDate.svelte'
+    import Alert from 'common/sveltestrap-s5-ports/Alert.svelte'
+    import Loadable from 'common/Loadable.svelte'
 
-import { api, ApiAuthState, type AuthStateResponseInternal } from 'gateway/lib/api'
-import AsyncButton from 'common/AsyncButton.svelte'
-import DelayedSpinner from 'common/DelayedSpinner.svelte'
-import RelativeDate from 'admin/RelativeDate.svelte'
+    interface Props {
+        params: { stateId: string };
+    }
 
-export let params: { stateId: string }
-let authState: AuthStateResponseInternal
+    let { params }: Props = $props()
 
-async function reload () {
-    authState = await api.getAuthState({ id: params.stateId })
-}
+    let authState: AuthStateResponseInternal | undefined = $state()
 
-async function init () {
-    await reload()
-}
+    async function reload () {
+        authState = await api.getAuthState({ id: params.stateId })
+    }
 
-async function approve () {
-    api.approveAuth({ id: params.stateId })
-    await reload()
-    window.close()
-}
+    async function init () {
+        await reload()
+    }
 
-async function reject () {
-    api.rejectAuth({ id: params.stateId })
-    await reload()
-    window.close()
-}
+    async function approve () {
+        api.approveAuth({ id: params.stateId })
+        await reload()
+        window.close()
+    }
+
+    async function reject () {
+        api.rejectAuth({ id: params.stateId })
+        await reload()
+        window.close()
+    }
 </script>
 
 <style lang="scss">
@@ -43,17 +47,16 @@ async function reject () {
     }
 </style>
 
-{#await init()}
-    <DelayedSpinner />
-{:then}
+<Loadable promise={init()}>
+{#if authState}
     <div class="page-summary-bar">
-        <h1>Authorization request</h1>
+        <h1>authorization request</h1>
     </div>
 
     <div class="mb-5">
         <div class="mb-2">Ensure this security key matches your authentication prompt:</div>
         <div class="identification-string">
-            {#each authState.identificationString as char}
+            {#each authState?.identificationString as char}
                 <div class="card bg-secondary text-light">
                     <div class="card-body">{char}</div>
                 </div>
@@ -88,7 +91,6 @@ async function reject () {
                 Authorize
             </AsyncButton>
             <AsyncButton
-                outline
                 color="secondary"
                 class="d-flex align-items-center ms-2"
                 click={reject}
@@ -97,4 +99,5 @@ async function reject () {
             </AsyncButton>
         </div>
     {/if}
-{/await}
+{/if}
+</Loadable>

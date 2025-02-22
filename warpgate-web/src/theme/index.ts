@@ -1,4 +1,5 @@
 import '@fontsource/work-sans'
+import './fonts.css'
 
 import { get, writable } from 'svelte/store'
 
@@ -37,7 +38,6 @@ export function setCurrentTheme (theme: ThemeName): void {
     localStorage.setItem('theme', theme)
     currentTheme.set(theme)
     if (theme === 'auto') {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
             loadTheme('dark')
         } else {

@@ -1,56 +1,57 @@
 <script lang="ts">
-import { api, type Role } from 'admin/lib/api'
-import AsyncButton from 'common/AsyncButton.svelte'
-import DelayedSpinner from 'common/DelayedSpinner.svelte'
-import { replace } from 'svelte-spa-router'
-import { Alert, FormGroup } from '@sveltestrap/sveltestrap'
+    import { api, type Role } from 'admin/lib/api'
+    import AsyncButton from 'common/AsyncButton.svelte'
+    import { replace } from 'svelte-spa-router'
+    import { FormGroup } from '@sveltestrap/sveltestrap'
+    import { stringifyError } from 'common/errors'
+    import Alert from 'common/sveltestrap-s5-ports/Alert.svelte'
+    import Loadable from 'common/Loadable.svelte'
 
-export let params: { id: string }
+    interface Props {
+        params: { id: string };
+    }
 
-let error: Error|undefined
-let role: Role
+    let { params }: Props = $props()
 
-async function load () {
-    try {
+    let error: string|null = $state(null)
+    let role: Role | undefined = $state()
+    const initPromise = init()
+
+    async function init () {
         role = await api.getRole({ id: params.id })
-    } catch (err) {
-        error = err as Error
     }
-}
 
-async function update () {
-    try {
-        role = await api.updateRole({
-            id: params.id,
-            roleDataRequest: role,
-        })
-    } catch (err) {
-        error = err as Error
+    async function update () {
+        try {
+            role = await api.updateRole({
+                id: params.id,
+                roleDataRequest: role!,
+            })
+        } catch (err) {
+            error = await stringifyError(err)
+        }
     }
-}
 
-async function remove () {
-    if (confirm(`Delete role ${role.name}?`)) {
-        await api.deleteRole(role)
-        replace('/config')
+    async function remove () {
+        if (confirm(`Delete role ${role!.name}?`)) {
+            await api.deleteRole(role!)
+            replace('/config/roles')
+        }
     }
-}
 </script>
 
-{#await load()}
-    <DelayedSpinner />
-{:then}
+<Loadable promise={initPromise}>
     <div class="page-summary-bar">
         <div>
-            <h1>{role.name}</h1>
-            <div class="text-muted">Role</div>
+            <h1>{role!.name}</h1>
+            <div class="text-muted">role</div>
         </div>
     </div>
 
     <FormGroup floating label="Name">
-        <input class="form-control" bind:value={role.name} />
+        <input class="form-control" bind:value={role!.name} />
     </FormGroup>
-{/await}
+</Loadable>
 
 {#if error}
     <Alert color="danger">{error}</Alert>
@@ -58,14 +59,13 @@ async function remove () {
 
 <div class="d-flex">
     <AsyncButton
+    color="primary"
         class="ms-auto"
-        outline
         click={update}
     >Update</AsyncButton>
 
     <AsyncButton
         class="ms-2"
-        outline
         color="danger"
         click={remove}
     >Remove</AsyncButton>

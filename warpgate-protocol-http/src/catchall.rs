@@ -8,9 +8,9 @@ use serde::Deserialize;
 use tokio::sync::Mutex;
 use tracing::*;
 use warpgate_common::{Target, TargetHTTPOptions, TargetOptions};
-use warpgate_core::{Services, WarpgateServerHandle};
+use warpgate_core::{ConfigProvider, Services, WarpgateServerHandle};
 
-use crate::common::{SessionAuthorization, SessionExt};
+use crate::common::{RequestAuthorization, SessionAuthorization, SessionExt};
 use crate::proxy::{proxy_normal_request, proxy_websocket_request};
 
 #[derive(Deserialize)]
@@ -63,7 +63,7 @@ async fn get_target_for_request(
 ) -> poem::Result<Option<(Target, TargetHTTPOptions)>> {
     let session = <&Session>::from_request_without_body(req).await?;
     let params: QueryParams = req.params()?;
-    let auth = Data::<&SessionAuthorization>::from_request_without_body(req).await?;
+    let auth = Data::<&RequestAuthorization>::from_request_without_body(req).await?;
 
     let selected_target_name;
     let need_role_auth;
@@ -86,12 +86,16 @@ async fn get_target_for_request(
         None
     };
 
-    match *auth {
-        SessionAuthorization::Ticket { target_name, .. } => {
+    let username = match *auth {
+        RequestAuthorization::Session(SessionAuthorization::Ticket {
+            target_name,
+            username,
+        }) => {
             selected_target_name = Some(target_name.clone());
             need_role_auth = false;
+            username
         }
-        SessionAuthorization::User(_) => {
+        RequestAuthorization::Session(SessionAuthorization::User(username)) => {
             need_role_auth = true;
 
             selected_target_name =
@@ -100,6 +104,10 @@ async fn get_target_for_request(
                 } else {
                     session.get_target_name()
                 });
+            username
+        }
+        RequestAuthorization::UserToken { .. } | RequestAuthorization::AdminToken => {
+            return Ok(None)
         }
     };
 
@@ -127,7 +135,7 @@ async fn get_target_for_request(
                     .config_provider
                     .lock()
                     .await
-                    .authorize_target(auth.username(), &target.0.name)
+                    .authorize_target(username, &target.0.name)
                     .await?
             {
                 return Ok(None);

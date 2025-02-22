@@ -10,6 +10,12 @@ mod m00005_create_log_entry;
 mod m00006_add_session_protocol;
 mod m00007_targets_and_roles;
 mod m00008_users;
+mod m00009_credential_models;
+mod m00010_parameters;
+mod m00011_rsa_key_algos;
+mod m00012_add_openssh_public_key_label;
+mod m00013_add_openssh_public_key_dates;
+mod m00014_api_tokens;
 
 pub struct Migrator;
 
@@ -25,6 +31,12 @@ impl MigratorTrait for Migrator {
             Box::new(m00006_add_session_protocol::Migration),
             Box::new(m00007_targets_and_roles::Migration),
             Box::new(m00008_users::Migration),
+            Box::new(m00009_credential_models::Migration),
+            Box::new(m00010_parameters::Migration),
+            Box::new(m00011_rsa_key_algos::Migration),
+            Box::new(m00012_add_openssh_public_key_label::Migration),
+            Box::new(m00013_add_openssh_public_key_dates::Migration),
+            Box::new(m00014_api_tokens::Migration),
         ]
     }
 }

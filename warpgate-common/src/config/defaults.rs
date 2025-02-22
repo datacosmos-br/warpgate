@@ -1,4 +1,4 @@
-use std::net::ToSocketAddrs;
+use std::net::{Ipv6Addr, SocketAddr};
 use std::time::Duration;
 
 use crate::{ListenEndpoint, Secret};
@@ -41,35 +41,32 @@ pub(crate) fn _default_database_url() -> Secret<String> {
 
 #[inline]
 pub(crate) fn _default_http_listen() -> ListenEndpoint {
-    #[allow(clippy::unwrap_used)]
-    ListenEndpoint("0.0.0.0:8888".to_socket_addrs().unwrap().next().unwrap())
+    ListenEndpoint::from(SocketAddr::new(Ipv6Addr::UNSPECIFIED.into(), 8888))
 }
 
 #[inline]
 pub(crate) fn _default_mysql_listen() -> ListenEndpoint {
-    #[allow(clippy::unwrap_used)]
-    ListenEndpoint("0.0.0.0:33306".to_socket_addrs().unwrap().next().unwrap())
+    ListenEndpoint::from(SocketAddr::new(Ipv6Addr::UNSPECIFIED.into(), 33306))
 }
 
 #[inline]
 pub(crate) fn _default_postgres_listen() -> ListenEndpoint {
-    #[allow(clippy::unwrap_used)]
-    ListenEndpoint("0.0.0.0:55432".to_socket_addrs().unwrap().next().unwrap())
+    ListenEndpoint::from(SocketAddr::new(Ipv6Addr::UNSPECIFIED.into(), 55432))
 }
 
 #[inline]
 pub(crate) fn _default_retention() -> Duration {
-    Duration::SECOND * 60 * 60 * 24 * 7
+    Duration::from_secs(60 * 60 * 24 * 7)
 }
 
 #[inline]
 pub(crate) fn _default_session_max_age() -> Duration {
-    Duration::SECOND * 60 * 30
+    Duration::from_secs(60 * 30)
 }
 
 #[inline]
 pub(crate) fn _default_cookie_max_age() -> Duration {
-    Duration::SECOND * 60 * 60 * 24
+    Duration::from_secs(60 * 60 * 24)
 }
 
 #[inline]
@@ -78,8 +75,7 @@ pub(crate) fn _default_empty_vec<T>() -> Vec<T> {
 }
 
 pub(crate) fn _default_ssh_listen() -> ListenEndpoint {
-    #[allow(clippy::unwrap_used)]
-    ListenEndpoint("0.0.0.0:2222".to_socket_addrs().unwrap().next().unwrap())
+    ListenEndpoint::from(SocketAddr::new(Ipv6Addr::UNSPECIFIED.into(), 2222))
 }
 
 pub(crate) fn _default_ssh_keys_path() -> String {
@@ -87,5 +83,5 @@ pub(crate) fn _default_ssh_keys_path() -> String {
 }
 
 pub(crate) fn _default_ssh_inactivity_timeout() -> Duration {
-    Duration::SECOND * 60 * 5
+    Duration::from_secs(60 * 5)
 }

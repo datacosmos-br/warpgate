@@ -1,7 +1,5 @@
-use async_trait::async_trait;
 use russh::client::{Msg, Session};
-use russh::keys::key::PublicKey;
-use russh::keys::PublicKeyBase64;
+use russh::keys::{PublicKey, PublicKeyBase64};
 use russh::Channel;
 use tokio::sync::mpsc::UnboundedSender;
 use tokio::sync::oneshot;
@@ -10,13 +8,15 @@ use warpgate_common::{SessionId, TargetSSHOptions};
 use warpgate_core::Services;
 
 use crate::known_hosts::{KnownHostValidationResult, KnownHosts};
-use crate::{ConnectionError, ForwardedTcpIpParams};
+use crate::{ConnectionError, ForwardedStreamlocalParams, ForwardedTcpIpParams};
 
 #[derive(Debug)]
 pub enum ClientHandlerEvent {
     HostKeyReceived(PublicKey),
     HostKeyUnknown(PublicKey, oneshot::Sender<bool>),
     ForwardedTcpIp(Channel<Msg>, ForwardedTcpIpParams),
+    ForwardedStreamlocal(Channel<Msg>, ForwardedStreamlocalParams),
+    ForwardedAgent(Channel<Msg>),
     X11(Channel<Msg>, String, u32),
     Disconnect,
 }
@@ -40,7 +40,6 @@ pub enum ClientHandlerError {
     Internal,
 }
 
-#[async_trait]
 impl russh::client::Handler for ClientHandler {
     type Error = ClientHandlerError;
 
@@ -70,7 +69,7 @@ impl russh::client::Handler for ClientHandler {
                 warn!(session=%self.session_id, "Host key is invalid!");
                 return Err(ClientHandlerError::ConnectionError(
                     ConnectionError::HostKeyMismatch {
-                        received_key_type: server_public_key.name().to_owned(),
+                        received_key_type: server_public_key.algorithm(),
                         received_key_base64: server_public_key.public_key_base64(),
                         known_key_type: key_type,
                         known_key_base64: key_base64,
@@ -147,6 +146,31 @@ impl russh::client::Handler for ClientHandler {
             originator_address,
             originator_port,
         ));
+        Ok(())
+    }
+
+    async fn server_channel_open_forwarded_streamlocal(
+        &mut self,
+        channel: Channel<Msg>,
+        socket_path: &str,
+        _session: &mut Session,
+    ) -> Result<(), Self::Error> {
+        let socket_path = socket_path.to_string();
+        let _ = self.event_tx.send(ClientHandlerEvent::ForwardedStreamlocal(
+            channel,
+            ForwardedStreamlocalParams { socket_path },
+        ));
+        Ok(())
+    }
+
+    async fn server_channel_open_agent_forward(
+        &mut self,
+        channel: Channel<Msg>,
+        _session: &mut Session,
+    ) -> Result<(), Self::Error> {
+        let _ = self
+            .event_tx
+            .send(ClientHandlerEvent::ForwardedAgent(channel));
         Ok(())
     }
 }

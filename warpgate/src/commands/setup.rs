@@ -2,7 +2,7 @@
 
 use std::fs::{create_dir_all, File};
 use std::io::Write;
-use std::net::{SocketAddr, ToSocketAddrs};
+use std::net::{Ipv6Addr, SocketAddr, ToSocketAddrs};
 use std::path::{Path, PathBuf};
 
 use anyhow::Result;
@@ -12,14 +12,12 @@ use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, QueryFilter, Set};
 use tracing::{error, info};
 use uuid::Uuid;
 use warpgate_common::helpers::fs::{secure_directory, secure_file};
-use warpgate_common::helpers::hash::hash_password;
 use warpgate_common::{
-    HttpConfig, ListenEndpoint, MySqlConfig, PostgresConfig, Secret, SshConfig, UserAuthCredential,
-    UserPasswordCredential, UserRequireCredentialsPolicy, WarpgateConfigStore, WarpgateError,
+    HttpConfig, ListenEndpoint, MySqlConfig, PostgresConfig, Secret, SshConfig, UserPasswordCredential, UserRequireCredentialsPolicy, WarpgateConfigStore, WarpgateError
 };
 use warpgate_core::consts::{BUILTIN_ADMIN_ROLE_NAME, BUILTIN_ADMIN_USERNAME};
 use warpgate_core::Services;
-use warpgate_db_entities::{Role, User, UserRoleAssignment};
+use warpgate_db_entities::{PasswordCredential, Role, User, UserRoleAssignment};
 
 use crate::commands::common::{assert_interactive_terminal, is_docker};
 use crate::config::load_config;
@@ -34,7 +32,7 @@ fn prompt_endpoint(prompt: &str, default: ListenEndpoint) -> ListenEndpoint {
             .and_then(|v| Ok(v.to_socket_addrs()?));
         match v {
             Ok(mut addr) => match addr.next() {
-                Some(addr) => return ListenEndpoint(addr),
+                Some(addr) => return ListenEndpoint::from(addr),
                 None => {
                     error!("No endpoints resolved");
                 }
@@ -109,8 +107,10 @@ pub async fn command(cli: &crate::Cli) -> Result<()> {
                 .interact_text()?
         }
     };
+    create_dir_all(&data_path)?;
+    let data_path = PathBuf::from(&data_path).canonicalize()?;
 
-    let db_path = PathBuf::from(&data_path).join("db");
+    let db_path = data_path.join("db");
     create_dir_all(&db_path)?;
     secure_directory(&db_path)?;
 
@@ -136,7 +136,8 @@ pub async fn command(cli: &crate::Cli) -> Result<()> {
 
     store.http.enable = true;
     if let Commands::UnattendedSetup { http_port, .. } = &cli.command {
-        store.http.listen = ListenEndpoint(SocketAddr::from(([0, 0, 0, 0], *http_port)));
+        store.http.listen =
+            ListenEndpoint::from(SocketAddr::new(Ipv6Addr::UNSPECIFIED.into(), *http_port));
     } else {
         if !is_docker() {
             store.http.listen = prompt_endpoint(
@@ -149,7 +150,8 @@ pub async fn command(cli: &crate::Cli) -> Result<()> {
     if let Commands::UnattendedSetup { ssh_port, .. } = &cli.command {
         if let Some(ssh_port) = ssh_port {
             store.ssh.enable = true;
-            store.ssh.listen = ListenEndpoint(SocketAddr::from(([0, 0, 0, 0], *ssh_port)));
+            store.ssh.listen =
+                ListenEndpoint::from(SocketAddr::new(Ipv6Addr::UNSPECIFIED.into(), *ssh_port));
         }
     } else {
         if is_docker() {
@@ -177,7 +179,8 @@ pub async fn command(cli: &crate::Cli) -> Result<()> {
     if let Commands::UnattendedSetup { mysql_port, .. } = &cli.command {
         if let Some(mysql_port) = mysql_port {
             store.mysql.enable = true;
-            store.mysql.listen = ListenEndpoint(SocketAddr::from(([0, 0, 0, 0], *mysql_port)));
+            store.mysql.listen =
+                ListenEndpoint::from(SocketAddr::new(Ipv6Addr::UNSPECIFIED.into(), *mysql_port));
         }
     } else {
         if is_docker() {
@@ -199,8 +202,10 @@ pub async fn command(cli: &crate::Cli) -> Result<()> {
     if let Commands::UnattendedSetup { postgres_port, .. } = &cli.command {
         if let Some(postgres_port) = postgres_port {
             store.postgres.enable = true;
-            store.postgres.listen =
-                ListenEndpoint(SocketAddr::from(([0, 0, 0, 0], *postgres_port)));
+            store.postgres.listen = ListenEndpoint::from(SocketAddr::new(
+                Ipv6Addr::UNSPECIFIED.into(),
+                *postgres_port,
+            ));
         }
     } else {
         if is_docker() {
@@ -220,15 +225,12 @@ pub async fn command(cli: &crate::Cli) -> Result<()> {
         }
     }
 
-    store.http.certificate = PathBuf::from(&data_path)
+    store.http.certificate = data_path
         .join("tls.certificate.pem")
         .to_string_lossy()
         .to_string();
 
-    store.http.key = PathBuf::from(&data_path)
-        .join("tls.key.pem")
-        .to_string_lossy()
-        .to_string();
+    store.http.key = data_path.join("tls.key.pem").to_string_lossy().to_string();
 
     store.mysql.certificate = store.http.certificate.clone();
     store.mysql.key = store.http.key.clone();
@@ -238,10 +240,7 @@ pub async fn command(cli: &crate::Cli) -> Result<()> {
 
     // ---
 
-    store.ssh.keys = PathBuf::from(&data_path)
-        .join("ssh-keys")
-        .to_string_lossy()
-        .to_string();
+    store.ssh.keys = data_path.join("ssh-keys").to_string_lossy().to_string();
 
     // ---
 
@@ -256,44 +255,43 @@ pub async fn command(cli: &crate::Cli) -> Result<()> {
             .with_prompt("Do you want to record user sessions?")
             .interact()?;
     }
-    store.recordings.path = PathBuf::from(&data_path)
-        .join("recordings")
-        .to_string_lossy()
-        .to_string();
+    store.recordings.path = data_path.join("recordings").to_string_lossy().to_string();
 
     // ---
 
-    let admin_password = if let Commands::UnattendedSetup { admin_password, .. } = &cli.command {
-        if let Some(admin_password) = admin_password {
-            admin_password.to_owned()
-        } else {
-            if let Ok(admin_password) = std::env::var("WARPGATE_ADMIN_PASSWORD") {
-                admin_password
+    let admin_password = Secret::new(
+        if let Commands::UnattendedSetup { admin_password, .. } = &cli.command {
+            if let Some(admin_password) = admin_password {
+                admin_password.to_owned()
             } else {
-                error!(
+                if let Ok(admin_password) = std::env::var("WARPGATE_ADMIN_PASSWORD") {
+                    admin_password
+                } else {
+                    error!(
                     "You must supply the admin password either through the --admin-password option"
                 );
-                error!("or the WARPGATE_ADMIN_PASSWORD environment variable.");
-                std::process::exit(1);
+                    error!("or the WARPGATE_ADMIN_PASSWORD environment variable.");
+                    std::process::exit(1);
+                }
             }
-        }
-    } else {
-        dialoguer::Password::with_theme(&theme)
-            .with_prompt("Set a password for the Warpgate admin user")
-            .interact()?
-    };
+        } else {
+            dialoguer::Password::with_theme(&theme)
+                .with_prompt("Set a password for the Warpgate admin user")
+                .interact()?
+        },
+    );
 
     // ---
 
     info!("Generated configuration:");
-    let yaml = serde_yaml_ng::to_string(&store)?;
+    let yaml = serde_yaml::to_string(&store)?;
     println!("{yaml}");
 
     File::create(&cli.config)?.write_all(yaml.as_bytes())?;
     info!("Saved into {}", cli.config.display());
 
     let config = load_config(&cli.config, true)?;
-    let services = Services::new(config.clone()).await?;
+    let services = Services::new(config.clone(), None).await?;
     warpgate_protocol_ssh::generate_host_keys(&config)?;
     warpgate_protocol_ssh::generate_client_keys(&config)?;
 
@@ -308,26 +306,32 @@ pub async fn command(cli: &crate::Cli) -> Result<()> {
             .next()
             .ok_or_else(|| anyhow::anyhow!("Database inconsistent: no admin role"))?;
 
-        let admin_user = if let Some(x) = User::Entity::find()
+        let admin_user = match User::Entity::find()   
             .filter(User::Column::Username.eq(BUILTIN_ADMIN_USERNAME))
             .all(&*db)
             .await?
             .first()
         {
-            x.to_owned()
-        } else {
-            let values = User::ActiveModel {
-                id: Set(Uuid::new_v4()),
-                username: Set(BUILTIN_ADMIN_USERNAME.to_owned()),
-                credentials: Set(serde_json::to_value(vec![UserAuthCredential::Password(
-                    UserPasswordCredential {
-                        hash: Secret::new(hash_password(&admin_password)),
-                    },
-                )])?),
-                credential_policy: Set(serde_json::to_value(None::<UserRequireCredentialsPolicy>)?),
-            };
-            values.insert(&*db).await.map_err(WarpgateError::from)?
+            Some(x) => x.to_owned(),
+            None => {
+                let values = User::ActiveModel {
+                    id: Set(Uuid::new_v4()),
+                    username: Set(BUILTIN_ADMIN_USERNAME.to_owned()),
+                    credential_policy: Set(serde_json::to_value(
+                        None::<UserRequireCredentialsPolicy>,
+                    )?),
+                };
+                values.insert(&*db).await.map_err(WarpgateError::from)?
+            }
         };
+
+        PasswordCredential::ActiveModel {
+            user_id: Set(admin_user.id),
+            id: Set(Uuid::new_v4()),
+            ..UserPasswordCredential::from_password(&admin_password).into()
+        }
+        .insert(&*db)
+        .await?;
 
         if UserRoleAssignment::Entity::find()
             .filter(UserRoleAssignment::Column::UserId.eq(admin_user.id))

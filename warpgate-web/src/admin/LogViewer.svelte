@@ -1,25 +1,30 @@
 <script lang="ts">
 import { api, type LogEntry } from 'admin/lib/api'
-import { Alert } from '@sveltestrap/sveltestrap'
 import { firstBy } from 'thenby'
 import IntersectionObserver from 'svelte-intersection-observer'
 import { link } from 'svelte-spa-router'
 import { onDestroy, onMount } from 'svelte'
+import { stringifyError } from 'common/errors'
+import Alert from 'common/sveltestrap-s5-ports/Alert.svelte'
 
-export let filters: {
-    sessionId?: string,
-} | undefined
+interface Props {
+    filters: {
+        sessionId?: string,
+    } | undefined;
+}
 
-let error: Error|undefined
+let { filters }: Props = $props()
+
+let error: string|null = $state(null)
 let items: LogEntry[]|undefined
-let visibleItems: LogEntry[]|undefined
-let loading = true
-let endReached = false
-let loadOlderButton: HTMLButtonElement|undefined
+let visibleItems: LogEntry[]|undefined = $state()
+let loading = $state(true)
+let endReached = $state(false)
+let loadOlderButton: HTMLButtonElement|undefined = $state()
 let reloadInterval: any
-let lastUpdate = new Date()
-let isLive = true
-let searchQuery = ''
+let lastUpdate = $state(new Date())
+let isLive = $state(true)
+let searchQuery = $state('')
 const PAGE_SIZE = 1000
 
 function addItems (newItems: LogEntry[]) {
@@ -92,8 +97,8 @@ function stringifyDate (date: Date) {
     return date.toLocaleString()
 }
 
-loadOlder().catch(e => {
-    error = e
+loadOlder().catch(async e => {
+    error = await stringifyError(e)
 })
 
 onMount(() => {
@@ -120,56 +125,57 @@ onDestroy(() => {
     type="text"
     class="form-control form-control-sm mb-2"
     bind:value={searchQuery}
-    on:keyup={() => search()} />
+    onkeyup={() => search()} />
 
 {#if visibleItems}
     <div class="table-wrapper">
         <table class="w-100">
-            <tr>
-                <th>Time</th>
-                {#if !filters?.sessionId}
-                    <th>User</th>
-                    <th>Session</th>
-                {/if}
-                <th class="d-flex">
-                    <div class="me-auto">Message</div>
-                    {#if isLive}
-                        <span class="badge bg-danger">Live</span>
-                    {:else}
-                        <small><em>Last update: {stringifyDate(lastUpdate)}</em></small>
-                    {/if}
-                </th>
-            </tr>
-            {#each visibleItems as item}
+            <tbody>
                 <tr>
-                    <td class="timestamp pe-4">
-                        {stringifyDate(item.timestamp)}
-                    </td>
+                    <th>Time</th>
                     {#if !filters?.sessionId}
-                        <td class="username pe-4">
-                            {#if item.username}
-                                {item.username}
-                            {/if}
-                        </td>
-                        <td class="session pe-4">
-                            {#if item.sessionId}
-                                <a href="/sessions/{item.sessionId}" use:link>
-                                    {item.sessionId}
-                                </a>
-                            {/if}
-                        </td>
+                        <th>User</th>
+                        <th>Session</th>
                     {/if}
-                    <td class="content">
-                        <span class="text">
-                            {item.text}
-                        </span>
-
-                        {#each Object.entries(item.values ?? {}) as pair}
-                            <span class="key">{pair[0]}:</span>
-                            <span class="value">{pair[1]}</span>
-                        {/each}
-                    </td>
+                    <th class="d-flex">
+                        <div class="me-auto">Message</div>
+                        {#if isLive}
+                            <span class="badge bg-danger">Live</span>
+                        {:else}
+                            <small><em>Last update: {stringifyDate(lastUpdate)}</em></small>
+                        {/if}
+                    </th>
                 </tr>
+                {#each visibleItems as item}
+                    <tr>
+                        <td class="timestamp pe-4">
+                            {stringifyDate(item.timestamp)}
+                        </td>
+                        {#if !filters?.sessionId}
+                            <td class="username pe-4">
+                                {#if item.username}
+                                    {item.username}
+                                {/if}
+                            </td>
+                            <td class="session pe-4">
+                                {#if item.sessionId}
+                                    <a href="/sessions/{item.sessionId}" use:link>
+                                        {item.sessionId}
+                                    </a>
+                                {/if}
+                            </td>
+                        {/if}
+                        <td class="content">
+                            <span class="text">
+                                {item.text}
+                            </span>
+
+                            {#each Object.entries(item.values ?? {}) as pair}
+                                <span class="key">{pair[0]}:</span>
+                                <span class="value">{pair[1]}</span>
+                            {/each}
+                        </td>
+                    </tr>
                 {/each}
                 {#if !endReached}
                     {#if !loading}
@@ -183,7 +189,7 @@ onDestroy(() => {
                                     <button
                                         bind:this={loadOlderButton}
                                         class="btn btn-light"
-                                        on:click={() => loadOlder()}
+                                        onclick={() => loadOlder()}
                                         disabled={loading}
                                     >
                                         Load older
@@ -202,6 +208,7 @@ onDestroy(() => {
                         <td class="text">End of the log</td>
                     </tr>
                 {/if}
+            </tbody>
         </table>
     </div>
 {/if}

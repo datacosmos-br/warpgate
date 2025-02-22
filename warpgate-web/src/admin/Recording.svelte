@@ -1,31 +1,36 @@
 <script lang="ts">
 import { api, type Recording } from 'admin/lib/api'
-import { Alert } from '@sveltestrap/sveltestrap'
 import TerminalRecordingPlayer from 'admin/player/TerminalRecordingPlayer.svelte'
+import Alert from 'common/sveltestrap-s5-ports/Alert.svelte'
 import DelayedSpinner from 'common/DelayedSpinner.svelte'
+import { stringifyError } from 'common/errors'
 
-export let params = { id: '' }
+interface Props {
+    params: { id: string }
+}
 
-let error: Error|null = null
-let recording: Recording|null = null
+let { params = { id: '' } }: Props = $props()
+
+let error: string|null = $state(null)
+let recording: Recording|null = $state(null)
 
 async function load () {
     recording = await api.getRecording(params)
 }
 
 function getTCPDumpURL () {
-    return `/@warpgate/api/recordings/${recording?.id}/tcpdump`
+    return `/@warpgate/admin/api/recordings/${recording?.id}/tcpdump`
 }
 
-load().catch(e => {
-    error = e
+load().catch(async e => {
+    error = await stringifyError(e)
 })
 
 </script>
 
 
 <div class="page-summary-bar">
-    <h1>Session recording</h1>
+    <h1>session recording</h1>
 </div>
 
 {#if !recording && !error}

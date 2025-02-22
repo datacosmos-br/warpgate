@@ -39,6 +39,11 @@ pub struct ForwardedTcpIpParams {
 }
 
 #[derive(Clone, Debug)]
+pub struct ForwardedStreamlocalParams {
+    pub socket_path: String,
+}
+
+#[derive(Clone, Debug)]
 pub struct X11Request {
     pub single_conection: bool,
     pub x11_auth_protocol: String,
@@ -57,6 +62,7 @@ pub enum ChannelOperation {
     RequestEnv(String, String),
     RequestExec(String),
     RequestX11(X11Request),
+    AgentForward,
     RequestSubsystem(String),
     Data(Bytes),
     ExtendedData { data: Bytes, ext: u32 },

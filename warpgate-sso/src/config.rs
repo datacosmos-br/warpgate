@@ -21,6 +21,9 @@ pub struct SsoProviderConfig {
     pub name: String,
     pub label: Option<String>,
     pub provider: SsoInternalProviderConfig,
+    pub return_domain_whitelist: Option<Vec<String>>,
+    #[serde(default)]
+    pub auto_create_users: bool,
 }
 
 impl SsoProviderConfig {
@@ -61,6 +64,8 @@ pub enum SsoInternalProviderConfig {
         scopes: Vec<String>,
         role_mappings: Option<HashMap<String, String>>,
         additional_trusted_audiences: Option<Vec<String>>,
+        #[serde(default)]
+        trust_unknown_audiences: bool,
     },
 }
 
@@ -227,6 +232,18 @@ impl SsoInternalProviderConfig {
                 ..
             } => additional_trusted_audiences.as_ref(),
             _ => None,
+        }
+    }
+
+    #[inline]
+    pub fn trust_unknown_audiences(&self) -> bool {
+        #[allow(clippy::match_like_matches_macro)]
+        match self {
+            SsoInternalProviderConfig::Custom {
+                trust_unknown_audiences,
+                ..
+            } => *trust_unknown_audiences,
+            _ => false,
         }
     }
 }
