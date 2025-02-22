@@ -82,19 +82,13 @@ impl ProtocolServer for SSHProtocolServer {
                             let _ = reply.send(false);
                         }
                         SshHostKeyVerificationMode::Prompt => {
-                            match dialoguer::Confirm::new()
+                            if dialoguer::Confirm::new()
                                 .with_prompt("Trust this key?")
-                                .interact()
+                                .interact()?
                             {
-                                Ok(true) => {
-                                    let _ = reply.send(true);
-                                }
-                                Ok(false) => {
-                                    let _ = reply.send(false);
-                                }
-                                Err(e) => {
-                                    return Err(TargetTestError::DialoguerError(e));
-                                }
+                                let _ = reply.send(true);
+                            } else {
+                                let _ = reply.send(false);
                             }
                         }
                     }
@@ -133,11 +127,5 @@ impl ProtocolServer for SSHProtocolServer {
         }
 
         Ok(())
-    }
-}
-
-impl Debug for SSHProtocolServer {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "SSHProtocolServer")
     }
 }

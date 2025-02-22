@@ -24,3 +24,5 @@ uuid = { version = "1.3", features = ["v4"] }
 warpgate-common = { version = "*", path = "../warpgate-common" }
 warpgate-core = { version = "*", path = "../warpgate-core" }
 warpgate-db-entities = { version = "*", path = "../warpgate-db-entities" }
+
+zeroize = "^1.5"

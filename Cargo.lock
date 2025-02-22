@@ -5520,6 +5520,7 @@ dependencies = [
  "flate2",
  "futures",
  "mysql_common",
+ "once_cell",
  "password-hash",
  "rand 0.8.5",
  "rustls 0.23.23",
@@ -5533,6 +5534,7 @@ dependencies = [
  "warpgate-common",
  "warpgate-core",
  "warpgate-database-protocols",
+ "webpki",
 ]
 
 [[package]]
@@ -5580,6 +5582,7 @@ dependencies = [
  "warpgate-common",
  "warpgate-core",
  "warpgate-db-entities",
+ "zeroize",
 ]
 
 [[package]]

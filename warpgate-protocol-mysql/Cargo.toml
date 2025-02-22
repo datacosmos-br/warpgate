@@ -24,3 +24,5 @@ rustls.workspace = true
 rustls-pemfile = "1.0"
 tokio-rustls.workspace = true
 thiserror = "1.0"
+webpki = "0.22"
+once_cell = "1.17"

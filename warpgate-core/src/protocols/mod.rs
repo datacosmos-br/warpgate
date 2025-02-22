@@ -7,6 +7,7 @@ use dialoguer::Error as DialoguerError;
 pub use handle::{SessionHandle, WarpgateServerHandle};
 use warpgate_common::{ListenEndpoint, Target};
 
+
 #[derive(Debug, thiserror::Error)]
 pub enum TargetTestError {
     #[error("unreachable")]
@@ -21,6 +22,12 @@ pub enum TargetTestError {
     Io(#[from] std::io::Error),
     #[error("dialoguer error: {0}")]
     DialoguerError(DialoguerError),
+}
+
+impl From<DialoguerError> for TargetTestError {
+    fn from(err: DialoguerError) -> Self {
+        TargetTestError::DialoguerError(err)
+    }
 }
 
 pub trait ProtocolServer {
