@@ -1,2 +1,2 @@
 [toolchain]
-channel = "nightly-2024-07-09"
+channel = "1.84.1-x86_64-unknown-linux-gnu"

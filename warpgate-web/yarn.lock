@@ -659,7 +659,7 @@
     magic-string "^0.30.15"
     vitefu "^1.0.4"
 
-"@sveltestrap/sveltestrap@^7.1.0":
+"@sveltestrap/sveltestrap@^7.0.2":
   version "7.0.2"
   resolved "https://registry.npmmirror.com/@sveltestrap/sveltestrap/-/sveltestrap-7.0.2.tgz#bfa516c21a43d503d6ae24d40f734449e7556feb"
   integrity sha512-+Idfn/8p1o2VIp1j/s7ZWlCiafOq6iccMnIQnelmrjhvYWkJuhttsOPfYiPNVEbpls5qi2x83o5oLiuCB0UJRw==
