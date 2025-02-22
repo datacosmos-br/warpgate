@@ -8,4 +8,4 @@ version = "0.13.1"
 serde.workspace = true
 rust-embed = "8.4"
 serde_json.workspace = true
-thiserror = "1.0"
+thiserror = "2.0"

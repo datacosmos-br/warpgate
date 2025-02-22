@@ -6,7 +6,7 @@ version = "0.13.1"
 
 [dependencies]
 bytes.workspace = true
-thiserror = "1.0"
+thiserror = "2.0"
 tokio = { version = "1.20", features = ["tracing", "macros"] }
 tracing.workspace = true
 openidconnect = { version = "4.0", default-features = false, features = [
