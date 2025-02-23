@@ -5,7 +5,7 @@ name = "warpgate"
 version = "0.13.1"
 
 [dependencies]
-ansi_term = "0.12"
+ansiterm = "0.12"
 anyhow = { version = "1.0", features = ["backtrace"] }
 async-trait = "0.1"
 bytes.workspace = true

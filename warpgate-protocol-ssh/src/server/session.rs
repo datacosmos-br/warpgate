@@ -7,7 +7,7 @@ use std::str::FromStr;
 use std::sync::Arc;
 use std::task::Poll;
 
-use ansi_term::Colour;
+use ansiterm::Colour;
 use anyhow::{Context, Result};
 use bimap::BiMap;
 use bytes::Bytes;
