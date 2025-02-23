@@ -20,6 +20,18 @@ updates:
     labels: ["type/deps"]
     schedule:
       interval: "weekly"
+    groups:
+      bundler:
+        patterns:
+          - '*'
+        exclude-patterns:
+          - 'api_sdk'
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    labels: ["type/deps"]
+    schedule:
+      interval: "weekly"
 
   - package-ecosystem: "docker"
     directory: "/docker"
