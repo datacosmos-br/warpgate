@@ -7,14 +7,14 @@ use std::path::{Path, PathBuf};
 
 use anyhow::Result;
 use dialoguer::theme::ColorfulTheme;
-use rcgen::CertificateParams;
+use rcgen::{generate_simple_self_signed, CertifiedKey};
 use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, QueryFilter, Set};
 use tracing::*;
 use uuid::Uuid;
 use warpgate_common::helpers::fs::{secure_directory, secure_file};
 use warpgate_common::{
-    HttpConfig, ListenEndpoint, MySqlConfig, PostgresConfig, Secret, SshConfig, 
-    UserPasswordCredential, UserRequireCredentialsPolicy, WarpgateConfigStore, WarpgateError
+    HttpConfig, ListenEndpoint, MySqlConfig, PostgresConfig, Secret, SshConfig,
+    UserPasswordCredential, UserRequireCredentialsPolicy, WarpgateConfigStore, WarpgateError,
 };
 use warpgate_core::consts::{BUILTIN_ADMIN_ROLE_NAME, BUILTIN_ADMIN_USERNAME};
 use warpgate_core::Services;
@@ -352,20 +352,16 @@ pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
 
     {
         info!("Generating a TLS certificate");
-        let params: CertificateParams = rcgen::CertificateParams::new(vec![
+        let CertifiedKey { cert, key_pair } = generate_simple_self_signed(vec![
             "warpgate.local".to_string(),
             "localhost".to_string(),
         ])?;
-
-        let key_pair = rcgen::KeyPair::generate()?;
-        let cert: rcgen::Certificate = params.self_signed(&key_pair)?;
-        let pem_serialized = cert.pem();
 
         let certificate_path = config
             .paths_relative_to
             .join(&config.store.http.certificate);
         let key_path = config.paths_relative_to.join(&config.store.http.key);
-        std::fs::write(&certificate_path, pem_serialized.as_bytes())?;
+        std::fs::write(&certificate_path, cert.pem().as_bytes())?;
         std::fs::write(&key_path, key_pair.serialize_pem().as_bytes())?;
         secure_file(&certificate_path)?;
         secure_file(&key_path)?;
