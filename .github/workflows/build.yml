@@ -34,7 +34,7 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: rlespinasse/github-slug-action@v4.4.1
+      - uses: rlespinasse/github-slug-action@v5.0.0
 
       - uses: mkroening/rust-toolchain-toml@main
         with:
