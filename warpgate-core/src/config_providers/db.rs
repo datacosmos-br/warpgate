@@ -43,11 +43,12 @@ impl DatabaseConfigProvider {
         let user = entities::User::ActiveModel {
             id: Set(Uuid::new_v4()),
             username: Set(preferred_username.clone()),
+            description: Set("".into()),
             credential_policy: Set(serde_json::to_value(
                 UserRequireCredentialsPolicy::default(),
             )?),
         }
-        .insert(&*db)
+        .insert(db)
         .await?;
 
         entities::SsoCredential::ActiveModel {
@@ -55,7 +56,7 @@ impl DatabaseConfigProvider {
             user_id: Set(user.id),
             ..entities::SsoCredential::ActiveModel::from(credential)
         }
-        .insert(&*db)
+        .insert(db)
         .await?;
 
         Ok(Some(preferred_username))
@@ -73,7 +74,7 @@ impl ConfigProvider for DatabaseConfigProvider {
 
         let users: Result<Vec<User>, _> = users.into_iter().map(|t| t.try_into()).collect();
 
-        Ok(users?)
+        users
     }
 
     async fn list_targets(&mut self) -> Result<Vec<Target>, WarpgateError> {
@@ -209,16 +210,16 @@ impl ConfigProvider for DatabaseConfigProvider {
                 error!("The OIDC server did not provide a preferred_username claim for this user");
                 return Ok(None);
             };
-            return Ok(self
+            return self
                 .maybe_autocreate_sso_user(
-                    &*db,
+                    &db,
                     UserSsoCredential {
                         email: client_email.clone(),
                         provider: Some(client_provider.clone()),
                     },
                     preferred_username,
                 )
-                .await?);
+                .await;
         }
 
         Ok(None)
@@ -255,7 +256,7 @@ impl ConfigProvider for DatabaseConfigProvider {
                     "Client key: {}", openssh_public_key
                 );
 
-                return Ok(user_details
+                Ok(user_details
                     .credentials
                     .iter()
                     .any(|credential| match credential {
@@ -263,10 +264,10 @@ impl ConfigProvider for DatabaseConfigProvider {
                             key: ref user_key,
                         }) => &openssh_public_key == user_key.expose_secret(),
                         _ => false,
-                    }));
+                    }))
             }
             AuthCredential::Password(client_password) => {
-                return Ok(user_details
+                Ok(user_details
                     .credentials
                     .iter()
                     .any(|credential| match credential {
@@ -287,7 +288,7 @@ impl ConfigProvider for DatabaseConfigProvider {
                     }))
             }
             AuthCredential::Otp(client_otp) => {
-                return Ok(user_details
+                Ok(user_details
                     .credentials
                     .iter()
                     .any(|credential| match credential {
@@ -314,9 +315,9 @@ impl ConfigProvider for DatabaseConfigProvider {
                         }
                     }
                 }
-                return Ok(false);
+                Ok(false)
             }
-            _ => return Err(WarpgateError::InvalidCredentialType),
+            _ => Err(WarpgateError::InvalidCredentialType),
         }
     }
 

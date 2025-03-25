@@ -7,15 +7,15 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get update \
     && apt-get install -y ca-certificates-java nodejs openjdk-17-jdk libssl-dev pkg-config\
     && rm -rf /var/lib/apt/lists/* \
-    && npm install -g yarn \
     && cargo install just
 
 COPY . /opt/warpgate
 
+ENV SOURCE_DATE_EPOCH 0 # for rust-embed determinism
 RUN cd /opt/warpgate \
-    && just yarn --network-timeout 1000000000 \
+    && just npm ci \
     && just openapi \
-    && just yarn build \
+    && just npm run build \
     && cargo build --features mysql,postgres --release
 
 FROM debian:bookworm-slim

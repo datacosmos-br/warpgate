@@ -161,7 +161,7 @@ pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
             info!("You will now choose specific protocol listeners to be enabled.");
             info!("");
             info!("NB: Nothing will be exposed by default -");
-            info!("    you'll set target hosts in the config file later.");
+            info!("    you'll choose target hosts in the UI later.");
 
             store.ssh.enable = dialoguer::Confirm::with_theme(&theme)
                 .default(true)
@@ -318,6 +318,7 @@ pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
                 let values = User::ActiveModel {
                     id: Set(Uuid::new_v4()),
                     username: Set(BUILTIN_ADMIN_USERNAME.to_owned()),
+                    description: Set("".into()),
                     credential_policy: Set(serde_json::to_value(
                         None::<UserRequireCredentialsPolicy>,
                     )?),
@@ -361,8 +362,8 @@ pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
             .paths_relative_to
             .join(&config.store.http.certificate);
         let key_path = config.paths_relative_to.join(&config.store.http.key);
-        std::fs::write(&certificate_path, cert.pem())?;
-        std::fs::write(&key_path, key_pair.serialize_pem())?;
+        std::fs::write(&certificate_path, cert.cert.pem())?;
+        std::fs::write(&key_path, cert.key_pair.serialize_pem())?;
         secure_file(&certificate_path)?;
         secure_file(&key_path)?;
     }

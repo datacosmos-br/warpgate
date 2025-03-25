@@ -16,6 +16,10 @@ mod m00011_rsa_key_algos;
 mod m00012_add_openssh_public_key_label;
 mod m00013_add_openssh_public_key_dates;
 mod m00014_api_tokens;
+mod m00015_fix_public_key_dates;
+mod m00016_fix_public_key_length;
+mod m00017_descriptions;
+mod m00018_ticket_description;
 
 pub struct Migrator;
 
@@ -37,6 +41,10 @@ impl MigratorTrait for Migrator {
             Box::new(m00012_add_openssh_public_key_label::Migration),
             Box::new(m00013_add_openssh_public_key_dates::Migration),
             Box::new(m00014_api_tokens::Migration),
+            Box::new(m00015_fix_public_key_dates::Migration),
+            Box::new(m00016_fix_public_key_length::Migration),
+            Box::new(m00017_descriptions::Migration),
+            Box::new(m00018_ticket_description::Migration),
         ]
     }
 }

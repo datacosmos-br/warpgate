@@ -15,9 +15,9 @@ use channel_session::SessionChannel;
 pub use error::SshClientError;
 use futures::pin_mut;
 use handler::ClientHandler;
-use russh::client::Handle;
-use russh::keys::PublicKey;
-use russh::{kex, Preferred, Sig};
+use russh::client::{AuthResult, Handle, KeyboardInteractiveAuthResponse};
+use russh::keys::{PrivateKeyWithHashAlg, PublicKey};
+use russh::{kex, MethodKind, Preferred, Sig};
 use tokio::sync::mpsc::{unbounded_channel, UnboundedReceiver, UnboundedSender};
 use tokio::sync::{oneshot, Mutex};
 use tokio::task::JoinHandle;
@@ -29,7 +29,7 @@ use warpgate_core::Services;
 use self::handler::ClientHandlerEvent;
 use super::{ChannelOperation, DirectTCPIPParams};
 use crate::client::handler::ClientHandlerError;
-use crate::{load_all_usable_private_keys, ForwardedStreamlocalParams, ForwardedTcpIpParams};
+use crate::{load_client_keys, ForwardedStreamlocalParams, ForwardedTcpIpParams};
 
 #[derive(Debug, thiserror::Error)]
 pub enum ConnectionError {
@@ -548,24 +548,63 @@ impl RemoteClient {
                     let mut auth_result = false;
                     match ssh_options.auth {
                         SSHTargetAuth::Password(auth) => {
-                            auth_result = session
-                                .authenticate_password(ssh_options.username.clone(), auth.password.expose_secret())
-                                .await?.success();
+                            let response = session
+                                    .authenticate_password(
+                                        ssh_options.username.clone(),
+                                        auth.password.expose_secret()
+                                    )
+                                    .await?;
+                            auth_result = self._handle_auth_result(
+                                &mut session,
+                                ssh_options.username.clone(),
+                                response
+                            ).await.unwrap_or(false);
                             if auth_result {
                                 debug!(username=&ssh_options.username[..], "Authenticated with password");
                             }
                         }
                         SSHTargetAuth::PublicKey(_) => {
+                            let best_hash = session.best_supported_rsa_hash().await?.flatten();
                             #[allow(clippy::explicit_auto_deref)]
-                            let keys = load_all_usable_private_keys(&*self.services.config.lock().await, ssh_options.allow_insecure_algos.unwrap_or(false))?;
+                            let keys = load_client_keys(&*self.services.config.lock().await)?;
+                            let allow_insecure_algos = ssh_options.allow_insecure_algos.unwrap_or(false);
                             for key in keys.into_iter() {
+                                let key = Arc::new(key);
+                                if key.key_data().is_rsa() && best_hash.is_none() && !allow_insecure_algos {
+                                    info!("Skipping ssh-rsa (SHA1) key authentication since insecure SSH algos are not allowed for this target");
+                                    continue;
+                                }
                                 let key_str = key.public_key().to_openssh().map_err(russh::Error::from)?;
-                                auth_result = session
+                                let mut response  = session
                                     .authenticate_publickey(
                                         ssh_options.username.clone(),
-                                        key
+                                        PrivateKeyWithHashAlg::new(key.clone(), best_hash),
                                     )
-                                    .await?.success();
+                                    .await?;
+
+                                auth_result = self._handle_auth_result(
+                                    &mut session,
+                                    ssh_options.username.clone(),
+                                    response
+                                ).await.unwrap_or(false);
+
+                                if !auth_result && key.key_data().is_rsa() && best_hash.is_some() && allow_insecure_algos {
+                                    // Corner case: OpenSSH advertising rsa2-sha-* through server-sig-algs, but it being
+                                    // disabled via PubkeyAcceptedAlgorithms. So far the only case is our own test suite.
+                                    // In this case we retry with ssh-rsa (SHA1)
+                                    response = session
+                                        .authenticate_publickey(
+                                            ssh_options.username.clone(),
+                                            PrivateKeyWithHashAlg::new(key.clone(), None),
+                                        ).await?;
+
+                                    auth_result = self._handle_auth_result(
+                                        &mut session,
+                                        ssh_options.username.clone(),
+                                        response
+                                    ).await.unwrap_or(false);
+                                }
+
                                 if auth_result {
                                     debug!(username=&ssh_options.username[..], key=%key_str, "Authenticated with key");
                                     break;
@@ -601,6 +640,83 @@ impl RemoteClient {
                 }
             }
         }
+    }
+
+    /// Handles an AuthResult from a password or public key authentication attempt.
+    /// If presented with an additional keyboard-interactive challenge it will respond with empty
+    /// strings. This ensures optional 2fa is respected, where this extra challenge always happens.
+    ///
+    /// TODO: Optionally implement forwarding the challenges to the user
+    ///
+    /// # Arguments
+    ///
+    /// * `session`: the session for which the initial result is
+    /// * `username`: username of the authenticating user
+    /// * `result`: the initial result received via the configured auth method
+    async fn _handle_auth_result(
+        &self,
+        session: &mut Handle<ClientHandler>,
+        username: String,
+        result: AuthResult,
+    ) -> Result<bool> {
+        debug!("Handling AuthResult");
+        match result {
+            AuthResult::Success => {
+                debug!("AuthResult is already success, no further handling needed");
+                return Ok(true);
+            }
+            AuthResult::Failure {
+                remaining_methods: methods,
+            } => {
+                debug!("Initial auth failed, checking remaining methods");
+                for method in methods.iter() {
+                    if matches!(method, MethodKind::KeyboardInteractive) {
+                        debug!("Found keyboard-interactive challenge");
+                        let mut kb_result = session
+                            .authenticate_keyboard_interactive_start(username.clone(), None)
+                            .await?;
+
+                        while let KeyboardInteractiveAuthResponse::InfoRequest {
+                            name: _name,
+                            instructions: _instructions,
+                            prompts,
+                        } = kb_result
+                        {
+                            for prompt in prompts.iter().clone() {
+                                debug!(
+                                    prompt = prompt.prompt,
+                                    echo = prompt.echo,
+                                    "Prompt received for keyboard-interactive"
+                                );
+                            }
+                            debug!("Responding with empty responses");
+                            kb_result = session
+                                .authenticate_keyboard_interactive_respond(vec![
+                                    String::new();
+                                    prompts.len()
+                                ])
+                                .await?;
+                        }
+
+                        match kb_result {
+                            KeyboardInteractiveAuthResponse::Success => {
+                                debug!("keyboard-interactive challenge successful");
+                                return Ok(true);
+                            }
+                            KeyboardInteractiveAuthResponse::Failure {
+                                remaining_methods: _remaining_methods,
+                            } => {
+                                debug!("keyboard-interactive challenge failed");
+                                return Ok(false);
+                            }
+                            _ => {}
+                        }
+                    }
+                    continue;
+                }
+            }
+        }
+        Ok(false)
     }
 
     async fn open_shell(&mut self, channel_id: Uuid) -> Result<(), SshClientError> {

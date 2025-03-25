@@ -137,3 +137,9 @@
         <Pagination total={_total} bind:page={page} pageSize={pageSize} />
     {/if}
 {/await}
+
+<style lang="scss">
+    .list-group:empty {
+        display: none;
+    }
+</style>

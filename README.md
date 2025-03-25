@@ -36,7 +36,7 @@ Warpgate is a smart SSH, HTTPS, MySQL and PostgreSQL bastion host for Linux that
 
 ## Getting started & downloads
 
-* See the [Getting started](https://github.com/warp-tech/warpgate/wiki/Getting-started) wiki page (or [Getting started on Docker](https://github.com/warp-tech/warpgate/wiki/Getting-started-on-Docker)).
+* See the [Getting started](https://warpgate.null.page/getting-started/) docs page (or [Getting started on Docker](https://warpgate.null.page/getting-started-on-docker/)).
 * [Release / beta binaries](https://github.com/warp-tech/warpgate/releases)
 * [Nightly builds](https://nightly.link/warp-tech/warpgate/workflows/build/main)
 
@@ -47,25 +47,30 @@ Warpgate is a smart SSH, HTTPS, MySQL and PostgreSQL bastion host for Linux that
 <table>
   <tr>
   <td>
-    <img width="500" alt="image" src="https://user-images.githubusercontent.com/161476/177408495-80268a91-1a21-43bf-b171-2a563a322f5f.png">
-
+    <img src="https://github.com/user-attachments/assets/c9a6a372-198e-4f46-ab86-8c420dc24bca">
   </td>
   <td>
-    <img width="500" alt="image" src="https://user-images.githubusercontent.com/161476/177410749-cf029df7-223e-4c9c-827a-bb96dbe0a7c8.png">
-
+    <img src="https://github.com/user-attachments/assets/a2166426-e865-4aba-9600-520954bcfe7f">
+  </td>
+  <td>
+    <img src="https://github.com/user-attachments/assets/366a5afb-aa86-4902-9080-eb2f40bf162c">
   </td>
   </tr>
 </table>
 
+## Reporting security issues
+
+Please use GitHub's [vulnerability reporting system](https://github.com/warp-tech/warpgate/security/policy).
+
 ## Project Status
 
-The project is currently in **alpha** stage and is gathering community feedback.
+The project is ready for production.
 
 ## How it works
 
 Warpgate is a service that you deploy on the bastion/DMZ host, which will accept SSH, HTTPS, MySQL and PostgreSQL connections and provide an (optional) web admin UI.
 
-Run `warpgate setup` to interactively generate a config file, including port bindings. See [Getting started](https://github.com/warp-tech/warpgate/wiki/Getting-started) for details.
+Run `warpgate setup` to interactively generate a config file, including port bindings. See [Getting started](https://warpgate.null.page/getting-started/) for details.
 
 It receives connections with specifically formatted credentials, authenticates the user locally, connects to the target itself, and then connects both parties together while (optionally) recording the session.
 
@@ -77,11 +82,11 @@ You can also use the admin web interface to view the live session list, review s
 
 ## Contributing / building from source
 
-* You'll need Rust, NodeJS and Yarn
+* You'll need Rust, NodeJS and NPM
 * Clone the repo
 * [Just](https://github.com/casey/just) is used to run tasks - install it: `cargo install just`
-* Install the admin UI deps: `just yarn`
-* Build the frontend: `just yarn build`
+* Install the admin UI deps: `just npm`
+* Build the frontend: `just npm run build`
 * Build Warpgate: `cargo build` (optionally `--release`)
 
 The binary is in `target/{debug|release}`.

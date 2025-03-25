@@ -22,13 +22,10 @@ let loading = $state(true)
 let endReached = $state(false)
 let loadOlderButton: HTMLButtonElement|undefined = $state()
 let reloadInterval: any
-let lastUpdate = $state(new Date())
-let isLive = $state(true)
 let searchQuery = $state('')
 const PAGE_SIZE = 1000
 
 function addItems (newItems: LogEntry[]) {
-    lastUpdate = new Date()
     let existingIds = new Set(items?.map(i => i.id) ?? [])
     newItems = newItems.filter(i => !existingIds.has(i.id))
     newItems.sort(firstBy('timestamp', -1))
@@ -103,7 +100,6 @@ loadOlder().catch(async e => {
 
 onMount(() => {
     reloadInterval = setInterval(() => {
-        isLive = Date.now() - lastUpdate.valueOf() < 3000
         if (!loading) {
             loadNewer()
         }
@@ -131,21 +127,6 @@ onDestroy(() => {
     <div class="table-wrapper">
         <table class="w-100">
             <tbody>
-                <tr>
-                    <th>Time</th>
-                    {#if !filters?.sessionId}
-                        <th>User</th>
-                        <th>Session</th>
-                    {/if}
-                    <th class="d-flex">
-                        <div class="me-auto">Message</div>
-                        {#if isLive}
-                            <span class="badge bg-danger">Live</span>
-                        {:else}
-                            <small><em>Last update: {stringifyDate(lastUpdate)}</em></small>
-                        {/if}
-                    </th>
-                </tr>
                 {#each visibleItems as item}
                     <tr>
                         <td class="timestamp pe-4">
@@ -256,9 +237,5 @@ onDestroy(() => {
                 font-style: italic;
             }
         }
-    }
-
-    .badge {
-        line-height: 1.3;
     }
 </style>
