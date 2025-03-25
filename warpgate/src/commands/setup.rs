@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 
 use anyhow::Result;
 use dialoguer::theme::ColorfulTheme;
-use rcgen::{generate_simple_self_signed, CertifiedKey};
+use rcgen::generate_simple_self_signed;
 use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, QueryFilter, Set};
 use tracing::*;
 use uuid::Uuid;
@@ -353,7 +353,7 @@ pub(crate) async fn command(cli: &crate::Cli) -> Result<()> {
 
     {
         info!("Generating a TLS certificate");
-        let CertifiedKey { cert, key_pair } = generate_simple_self_signed(vec![
+        let cert = generate_simple_self_signed(vec![
             "warpgate.local".to_string(),
             "localhost".to_string(),
         ])?;
