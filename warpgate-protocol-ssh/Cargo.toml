@@ -18,7 +18,7 @@ russh.workspace = true
 sea-orm.workspace = true
 thiserror = "2.0"
 time = "0.3"
-tokio = { version = "1.40", features = ["tracing", "signal"] }
+tokio = { version = "1.43", features = ["tracing", "signal"] }
 tracing.workspace = true
 uuid = { version = "1.3", features = ["v4"] }
 warpgate-common = { version = "*", path = "../warpgate-common" }
