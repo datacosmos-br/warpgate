@@ -34,7 +34,7 @@ jobs:
           docker build -f docker/Dockerfile -t docker.io/datacosmos-br/warpgate:${{ github.sha }} .
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@a11da62073708815958ea6d84f5650c78a3ef85b
+        uses: aquasecurity/trivy-action@76071ef0d7ec797419534a183b498b4d6366cf37
         with:
           image-ref: 'docker.io/datacosmos-br/warpgate:${{ github.sha }}'
           format: 'template'
