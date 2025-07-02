@@ -18,7 +18,7 @@ RUN cd /opt/warpgate \
     && just npm run build \
     && cargo build --features mysql,postgres --release
 
-FROM debian:bookworm-slim
+FROM debian:12.11-slim
 LABEL maintainer=heywoodlh
 
 ENV DEBIAN_FRONTEND noninteractive
