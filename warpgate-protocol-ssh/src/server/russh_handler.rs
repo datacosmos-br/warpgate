@@ -195,6 +195,7 @@ impl russh::server::Handler for ServerHandler {
 
         Ok(rx.await.unwrap_or(Auth::Reject {
             proceed_with_methods: None,
+            partial_success: false,
         }))
     }
 

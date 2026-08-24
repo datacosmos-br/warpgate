@@ -667,6 +667,7 @@ impl RemoteClient {
             }
             AuthResult::Failure {
                 remaining_methods: methods,
+                partial_success: true,
             } => {
                 debug!("Initial auth failed, checking remaining methods");
                 for method in methods.iter() {
@@ -705,6 +706,7 @@ impl RemoteClient {
                             }
                             KeyboardInteractiveAuthResponse::Failure {
                                 remaining_methods: _remaining_methods,
+                                partial_success: true,
                             } => {
                                 debug!("keyboard-interactive challenge failed");
                                 return Ok(false);
@@ -714,9 +716,16 @@ impl RemoteClient {
                     }
                     continue;
                 }
+                Ok(false)
+            }
+            AuthResult::Failure {
+                remaining_methods: _,
+                partial_success: false,
+            } => {
+                debug!("Authentication failed with no partial success");
+                Ok(false)
             }
         }
-        Ok(false)
     }
 
     async fn open_shell(&mut self, channel_id: Uuid) -> Result<(), SshClientError> {
